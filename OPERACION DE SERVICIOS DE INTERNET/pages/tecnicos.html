@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Técnicos - Telecomunicaciones</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-info">
+                    <h1><i class="fas fa-tools"></i> Gestión de Técnicos</h1>
+                    <p>Administra el equipo técnico</p>
+                </div>
+                <div class="user-logo">
+                    <div class="user-logo-btn" onclick="toggleUserMenu()">
+                        <div class="user-initial" id="userInitial">A</div>
+                    </div>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="#" class="user-dropdown-item" onclick="showPerfilModal()">
+                            <i class="fas fa-user"></i>
+                            Mi Perfil
+                        </a>
+                        <a href="#" class="user-dropdown-item danger" onclick="cerrarSesion()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Cerrar Sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas de técnicos -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalTecnicos">-</div>
+                <div class="stat-label">Técnicos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="tecnicosDisponibles">-</div>
+                <div class="stat-label">Disponibles</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="tareasActivas">-</div>
+                <div class="stat-label">Tareas Activas</div>
+            </div>
+        </div>
+
+        <!-- Lista de técnicos -->
+        <div id="tecnicosContainer">
+            <div class="loading">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de perfil -->
+    <div id="perfilModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Mi Perfil</h3>
+                <button class="modal-close" onclick="closePerfilModal()">&times;</button>
+            </div>
+            
+            <form id="perfilForm">
+                <div class="form-group">
+                    <label for="perfilUsuario" class="form-label">Usuario</label>
+                    <input 
+                        type="text" 
+                        id="perfilUsuario" 
+                        class="form-input" 
+                        readonly
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="perfilRol" class="form-label">Rol</label>
+                    <input 
+                        type="text" 
+                        id="perfilRol" 
+                        class="form-input" 
+                        readonly
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="perfilNombre" class="form-label">Nombre Completo</label>
+                    <input 
+                        type="text" 
+                        id="perfilNombre" 
+                        class="form-input" 
+                        placeholder="Ingresa tu nombre completo"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="perfilEmail" class="form-label">Email</label>
+                    <input 
+                        type="email" 
+                        id="perfilEmail" 
+                        class="form-input" 
+                        placeholder="tu@email.com"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="perfilTelefono" class="form-label">Teléfono</label>
+                    <input 
+                        type="tel" 
+                        id="perfilTelefono" 
+                        class="form-input" 
+                        placeholder="300-123-4567"
+                    >
+                </div>
+
+                <div style="display: flex; gap: 12px;">
+                    <button type="button" class="btn btn-secondary" onclick="closePerfilModal()" style="flex: 1;">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        <i class="fas fa-save"></i>
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Navegación inferior -->
+    <div class="bottom-nav">
+        <a href="dashboard-coordinador.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="clientes.html" class="nav-item">
+            <i class="fas fa-users"></i>
+            <span>Clientes</span>
+        </a>
+        <a href="tareas.html" class="nav-item">
+            <i class="fas fa-tasks"></i>
+            <span>Tareas</span>
+        </a>
+        <a href="tecnicos.html" class="nav-item active">
+            <i class="fas fa-tools"></i>
+            <span>Técnicos</span>
+        </a>
+        <a href="nucleo.html" class="nav-item">
+            <i class="fas fa-network-wired"></i>
+            <span>Núcleo</span>
+        </a>
+    </div>
+
+    <script>
+        let tecnicos = [];
+        let tareas = [];
+
+        // Verificar sesión
+        window.addEventListener('load', function() {
+            const userData = localStorage.getItem('userData');
+            if (!userData || JSON.parse(userData).rol !== 'coordinador') {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            loadTecnicos();
+            loadPerfilData();
+            loadUserInitial();
+        });
+
+        // Cargar técnicos
+        function loadTecnicos() {
+            try {
+                // Cargar desde localStorage
+                tecnicos = JSON.parse(localStorage.getItem('tecnicos') || '[]');
+                tareas = JSON.parse(localStorage.getItem('tareas') || '[]');
+                
+                // Si no hay datos, usar datos por defecto
+                if (tecnicos.length === 0) {
+                    tecnicos = [
+                        {
+                            "id": 1,
+                            "nombre": "Juan Pérez",
+                            "especialidad": "Instalaciones de Red",
+                            "estado": "Disponible",
+                            "telefono": "300-111-2222",
+                            "experiencia": "5 años",
+                            "zona": "Norte y Centro",
+                            "tareas_completadas": 45
+                        },
+                        {
+                            "id": 2,
+                            "nombre": "Pedro García",
+                            "especialidad": "Mantenimiento y Reparaciones",
+                            "estado": "Disponible",
+                            "telefono": "300-333-4444",
+                            "experiencia": "7 años",
+                            "zona": "Sur y Este",
+                            "tareas_completadas": 62
+                        },
+                        {
+                            "id": 3,
+                            "nombre": "Miguel López",
+                            "especialidad": "Configuración y Soporte",
+                            "estado": "Disponible",
+                            "telefono": "300-555-6666",
+                            "experiencia": "4 años",
+                            "zona": "Oeste y Centro",
+                            "tareas_completadas": 38
+                        }
+                    ];
+                    localStorage.setItem('tecnicos', JSON.stringify(tecnicos));
+                }
+                
+                displayTecnicos();
+                updateStats();
+            } catch (error) {
+                console.error('Error cargando técnicos:', error);
+            }
+        }
+
+        function displayTecnicos() {
+            const container = document.getElementById('tecnicosContainer');
+            
+            container.innerHTML = tecnicos.map(tecnico => {
+                const tareasTecnico = tareas.filter(t => t.tecnico_id === tecnico.id);
+                const tareasActivas = tareasTecnico.filter(t => t.estado === 'En Progreso').length;
+                const tareasPendientes = tareasTecnico.filter(t => t.estado === 'Pendiente').length;
+                const tareasCompletadas = tareasTecnico.filter(t => t.estado === 'Completada').length;
+                
+                return `
+                    <div class="list-item">
+                        <div class="list-item-header">
+                            <div>
+                                <div class="list-item-title">${tecnico.nombre}</div>
+                                <div class="list-item-subtitle">
+                                    <i class="fas fa-cog"></i> ${tecnico.especialidad}<br>
+                                    <i class="fas fa-map-marker-alt"></i> ${tecnico.zona}<br>
+                                    <i class="fas fa-phone"></i> ${tecnico.telefono}<br>
+                                    <i class="fas fa-clock"></i> ${tecnico.experiencia} de experiencia
+                                </div>
+                            </div>
+                            <span class="status-badge status-${tecnico.estado.toLowerCase()}">
+                                ${tecnico.estado}
+                            </span>
+                        </div>
+                        
+                        <div style="margin-top: 16px;">
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: center; margin-bottom: 16px;">
+                                <div style="background: #E3F2FD; padding: 12px; border-radius: 8px;">
+                                    <div style="font-size: 20px; font-weight: bold; color: #1976D2;">${tareasActivas}</div>
+                                    <div style="font-size: 12px; color: #666;">En Progreso</div>
+                                </div>
+                                <div style="background: #FFF3E0; padding: 12px; border-radius: 8px;">
+                                    <div style="font-size: 20px; font-weight: bold; color: #E65100;">${tareasPendientes}</div>
+                                    <div style="font-size: 12px; color: #666;">Pendientes</div>
+                                </div>
+                                <div style="background: #E8F5E8; padding: 12px; border-radius: 8px;">
+                                    <div style="font-size: 20px; font-weight: bold; color: #2E7D32;">${tareasCompletadas}</div>
+                                    <div style="font-size: 12px; color: #666;">Completadas</div>
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button class="btn btn-small btn-primary" onclick="asignarTarea(${tecnico.id})">
+                                    <i class="fas fa-plus"></i>
+                                    Asignar Tarea
+                                </button>
+                                <button class="btn btn-small btn-secondary" onclick="verTareasTecnico(${tecnico.id})">
+                                    <i class="fas fa-tasks"></i>
+                                    Ver Tareas
+                                </button>
+                                <button class="btn btn-small btn-success" onclick="contactarTecnico(${tecnico.id})">
+                                    <i class="fas fa-phone"></i>
+                                    Contactar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateStats() {
+            const totalTecnicos = tecnicos.length;
+            const tecnicosDisponibles = tecnicos.filter(t => t.estado === 'Disponible').length;
+            const tareasActivas = tareas.filter(t => t.estado === 'En Progreso').length;
+
+            document.getElementById('totalTecnicos').textContent = totalTecnicos;
+            document.getElementById('tecnicosDisponibles').textContent = tecnicosDisponibles;
+            document.getElementById('tareasActivas').textContent = tareasActivas;
+        }
+
+        function asignarTarea(tecnicoId) {
+            // Redirigir a la página de tareas con el técnico preseleccionado
+            window.location.href = `tareas.html?tecnico=${tecnicoId}`;
+        }
+
+        function verTareasTecnico(tecnicoId) {
+            // Redirigir a la página de tareas filtrada por técnico
+            window.location.href = `tareas.html?filtro=tecnico&id=${tecnicoId}`;
+        }
+
+        function contactarTecnico(tecnicoId) {
+            const tecnico = tecnicos.find(t => t.id === tecnicoId);
+            if (tecnico) {
+                alert(`Contactando a ${tecnico.nombre}\nTeléfono: ${tecnico.telefono}\n\nEn un sistema real, esto abriría la aplicación de llamadas.`);
+            }
+        }
+
+        // Funciones de perfil
+        function loadPerfilData() {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const perfilData = JSON.parse(localStorage.getItem('perfilData') || '{}');
+            
+            document.getElementById('perfilUsuario').value = userData.usuario || '';
+            document.getElementById('perfilRol').value = userData.rol === 'coordinador' ? 'Coordinador/Administrador' : 'Técnico';
+            document.getElementById('perfilNombre').value = perfilData.nombre || '';
+            document.getElementById('perfilEmail').value = perfilData.email || '';
+            document.getElementById('perfilTelefono').value = perfilData.telefono || '';
+        }
+
+        function showPerfilModal() {
+            loadPerfilData();
+            document.getElementById('perfilModal').classList.add('show');
+        }
+
+        function closePerfilModal() {
+            document.getElementById('perfilModal').classList.remove('show');
+        }
+
+        // Manejar envío del formulario de perfil
+        document.getElementById('perfilForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const perfilData = {
+                nombre: document.getElementById('perfilNombre').value,
+                email: document.getElementById('perfilEmail').value,
+                telefono: document.getElementById('perfilTelefono').value,
+                fechaActualizacion: new Date().toISOString()
+            };
+            
+            localStorage.setItem('perfilData', JSON.stringify(perfilData));
+            closePerfilModal();
+            alert('Perfil actualizado exitosamente');
+        });
+
+        function cerrarSesion() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                localStorage.removeItem('userData');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Función para toggle del menú de usuario
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            const userLogo = document.querySelector('.user-logo');
+            const dropdown = document.getElementById('userDropdown');
+            
+            if (!userLogo.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Cargar inicial del usuario
+        function loadUserInitial() {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const initial = userData.usuario ? userData.usuario.charAt(0).toUpperCase() : 'A';
+            document.getElementById('userInitial').textContent = initial;
+        }
+
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('perfilModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePerfilModal();
+            }
+        });
+    </script>
+
+    <style>
+        .status-disponible {
+            background: #E8F5E8;
+            color: #2E7D32;
+        }
+        
+        .status-ocupado {
+            background: #FFF3E0;
+            color: #E65100;
+        }
+    </style>
+</body>
+</html>

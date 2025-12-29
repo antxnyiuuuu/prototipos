@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Habitaciones - TravelApp Hotel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .hotel-welcome {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .hotel-avatar {
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .hotel-avatar:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Main Content */
+        .main {
+            padding: 2rem 0;
+            padding-bottom: 80px;
+        }
+
+        .management-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-btn {
+            padding: 0.75rem 1.5rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .room-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .room-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .room-image {
+            height: 150px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .room-content {
+            padding: 1.5rem;
+        }
+
+        .room-number {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .room-type {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .room-amenities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .amenity {
+            background: #f8f9ff;
+            color: #667eea;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .room-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .room-status {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-available {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-occupied {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-maintenance {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #218838;
+        }
+
+        .btn-maintenance {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-maintenance:hover {
+            background: #e0a800;
+        }
+
+        .btn-clean {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-clean:hover {
+            background: #138496;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #f8f9ff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #e1e5e9;
+            padding: 0.5rem 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            transition: color 0.3s;
+            padding: 0.5rem;
+            border-radius: 10px;
+            min-width: 60px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-text {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        /* Alertas */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-success {
+            background: #28a745;
+        }
+
+        .alert-error {
+            background: #dc3545;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Botón Flotante de Edición */
+        .floating-edit-btn {
+            position: fixed;
+            bottom: 100px;
+            left: 20px;
+            z-index: 999;
+            background: linear-gradient(45deg, #20b2aa, #4169e1, #8a2be2);
+            border-radius: 30px;
+            padding: 0.6rem 1.2rem;
+            box-shadow: 0 6px 20px rgba(32, 178, 170, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .floating-edit-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(32, 178, 170, 0.6);
+        }
+
+        .floating-btn-content {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .floating-icon {
+            font-size: 1.2rem;
+        }
+
+        .floating-text {
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        /* Modal de Edición de Perfil */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .profile-modal {
+            background: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .close {
+            font-size: 2rem;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .close:hover {
+            opacity: 0.7;
+        }
+
+        .profile-edit-content {
+            padding: 2rem;
+        }
+
+        /* Cover Photo Section */
+        .cover-photo-section {
+            margin-bottom: 2rem;
+        }
+
+        .cover-photo-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: -50px;
+        }
+
+        .cover-photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cover-photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .cover-photo-container:hover .cover-photo-overlay {
+            opacity: 1;
+        }
+
+        .upload-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-btn:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        /* Profile Photo Section */
+        .profile-photo-section {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .profile-photo-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .profile-photo-container img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-photo-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Hotel Info Section */
+        .hotel-info-section {
+            margin-bottom: 2rem;
+        }
+
+        .hotel-info-section h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        /* Media Gallery Section */
+        .media-gallery-section {
+            margin-bottom: 2rem;
+        }
+
+        .media-gallery-section h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .media-upload-area {
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-zone {
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9ff;
+        }
+
+        .upload-zone:hover {
+            border-color: #5a6fd8;
+            background: #f0f2ff;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-zone p {
+            margin: 0.5rem 0;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .upload-zone small {
+            color: #999;
+        }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .media-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .media-item img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .delete-media {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Modal Actions */
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .search-bar {
+                flex-direction: column;
+            }
+            
+            .rooms-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="hotel-info">
+                    <h1 class="logo">TravelApp Hotel</h1>
+                    <p class="hotel-welcome" id="hotelWelcome">Gestión de Habitaciones</p>
+                </div>
+                <div class="hotel-avatar" id="hotelAvatar" onclick="showHotelMenu()">🏨</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Stats Section -->
+            <div class="management-section">
+                <h2 class="section-title">📊 Estadísticas de Habitaciones</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">120</div>
+                        <div class="stat-label">Total Habitaciones</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">89</div>
+                        <div class="stat-label">Habitaciones Ocupadas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">28</div>
+                        <div class="stat-label">Habitaciones Disponibles</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">En Mantenimiento</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rooms Management Section -->
+            <div class="management-section">
+                <h2 class="section-title">🛏️ Gestión de Habitaciones</h2>
+                
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Buscar habitaciones..." id="searchInput">
+                    <select class="search-input" id="typeFilter">
+                        <option value="">Todos los tipos</option>
+                        <option value="standard">Estándar</option>
+                        <option value="deluxe">Deluxe</option>
+                        <option value="suite">Suite</option>
+                        <option value="presidential">Presidencial</option>
+                    </select>
+                    <select class="search-input" id="statusFilter">
+                        <option value="">Todos los estados</option>
+                        <option value="available">Disponible</option>
+                        <option value="occupied">Ocupada</option>
+                        <option value="maintenance">Mantenimiento</option>
+                    </select>
+                    <button class="search-btn" onclick="searchRooms()">Buscar</button>
+                </div>
+
+                <div class="rooms-grid" id="roomsGrid">
+                    <!-- Las habitaciones se cargarán dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-content">
+            <a href="dashboard-hotel-direct.html" class="nav-item">
+                <span class="nav-icon">🏨</span>
+                <span class="nav-text">Dashboard</span>
+            </a>
+            <a href="#" class="nav-item active">
+                <span class="nav-icon">🛏️</span>
+                <span class="nav-text">Habitaciones</span>
+            </a>
+            <a href="hotel-reservas-direct.html" class="nav-item">
+                <span class="nav-icon">📅</span>
+                <span class="nav-text">Reservas</span>
+            </a>
+            <a href="hotel-precios-direct.html" class="nav-item">
+                <span class="nav-icon">💰</span>
+                <span class="nav-text">Precios</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showHotelMenu()">
+                <span class="nav-icon">🏨</span>
+                <span class="nav-text">Hotel</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Modal de Hotel -->
+    <div id="hotelModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeHotelModal()">&times;</span>
+            <h3>Panel del Hotel</h3>
+            <div id="hotelInfo"></div>
+            <div style="margin-top: 2rem;">
+                <button class="btn" onclick="goToProfile()">Mi Perfil</button>
+                <button class="btn" onclick="logout()" style="margin-left: 1rem; background: #6c757d;">Cerrar Sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="alertContainer"></div>
+
+    <script>
+        // Datos de habitaciones de ejemplo
+        const habitaciones = [
+            {
+                id: 101,
+                numero: "101",
+                tipo: "standard",
+                capacidad: 2,
+                precio: 150,
+                estado: "occupied",
+                amenidades: ["WiFi", "TV", "A/C", "Baño Privado"],
+                imagen: "🛏️"
+            },
+            {
+                id: 102,
+                numero: "102",
+                tipo: "standard",
+                capacidad: 2,
+                precio: 150,
+                estado: "available",
+                amenidades: ["WiFi", "TV", "A/C", "Baño Privado"],
+                imagen: "🛏️"
+            },
+            {
+                id: 201,
+                numero: "201",
+                tipo: "deluxe",
+                capacidad: 3,
+                precio: 250,
+                estado: "available",
+                amenidades: ["WiFi", "TV", "A/C", "Baño Privado", "Minibar", "Vista al Mar"],
+                imagen: "🏖️"
+            },
+            {
+                id: 301,
+                numero: "301",
+                tipo: "suite",
+                capacidad: 4,
+                precio: 400,
+                estado: "occupied",
+                amenidades: ["WiFi", "TV", "A/C", "Baño Privado", "Minibar", "Vista al Mar", "Jacuzzi"],
+                imagen: "🛁"
+            },
+            {
+                id: 401,
+                numero: "401",
+                tipo: "presidential",
+                capacidad: 6,
+                precio: 800,
+                estado: "maintenance",
+                amenidades: ["WiFi", "TV", "A/C", "Baño Privado", "Minibar", "Vista al Mar", "Jacuzzi", "Servicio 24h"],
+                imagen: "👑"
+            }
+        ];
+
+        // Funciones de utilidad
+        function showAlert(message, type = 'success') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+        }
+
+        function showHotelMenu() {
+            const modal = document.getElementById('hotelModal');
+            const hotelInfo = document.getElementById('hotelInfo');
+            
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                hotelInfo.innerHTML = `
+                    <p><strong>Nombre:</strong> ${user.name}</p>
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>Rol:</strong> ${getRoleDisplayName(user.role)}</p>
+                `;
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        function closeHotelModal() {
+            document.getElementById('hotelModal').style.display = 'none';
+        }
+
+        function getRoleDisplayName(role) {
+            const roleNames = {
+                'usuario': 'Usuario',
+                'admin': 'Administrador',
+                'hotel': 'Hotel',
+                'restaurante': 'Restaurante',
+                'actividades': 'Actividades'
+            };
+            return roleNames[role] || role;
+        }
+
+        function goToProfile() {
+            showAlert('Funcionalidad de perfil en desarrollo', 'success');
+            closeHotelModal();
+        }
+
+        function logout() {
+            localStorage.removeItem('current_user');
+            showAlert('Sesión cerrada correctamente', 'success');
+            setTimeout(() => {
+                window.location.href = 'login-direct.html';
+            }, 1000);
+        }
+
+        function searchRooms() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const typeFilter = document.getElementById('typeFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            
+            let filteredRooms = habitaciones;
+            
+            if (searchTerm) {
+                filteredRooms = filteredRooms.filter(room => 
+                    room.numero.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            if (typeFilter) {
+                filteredRooms = filteredRooms.filter(room => 
+                    room.tipo === typeFilter
+                );
+            }
+            
+            if (statusFilter) {
+                filteredRooms = filteredRooms.filter(room => 
+                    room.estado === statusFilter
+                );
+            }
+            
+            displayRooms(filteredRooms);
+            showAlert(`Se encontraron ${filteredRooms.length} habitaciones`, 'success');
+        }
+
+        function displayRooms(roomsToShow) {
+            const grid = document.getElementById('roomsGrid');
+            grid.innerHTML = '';
+            
+            roomsToShow.forEach(room => {
+                const card = document.createElement('div');
+                card.className = 'room-card';
+                
+                let statusClass = '';
+                let statusText = '';
+                
+                switch(room.estado) {
+                    case 'available':
+                        statusClass = 'status-available';
+                        statusText = 'Disponible';
+                        break;
+                    case 'occupied':
+                        statusClass = 'status-occupied';
+                        statusText = 'Ocupada';
+                        break;
+                    case 'maintenance':
+                        statusClass = 'status-maintenance';
+                        statusText = 'Mantenimiento';
+                        break;
+                }
+                
+                card.innerHTML = `
+                    <div class="room-image">${room.imagen}</div>
+                    <div class="room-content">
+                        <h3 class="room-number">Habitación ${room.numero}</h3>
+                        <p class="room-type">${room.tipo.charAt(0).toUpperCase() + room.tipo.slice(1)} - ${room.capacidad} personas</p>
+                        
+                        <div class="room-amenities">
+                            ${room.amenidades.map(amenity => `<span class="amenity">${amenity}</span>`).join('')}
+                        </div>
+                        
+                        <div class="room-stats">
+                            <div class="stat-item">
+                                <div class="stat-number">$${room.precio}</div>
+                                <div class="stat-label">Por noche</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">${room.capacidad}</div>
+                                <div class="stat-label">Capacidad</div>
+                            </div>
+                        </div>
+                        
+                        <div class="room-status">
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn btn-edit" onclick="editRoom(${room.id})">Editar</button>
+                            <button class="btn btn-maintenance" onclick="toggleMaintenance(${room.id})">${room.estado === 'maintenance' ? 'Finalizar' : 'Mantenimiento'}</button>
+                            <button class="btn btn-clean" onclick="markClean(${room.id})">Limpiar</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function editRoom(roomId) {
+            const room = habitaciones.find(r => r.id === roomId);
+            if (room) {
+                showAlert(`Editando habitación: ${room.numero}`, 'success');
+            }
+        }
+
+        function toggleMaintenance(roomId) {
+            const room = habitaciones.find(r => r.id === roomId);
+            if (room) {
+                room.estado = room.estado === 'maintenance' ? 'available' : 'maintenance';
+                displayRooms(habitaciones);
+                showAlert(`Estado de habitación ${room.numero} actualizado`, 'success');
+            }
+        }
+
+        function markClean(roomId) {
+            const room = habitaciones.find(r => r.id === roomId);
+            if (room) {
+                showAlert(`Habitación ${room.numero} marcada para limpieza`, 'success');
+            }
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('hotelModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Inicializar página
+        window.addEventListener('load', function() {
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                if (user.role === 'hotel') {
+                    document.getElementById('hotelWelcome').textContent = `¡Hola ${user.name}!`;
+                    document.getElementById('hotelAvatar').textContent = user.avatar || '🏨';
+                } else {
+                    showAlert('Acceso denegado. Solo hoteles pueden acceder a esta página.', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'login-direct.html';
+                    }, 2000);
+                }
+            } else {
+                showAlert('No hay usuario logueado. Redirigiendo al login...', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login-direct.html';
+                }, 2000);
+            }
+            
+            // Cargar habitaciones iniciales
+            displayRooms(habitaciones);
+        });
+    </script>
+
+    <!-- Botón Flotante de Edición -->
+    <div class="floating-edit-btn" onclick="openEditProfile()">
+        <div class="floating-btn-content">
+            <span class="floating-icon">✏️</span>
+            <span class="floating-text">Editar</span>
+        </div>
+    </div>
+
+    <!-- Modal de Edición de Perfil -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content profile-modal">
+            <div class="modal-header">
+                <h2>📸 Editar Perfil del Hotel</h2>
+                <span class="close" onclick="closeEditProfile()">&times;</span>
+            </div>
+            
+            <div class="profile-edit-content">
+                <!-- Cover Photo Section -->
+                <div class="cover-photo-section">
+                    <div class="cover-photo-container">
+                        <img id="coverPhoto" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjNjY3ZWVhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7wn5GoIENvdmVyIFBob3RvPC90ZXh0Pjwvc3ZnPg==" alt="Cover Photo">
+                        <div class="cover-photo-overlay">
+                            <button class="upload-btn" onclick="uploadCoverPhoto()">
+                                📷 Cambiar Foto de Portada
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Photo Section -->
+                <div class="profile-photo-section">
+                    <div class="profile-photo-container">
+                        <img id="profilePhoto" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI3NSIgY3k9Ijc1IiByPSI3NSIgZmlsbD0iIzY2N2VlYSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+RsTwvdGV4dD48L3N2Zz4=" alt="Profile Photo">
+                        <button class="profile-photo-btn" onclick="uploadProfilePhoto()">
+                            ✏️
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Hotel Info Section -->
+                <div class="hotel-info-section">
+                    <h3>🏨 Información del Hotel</h3>
+                    <div class="form-group">
+                        <label>Nombre del Hotel:</label>
+                        <input type="text" id="hotelName" value="Hotel Paradise Ecuador" placeholder="Nombre del hotel">
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción:</label>
+                        <textarea id="hotelDescription" placeholder="Describe tu hotel...">Hotel de lujo en el corazón de Ecuador con vistas espectaculares y servicio de primera clase.</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Ubicación:</label>
+                        <input type="text" id="hotelLocation" value="Quito, Ecuador" placeholder="Ubicación">
+                    </div>
+                </div>
+
+                <!-- Media Gallery Section -->
+                <div class="media-gallery-section">
+                    <h3>📸 Galería de Fotos y Videos</h3>
+                    <div class="media-upload-area">
+                        <div class="upload-zone" onclick="uploadMedia()">
+                            <div class="upload-icon">📷</div>
+                            <p>Arrastra fotos/videos aquí o haz clic para subir</p>
+                            <small>Soporta: JPG, PNG, MP4, MOV</small>
+                        </div>
+                    </div>
+                    
+                    <div class="media-grid" id="mediaGrid">
+                        <!-- Media items will be added here -->
+                        <div class="media-item">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPvCfkaggSGFiaXRhY2nDs248L3RleHQ+PC9zdmc+" alt="Habitación">
+                            <button class="delete-media" onclick="deleteMedia(this)">🗑️</button>
+                        </div>
+                        <div class="media-item">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPvCfkaggUmVzdGF1cmFudGU8L3RleHQ+PC9zdmc+" alt="Restaurante">
+                            <button class="delete-media" onclick="deleteMedia(this)">🗑️</button>
+                        </div>
+                        <div class="media-item">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPvCfkaggUGlzY2luYTwvdGV4dD48L3N2Zz4=" alt="Piscina">
+                            <button class="delete-media" onclick="deleteMedia(this)">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="closeEditProfile()">Cancelar</button>
+                    <button class="btn btn-primary" onclick="saveProfile()">💾 Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Funciones del Modal de Edición de Perfil
+        function openEditProfile() {
+            document.getElementById('editProfileModal').style.display = 'block';
+        }
+
+        function closeEditProfile() {
+            document.getElementById('editProfileModal').style.display = 'none';
+        }
+
+        function uploadCoverPhoto() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('coverPhoto').src = e.target.result;
+                        showAlert('Foto de portada actualizada', 'success');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        function uploadProfilePhoto() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('profilePhoto').src = e.target.result;
+                        showAlert('Foto de perfil actualizada', 'success');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        function uploadMedia() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*,video/*';
+            input.multiple = true;
+            input.onchange = function(e) {
+                const files = Array.from(e.target.files);
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        addMediaItem(e.target.result, file.type.startsWith('video/'));
+                    };
+                    reader.readAsDataURL(file);
+                });
+                showAlert(`${files.length} archivo(s) subido(s)`, 'success');
+            };
+            input.click();
+        }
+
+        function addMediaItem(src, isVideo) {
+            const mediaGrid = document.getElementById('mediaGrid');
+            const mediaItem = document.createElement('div');
+            mediaItem.className = 'media-item';
+            
+            if (isVideo) {
+                mediaItem.innerHTML = `
+                    <video controls style="width: 100%; height: 120px; object-fit: cover;">
+                        <source src="${src}" type="video/mp4">
+                    </video>
+                    <button class="delete-media" onclick="deleteMedia(this)">🗑️</button>
+                `;
+            } else {
+                mediaItem.innerHTML = `
+                    <img src="${src}" alt="Media">
+                    <button class="delete-media" onclick="deleteMedia(this)">🗑️</button>
+                `;
+            }
+            
+            mediaGrid.appendChild(mediaItem);
+        }
+
+        function deleteMedia(button) {
+            if (confirm('¿Estás seguro de que quieres eliminar este archivo?')) {
+                button.parentElement.remove();
+                showAlert('Archivo eliminado', 'info');
+            }
+        }
+
+        function saveProfile() {
+            const hotelName = document.getElementById('hotelName').value;
+            const hotelDescription = document.getElementById('hotelDescription').value;
+            const hotelLocation = document.getElementById('hotelLocation').value;
+            
+            if (!hotelName || !hotelDescription || !hotelLocation) {
+                showAlert('Por favor completa todos los campos', 'error');
+                return;
+            }
+            
+            // Simular guardado
+            showAlert('Perfil del hotel actualizado exitosamente', 'success');
+            closeEditProfile();
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('editProfileModal');
+            if (event.target === modal) {
+                closeEditProfile();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Day Tours - Ecuador Travel</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.ico">
+</head>
+<body>
+    <div class="container">
+        <!-- Navegación superior -->
+        <nav class="top-nav">
+            <div class="nav-brand">
+                <span>Ecuador Travel</span>
+            </div>
+            <div class="nav-links">
+                <a href="../index.html" class="nav-link">Inicio</a>
+                <a href="paquetes.html" class="nav-link">Mis Paquetes</a>
+                <a href="fullday.html" class="nav-link active">Full Day Tours</a>
+                <a href="transportes.html" class="nav-link">Transportes</a>
+            </div>
+            <div class="nav-user">
+                <span id="user-greeting"></span>
+                <button class="btn btn-sm btn-secondary" onclick="EcuadorTravel.logoutCustomer(); window.location.href='../login.html';">Salir</button>
+            </div>
+        </nav>
+
+        <!-- Contenido principal -->
+        <main class="main-content">
+            <!-- Información -->
+            <div class="card">
+                <h2 class="card-title">Tours Full Day en Quito</h2>
+                <p class="card-description">
+                    Agrega estos tours adicionales a tu paquete turístico. Cada tour incluye 
+                    transporte, guía profesional y todas las actividades mencionadas.
+                </p>
+            </div>
+
+            <!-- Tours disponibles -->
+            <div class="card">
+                <h3 class="card-title">Tours Disponibles</h3>
+                <div class="options-grid" id="tours-container">
+                    <!-- Los tours se cargarán dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Tours seleccionados -->
+            <div class="card">
+                <h3 class="card-title">Tours Seleccionados</h3>
+                <div id="selected-tours" class="selection-list">
+                    <p style="text-align: center; color: var(--gray-600);">
+                        No hay tours seleccionados
+                    </p>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <button class="btn btn-secondary" onclick="clearAllTours()" style="flex: 1;">
+                        Limpiar Todo
+                    </button>
+                    <button class="btn btn-primary" onclick="saveTours()" style="flex: 1;">
+                        Guardar Tours
+                    </button>
+                </div>
+            </div>
+
+            <!-- Resumen -->
+            <div class="package-summary">
+                <h3 class="summary-title">Resumen de Tours</h3>
+                <div class="summary-item">
+                    <span>Tours seleccionados:</span>
+                    <span id="summary-tours-count">0</span>
+                </div>
+                <div class="summary-item">
+                    <span>Total tours:</span>
+                    <span id="summary-tours-total">$0</span>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <a href="../index.html" class="btn btn-secondary" style="flex: 1;">Volver al Inicio</a>
+                <a href="transportes.html" class="btn btn-primary" style="flex: 1;">Siguiente: Transportes</a>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Modal para detalles del tour -->
+    <div id="tour-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-tour-title">Detalles del Tour</h3>
+                <button class="modal-close" onclick="closeModal('tour-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-tour-content"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('tour-modal')">Cerrar</button>
+                <button id="modal-add-tour-btn" class="btn btn-primary">Agregar Tour</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/app.js"></script>
+    <script>
+        let selectedTours = [];
+        let currentTour = null;
+
+        // Tours Full Day disponibles
+        const fullDayTours = [
+            {
+                id: 1,
+                nombre: "Tour Centro Histórico Completo",
+                precio: 35,
+                duracion: "8 horas",
+                descripcion: "Recorrido completo por el centro histórico de Quito, Patrimonio de la Humanidad",
+                incluye: [
+                    "Guía profesional bilingüe",
+                    "Transporte privado",
+                    "Entradas a museos",
+                    "Almuerzo tradicional",
+                    "Visita a iglesias coloniales"
+                ],
+                horario: "08:00 - 16:00",
+                imagen: "tour-centro-completo.jpg"
+            },
+            {
+                id: 2,
+                nombre: "Teleférico y Mitad del Mundo",
+                precio: 45,
+                duracion: "10 horas",
+                descripcion: "Combinación perfecta: vista panorámica desde el teleférico y visita a la Mitad del Mundo",
+                incluye: [
+                    "Transporte privado",
+                    "Entrada al teleférico",
+                    "Entrada a Mitad del Mundo",
+                    "Guía especializado",
+                    "Almuerzo buffet"
+                ],
+                horario: "07:00 - 17:00",
+                imagen: "teleferico-mitad-mundo.jpg"
+            },
+            {
+                id: 3,
+                nombre: "Mercado de Otavalo y Artesanías",
+                precio: 55,
+                duracion: "12 horas",
+                descripcion: "Tour al famoso mercado indígena de Otavalo y pueblos artesanales",
+                incluye: [
+                    "Transporte privado",
+                    "Guía especializado en cultura",
+                    "Visita a talleres artesanales",
+                    "Almuerzo típico",
+                    "Tiempo libre para compras"
+                ],
+                horario: "06:00 - 18:00",
+                imagen: "otavalo-artesanias.jpg"
+            },
+            {
+                id: 4,
+                nombre: "Baños de Agua Santa Aventura",
+                precio: 65,
+                duracion: "14 horas",
+                descripcion: "Tour de aventura a Baños con cascadas, puenting y aguas termales",
+                incluye: [
+                    "Transporte privado",
+                    "Guía de aventura",
+                    "Entrada a cascadas",
+                    "Actividad de puenting",
+                    "Acceso a aguas termales",
+                    "Almuerzo y cena"
+                ],
+                horario: "05:00 - 19:00",
+                imagen: "banos-aventura.jpg"
+            },
+            {
+                id: 5,
+                nombre: "Cotopaxi National Park",
+                precio: 75,
+                duracion: "12 horas",
+                descripcion: "Excursión al Parque Nacional Cotopaxi con caminata y observación de fauna",
+                incluye: [
+                    "Transporte 4x4",
+                    "Guía naturalista",
+                    "Entrada al parque",
+                    "Caminata interpretativa",
+                    "Almuerzo picnic",
+                    "Equipo de montaña"
+                ],
+                horario: "06:00 - 18:00",
+                imagen: "cotopaxi-full-day.jpg"
+            },
+            {
+                id: 6,
+                nombre: "Mindo Cloud Forest",
+                precio: 50,
+                duracion: "10 horas",
+                descripcion: "Tour ecológico al bosque nublado de Mindo con observación de aves",
+                incluye: [
+                    "Transporte privado",
+                    "Guía ornitólogo",
+                    "Entrada a reserva",
+                    "Canopy tour",
+                    "Almuerzo ecológico",
+                    "Binoculares incluidos"
+                ],
+                horario: "07:00 - 17:00",
+                imagen: "mindo-cloud-forest.jpg"
+            }
+        ];
+
+        // Inicializar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            loadTours();
+            loadSelectedTours();
+            updateSummary();
+        });
+
+        function loadTours() {
+            const container = document.getElementById('tours-container');
+            container.innerHTML = '';
+
+            fullDayTours.forEach(tour => {
+                const tourCard = document.createElement('div');
+                tourCard.className = 'option-card';
+                tourCard.onclick = () => showTourDetails(tour);
+                tourCard.innerHTML = `
+                    <div class="option-title">${tour.nombre}</div>
+                    <div class="option-price">$${tour.precio}</div>
+                    <div class="option-description">
+                        <strong>Duración:</strong> ${tour.duracion}<br>
+                        <strong>Horario:</strong> ${tour.horario}<br>
+                        ${tour.descripcion}
+                    </div>
+                `;
+                container.appendChild(tourCard);
+            });
+        }
+
+        function showTourDetails(tour) {
+            currentTour = tour;
+            document.getElementById('modal-tour-title').textContent = tour.nombre;
+            
+            const content = document.getElementById('modal-tour-content');
+            content.innerHTML = `
+                <div class="card-description">
+                    <strong>Duración:</strong> ${tour.duracion}<br>
+                    <strong>Horario:</strong> ${tour.horario}<br>
+                    <strong>Precio:</strong> $${tour.precio}<br><br>
+                    ${tour.descripcion}
+                </div>
+                <h4>Incluye:</h4>
+                <ul class="features-list">
+                    ${tour.incluye.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            `;
+
+            const addBtn = document.getElementById('modal-add-tour-btn');
+            const isSelected = selectedTours.some(t => t.id === tour.id);
+            addBtn.textContent = isSelected ? 'Ya Seleccionado' : 'Agregar Tour';
+            addBtn.disabled = isSelected;
+            addBtn.onclick = isSelected ? null : () => addTour(tour);
+
+            showModal('tour-modal');
+        }
+
+        function addTour(tour) {
+            if (!selectedTours.some(t => t.id === tour.id)) {
+                selectedTours.push(tour);
+                updateSelectedTours();
+                updateSummary();
+                closeModal('tour-modal');
+            }
+        }
+
+        function removeTour(tourId) {
+            selectedTours = selectedTours.filter(t => t.id !== tourId);
+            updateSelectedTours();
+            updateSummary();
+        }
+
+        function updateSelectedTours() {
+            const container = document.getElementById('selected-tours');
+            
+            if (selectedTours.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--gray-600);">No hay tours seleccionados</p>';
+                return;
+            }
+
+            container.innerHTML = selectedTours.map(tour => `
+                <div class="selection-item">
+                    <div>
+                        <div class="selection-name">${tour.nombre}</div>
+                        <div style="font-size: 0.875rem; color: var(--gray-600);">
+                            ${tour.duracion} - ${tour.horario}
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span class="selection-price">$${tour.precio}</span>
+                        <button onclick="removeTour(${tour.id})" style="background: var(--error); color: white; border: none; border-radius: 4px; padding: 0.25rem 0.5rem; font-size: 0.75rem;">✕</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadSelectedTours() {
+            const saved = localStorage.getItem('selectedFullDayTours');
+            if (saved) {
+                selectedTours = JSON.parse(saved);
+                updateSelectedTours();
+            }
+        }
+
+        function saveTours() {
+            localStorage.setItem('selectedFullDayTours', JSON.stringify(selectedTours));
+            showAlert('Tours guardados correctamente', 'success');
+        }
+
+        function clearAllTours() {
+            if (selectedTours.length > 0) {
+                if (confirm('¿Estás seguro de que quieres eliminar todos los tours seleccionados?')) {
+                    selectedTours = [];
+                    updateSelectedTours();
+                    updateSummary();
+                }
+            }
+        }
+
+        function updateSummary() {
+            document.getElementById('summary-tours-count').textContent = selectedTours.length;
+            const total = selectedTours.reduce((sum, tour) => sum + tour.precio, 0);
+            document.getElementById('summary-tours-total').textContent = `$${total}`;
+        }
+    </script>
+</body>
+</html>

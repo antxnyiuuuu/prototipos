@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificaciones - Telecomunicaciones</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-info">
+                    <h1><i class="fas fa-bell"></i> Notificaciones</h1>
+                    <p>Bandeja de entrada de tareas</p>
+                </div>
+                <div class="user-logo">
+                    <div class="user-logo-btn" onclick="toggleUserMenu()">
+                        <div class="user-initial" id="userInitial">T</div>
+                    </div>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="#" class="user-dropdown-item" onclick="showPerfilModal()">
+                            <i class="fas fa-user"></i>
+                            Mi Perfil
+                        </a>
+                        <a href="#" class="user-dropdown-item danger" onclick="cerrarSesion()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Cerrar Sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros de notificaciones -->
+        <div class="card">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="btn btn-small btn-secondary" onclick="filterNotifications('all')" id="filterAll">
+                    Todas
+                </button>
+                <button class="btn btn-small btn-secondary" onclick="filterNotifications('nueva')" id="filterNueva">
+                    Nuevas
+                </button>
+                <button class="btn btn-small btn-secondary" onclick="filterNotifications('asignada')" id="filterAsignada">
+                    Asignadas
+                </button>
+                <button class="btn btn-small btn-secondary" onclick="filterNotifications('completada')" id="filterCompletada">
+                    Completadas
+                </button>
+            </div>
+        </div>
+
+        <!-- Lista de notificaciones -->
+        <div id="notificacionesContainer">
+            <div class="loading">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de detalles de tarea -->
+    <div id="detallesModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Detalles de la Tarea</h3>
+                <button class="modal-close" onclick="closeDetallesModal()">&times;</button>
+            </div>
+            
+            <div id="detallesContent">
+                <!-- Contenido dinámico -->
+            </div>
+            
+            <div id="detallesActions" style="margin-top: 20px; display: flex; gap: 12px;">
+                <!-- Botones dinámicos -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de perfil -->
+    <div id="perfilModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Mi Perfil</h3>
+                <button class="modal-close" onclick="closePerfilModal()">&times;</button>
+            </div>
+            
+            <form id="perfilForm">
+                <div class="form-group">
+                    <label for="perfilUsuario" class="form-label">Usuario</label>
+                    <input 
+                        type="text" 
+                        id="perfilUsuario" 
+                        class="form-input" 
+                        readonly
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="perfilRol" class="form-label">Rol</label>
+                    <input 
+                        type="text" 
+                        id="perfilRol" 
+                        class="form-input" 
+                        readonly
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="perfilNombre" class="form-label">Nombre Completo</label>
+                    <input 
+                        type="text" 
+                        id="perfilNombre" 
+                        class="form-input" 
+                        placeholder="Ingresa tu nombre completo"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="perfilEmail" class="form-label">Email</label>
+                    <input 
+                        type="email" 
+                        id="perfilEmail" 
+                        class="form-input" 
+                        placeholder="tu@email.com"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="perfilTelefono" class="form-label">Teléfono</label>
+                    <input 
+                        type="tel" 
+                        id="perfilTelefono" 
+                        class="form-input" 
+                        placeholder="300-123-4567"
+                    >
+                </div>
+
+                <div style="display: flex; gap: 12px;">
+                    <button type="button" class="btn btn-secondary" onclick="closePerfilModal()" style="flex: 1;">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        <i class="fas fa-save"></i>
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Navegación inferior -->
+    <div class="bottom-nav">
+        <a href="dashboard-tecnico.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="notificaciones.html" class="nav-item active">
+            <i class="fas fa-bell"></i>
+            <span>Notificaciones</span>
+        </a>
+        <a href="login.html" class="nav-item" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Salir</span>
+        </a>
+    </div>
+
+    <script>
+        let notificaciones = [];
+        let tareas = [];
+        let tecnicoId = null;
+        let currentFilter = 'all';
+
+        // Verificar sesión
+        window.addEventListener('load', function() {
+            const userData = localStorage.getItem('userData');
+            if (!userData || JSON.parse(userData).rol !== 'tecnico') {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Obtener ID del técnico del login
+            const user = JSON.parse(userData);
+            tecnicoId = user.tecnico_id;
+            
+            if (!tecnicoId) {
+                alert('Error: No se encontró el ID del técnico. Por favor, inicia sesión nuevamente.');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            loadNotificaciones();
+            loadPerfilData();
+            loadUserInitial();
+        });
+
+        // Cargar notificaciones
+        function loadNotificaciones() {
+            try {
+                // Cargar notificaciones desde localStorage
+                notificaciones = JSON.parse(localStorage.getItem('notificaciones') || '[]');
+                tareas = JSON.parse(localStorage.getItem('tareas') || '[]');
+                
+                // Filtrar notificaciones del técnico actual
+                notificaciones = notificaciones.filter(notif => notif.tecnico_id === tecnicoId);
+                
+                displayNotificaciones();
+            } catch (error) {
+                console.error('Error cargando notificaciones:', error);
+            }
+        }
+
+        function displayNotificaciones() {
+            const container = document.getElementById('notificacionesContainer');
+            
+            let notificacionesFiltradas = notificaciones;
+            if (currentFilter !== 'all') {
+                notificacionesFiltradas = notificaciones.filter(notif => notif.tipo === currentFilter);
+            }
+            
+            if (notificacionesFiltradas.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #666;">
+                        <i class="fas fa-bell-slash" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                        <p>No hay notificaciones</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Ordenar por fecha (más recientes primero)
+            notificacionesFiltradas.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+            container.innerHTML = notificacionesFiltradas.map(notif => {
+                const tarea = tareas.find(t => t.id === notif.tarea_id);
+                const isLeida = notif.leida;
+                
+                return `
+                    <div class="list-item ${isLeida ? '' : 'unread'}" onclick="verDetallesTarea(${notif.tarea_id})" style="cursor: pointer;">
+                        <div class="list-item-header">
+                            <div>
+                                <div class="list-item-title" style="display: flex; align-items: center; gap: 8px;">
+                                    ${isLeida ? '' : '<span style="width: 8px; height: 8px; background: #2196F3; border-radius: 50%; display: inline-block;"></span>'}
+                                    ${notif.titulo}
+                                </div>
+                                <div class="list-item-subtitle">
+                                    ${notif.mensaje}
+                                    <br>
+                                    <i class="fas fa-clock"></i> ${new Date(notif.fecha).toLocaleString()}
+                                </div>
+                            </div>
+                            <span class="status-badge status-${notif.tipo}">
+                                ${notif.tipo === 'nueva' ? 'Nueva' : notif.tipo === 'asignada' ? 'Asignada' : 'Completada'}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterNotifications(tipo) {
+            currentFilter = tipo;
+            
+            // Actualizar botones de filtro
+            document.querySelectorAll('[id^="filter"]').forEach(btn => {
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+            });
+            
+            document.getElementById(`filter${tipo === 'all' ? 'All' : tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).classList.remove('btn-secondary');
+            document.getElementById(`filter${tipo === 'all' ? 'All' : tipo.charAt(0).toUpperCase() + tipo.slice(1)}`).classList.add('btn-primary');
+            
+            displayNotificaciones();
+        }
+
+        function verDetallesTarea(tareaId) {
+            const tarea = tareas.find(t => t.id === tareaId);
+            if (!tarea) return;
+            
+            // Marcar notificación como leída
+            const notif = notificaciones.find(n => n.tarea_id === tareaId);
+            if (notif && !notif.leida) {
+                notif.leida = true;
+                localStorage.setItem('notificaciones', JSON.stringify(notificaciones));
+            }
+            
+            // Mostrar detalles
+            const content = document.getElementById('detallesContent');
+            const actions = document.getElementById('detallesActions');
+            
+            content.innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: #2196F3; margin-bottom: 12px;">${tarea.descripcion}</h4>
+                    <div style="background: #f5f5f5; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
+                        <p><strong>Cliente:</strong> ${tarea.cliente_nombre}</p>
+                        <p><strong>Dirección:</strong> ${tarea.direccion}</p>
+                        <p><strong>Fecha de vencimiento:</strong> ${new Date(tarea.fecha_vencimiento).toLocaleDateString()}</p>
+                        <p><strong>Estado:</strong> <span class="status-badge status-${tarea.estado.toLowerCase().replace(' ', '-')}">${tarea.estado}</span></p>
+                    </div>
+                    
+                    ${tarea.observaciones ? `
+                        <div style="background: #E3F2FD; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
+                            <strong>Observaciones:</strong><br>
+                            ${tarea.observaciones}
+                        </div>
+                    ` : ''}
+                    
+                    ${tarea.fotos && tarea.fotos.length > 0 ? `
+                        <div style="margin-bottom: 16px;">
+                            <strong>Fotografías:</strong><br>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;">
+                                ${tarea.fotos.map(foto => `
+                                    <div style="width: 80px; height: 80px; background: #e0e0e0; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #666;">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            // Botones de acción según el estado
+            if (tarea.estado === 'Pendiente') {
+                actions.innerHTML = `
+                    <button class="btn btn-primary" onclick="aceptarTarea(${tareaId})" style="flex: 1;">
+                        <i class="fas fa-check"></i>
+                        Aceptar Tarea
+                    </button>
+                    <button class="btn btn-secondary" onclick="closeDetallesModal()" style="flex: 1;">
+                        Cancelar
+                    </button>
+                `;
+            } else if (tarea.estado === 'En Progreso') {
+                actions.innerHTML = `
+                    <button class="btn btn-success" onclick="marcarCompletada(${tareaId})" style="flex: 1;">
+                        <i class="fas fa-check-circle"></i>
+                        Marcar Completada
+                    </button>
+                    <button class="btn btn-secondary" onclick="closeDetallesModal()" style="flex: 1;">
+                        Cerrar
+                    </button>
+                `;
+            } else {
+                actions.innerHTML = `
+                    <button class="btn btn-secondary" onclick="closeDetallesModal()" style="flex: 1;">
+                        Cerrar
+                    </button>
+                `;
+            }
+            
+            document.getElementById('detallesModal').classList.add('show');
+        }
+
+        function aceptarTarea(tareaId) {
+            const tarea = tareas.find(t => t.id === tareaId);
+            if (tarea) {
+                tarea.estado = 'En Progreso';
+                tarea.fecha_inicio = new Date().toISOString();
+                
+                // Actualizar en localStorage
+                localStorage.setItem('tareas', JSON.stringify(tareas));
+                
+                // Crear notificación para el admin
+                const notificacionAdmin = {
+                    id: Date.now(),
+                    admin_id: 1,
+                    tecnico_id: tecnicoId,
+                    tarea_id: tareaId,
+                    tipo: 'aceptada',
+                    titulo: 'Tarea Aceptada',
+                    mensaje: `El técnico ha aceptado la tarea: ${tarea.descripcion}`,
+                    fecha: new Date().toISOString(),
+                    leida: false
+                };
+                
+                const notificacionesAdmin = JSON.parse(localStorage.getItem('notificacionesAdmin') || '[]');
+                notificacionesAdmin.push(notificacionAdmin);
+                localStorage.setItem('notificacionesAdmin', JSON.stringify(notificacionesAdmin));
+                
+                // Eliminar la notificación del técnico
+                const notificacionesTecnico = JSON.parse(localStorage.getItem('notificaciones') || '[]');
+                const notificacionesFiltradas = notificacionesTecnico.filter(notif => 
+                    !(notif.tipo === 'nueva' && notif.tarea_id === tareaId && notif.tecnico_id === tecnicoId)
+                );
+                localStorage.setItem('notificaciones', JSON.stringify(notificacionesFiltradas));
+                
+                closeDetallesModal();
+                loadNotificaciones();
+                alert('Tarea aceptada exitosamente');
+            }
+        }
+
+        function marcarCompletada(tareaId) {
+            const tarea = tareas.find(t => t.id === tareaId);
+            if (tarea) {
+                // Mostrar modal de reporte
+                showReporteModal(tareaId);
+            }
+        }
+
+        function showReporteModal(tareaId) {
+            const tarea = tareas.find(t => t.id === tareaId);
+            if (!tarea) return;
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal show';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Reportar Tarea Completada</h3>
+                        <button class="modal-close" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    
+                    <form id="reporteForm">
+                        <div class="form-group">
+                            <label for="observaciones" class="form-label">Observaciones Técnicas</label>
+                            <textarea 
+                                id="observaciones" 
+                                class="form-textarea" 
+                                placeholder="Describe el trabajo realizado, problemas encontrados, soluciones aplicadas..."
+                                required
+                            ></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fotos" class="form-label">Fotografías (Opcional)</label>
+                            <input 
+                                type="file" 
+                                id="fotos" 
+                                class="form-input" 
+                                multiple 
+                                accept="image/*"
+                            >
+                            <small style="color: #666; font-size: 12px;">
+                                Puedes subir múltiples fotos del trabajo realizado
+                            </small>
+                        </div>
+
+                        <div style="display: flex; gap: 12px;">
+                            <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').remove()" style="flex: 1;">
+                                Cancelar
+                            </button>
+                            <button type="submit" class="btn btn-success" style="flex: 1;">
+                                <i class="fas fa-check"></i>
+                                Reportar Completada
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Manejar envío del formulario
+            modal.querySelector('#reporteForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const observaciones = document.getElementById('observaciones').value;
+                const fotos = document.getElementById('fotos').files;
+                
+                // Actualizar la tarea
+                tarea.estado = 'Completada';
+                tarea.observaciones = observaciones;
+                tarea.fecha_completada = new Date().toISOString();
+                
+                // Simular subida de fotos
+                if (fotos.length > 0) {
+                    tarea.fotos = Array.from(fotos).map(foto => foto.name);
+                }
+                
+                // Guardar en localStorage
+                localStorage.setItem('tareas', JSON.stringify(tareas));
+                
+                // Crear notificación para el admin
+                const notificacionAdmin = {
+                    id: Date.now(),
+                    admin_id: 1,
+                    tecnico_id: tecnicoId,
+                    tarea_id: tareaId,
+                    tipo: 'completada',
+                    titulo: 'Tarea Completada',
+                    mensaje: `El técnico ha completado la tarea: ${tarea.descripcion}`,
+                    fecha: new Date().toISOString(),
+                    leida: false
+                };
+                
+                const notificacionesAdmin = JSON.parse(localStorage.getItem('notificacionesAdmin') || '[]');
+                notificacionesAdmin.push(notificacionAdmin);
+                localStorage.setItem('notificacionesAdmin', JSON.stringify(notificacionesAdmin));
+                
+                // Eliminar la notificación del técnico
+                const notificacionesTecnico = JSON.parse(localStorage.getItem('notificaciones') || '[]');
+                const notificacionesFiltradas = notificacionesTecnico.filter(notif => 
+                    !(notif.tipo === 'nueva' && notif.tarea_id === tareaId && notif.tecnico_id === tecnicoId)
+                );
+                localStorage.setItem('notificaciones', JSON.stringify(notificacionesFiltradas));
+                
+                modal.remove();
+                closeDetallesModal();
+                loadNotificaciones();
+                alert('Tarea reportada exitosamente. Pendiente de validación por el coordinador.');
+            });
+        }
+
+        function closeDetallesModal() {
+            document.getElementById('detallesModal').classList.remove('show');
+        }
+
+        // Funciones de perfil
+        function loadPerfilData() {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const perfilData = JSON.parse(localStorage.getItem('perfilData') || '{}');
+            
+            document.getElementById('perfilUsuario').value = userData.usuario || '';
+            document.getElementById('perfilRol').value = userData.rol === 'coordinador' ? 'Coordinador/Administrador' : 'Técnico';
+            document.getElementById('perfilNombre').value = perfilData.nombre || '';
+            document.getElementById('perfilEmail').value = perfilData.email || '';
+            document.getElementById('perfilTelefono').value = perfilData.telefono || '';
+        }
+
+        function showPerfilModal() {
+            loadPerfilData();
+            document.getElementById('perfilModal').classList.add('show');
+        }
+
+        function closePerfilModal() {
+            document.getElementById('perfilModal').classList.remove('show');
+        }
+
+        // Manejar envío del formulario de perfil
+        document.getElementById('perfilForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const perfilData = {
+                nombre: document.getElementById('perfilNombre').value,
+                email: document.getElementById('perfilEmail').value,
+                telefono: document.getElementById('perfilTelefono').value,
+                fechaActualizacion: new Date().toISOString()
+            };
+            
+            localStorage.setItem('perfilData', JSON.stringify(perfilData));
+            closePerfilModal();
+            alert('Perfil actualizado exitosamente');
+        });
+
+        function cerrarSesion() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                localStorage.removeItem('userData');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Función para toggle del menú de usuario
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            const userLogo = document.querySelector('.user-logo');
+            const dropdown = document.getElementById('userDropdown');
+            
+            if (!userLogo.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Cargar inicial del usuario
+        function loadUserInitial() {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const initial = userData.tecnico_nombre ? userData.tecnico_nombre.charAt(0).toUpperCase() : 'T';
+            document.getElementById('userInitial').textContent = initial;
+        }
+
+        // Cerrar modales al hacer clic fuera
+        document.getElementById('detallesModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDetallesModal();
+            }
+        });
+
+        document.getElementById('perfilModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePerfilModal();
+            }
+        });
+
+        // Simular notificaciones en tiempo real (cada 5 segundos)
+        setInterval(() => {
+            loadNotificaciones();
+        }, 5000);
+    </script>
+
+    <style>
+        .unread {
+            border-left: 4px solid #2196F3 !important;
+            background: #f8f9ff !important;
+        }
+        
+        .status-nueva {
+            background: #E3F2FD;
+            color: #1976D2;
+        }
+        
+        .status-asignada {
+            background: #E8F5E8;
+            color: #2E7D32;
+        }
+        
+        .status-completada {
+            background: #FFF3E0;
+            color: #E65100;
+        }
+    </style>
+</body>
+</html>

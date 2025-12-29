@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Ecuador Travel</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.ico">
+</head>
+<body>
+    <div class="container">
+
+        <!-- Navegación superior -->
+        <nav class="top-nav">
+            <div class="nav-brand">
+                <span>Ecuador Travel - Admin</span>
+            </div>
+            <div class="nav-links">
+                <a href="admin-home.html" class="nav-link active">Dashboard</a>
+                <a href="admin-packages.html" class="nav-link">Paquetes</a>
+                <a href="admin-products.html" class="nav-link">Productos</a>
+                <a href="admin-customers.html" class="nav-link">Clientes</a>
+                <a href="../index.html" class="nav-link">Volver al Inicio</a>
+            </div>
+            <div class="nav-user">
+                <span>Administrador</span>
+                <button class="btn btn-sm btn-secondary" onclick="logout()">Cerrar Sesión</button>
+            </div>
+        </nav>
+
+        <!-- Contenido principal -->
+        <main class="main-content">
+            <!-- Estadísticas generales -->
+            <div class="card">
+                <h2 class="card-title">Estadísticas Generales</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0;">
+                    <div style="text-align: center; padding: 1rem; background: var(--light-blue); border-radius: 8px;">
+                        <div style="font-size: 2rem; font-weight: bold; color: var(--primary-blue);" id="total-packages">0</div>
+                        <div style="color: var(--gray-600);">Paquetes Creados</div>
+                    </div>
+                    <div style="text-align: center; padding: 1rem; background: var(--light-blue); border-radius: 8px;">
+                        <div style="font-size: 2rem; font-weight: bold; color: var(--primary-blue);" id="total-customers">0</div>
+                        <div style="color: var(--gray-600);">Clientes Únicos</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paquetes más populares -->
+            <div class="card">
+                <h3 class="card-title">Paquetes Más Populares</h3>
+                <div id="popular-packages">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Cargando estadísticas...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paquetes recientes -->
+            <div class="card">
+                <h3 class="card-title">Paquetes Recientes</h3>
+                <div id="recent-packages">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Cargando paquetes recientes...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acciones rápidas -->
+            <div class="card">
+                <h3 class="card-title">Acciones Rápidas</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <a href="admin-packages.html" class="btn btn-primary">
+                        📦 Gestionar Paquetes
+                    </a>
+                    <a href="admin-products.html" class="btn btn-primary">
+                        🏨 Gestionar Productos
+                    </a>
+                    <a href="admin-customers.html" class="btn btn-secondary">
+                        👥 Ver Clientes
+                    </a>
+                    <button onclick="exportData()" class="btn btn-secondary">
+                        📊 Exportar Datos
+                    </button>
+                </div>
+            </div>
+
+            <!-- Configuración del sistema -->
+            <div class="card">
+                <h3 class="card-title">Configuración del Sistema</h3>
+                <div class="form-group">
+                    <label class="form-label">Número de WhatsApp del Administrador</label>
+                    <input 
+                        type="tel" 
+                        id="admin-whatsapp" 
+                        class="form-input" 
+                        placeholder="593987654321"
+                        value="593987654321"
+                    >
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mensaje de bienvenida</label>
+                    <textarea 
+                        id="welcome-message" 
+                        class="form-textarea" 
+                        rows="3"
+                        placeholder="Mensaje que aparece en la página principal"
+                    >¡Bienvenido a Ecuador Travel! Arma tu paquete turístico perfecto y vive una experiencia única en Ecuador.</textarea>
+                </div>
+                <button onclick="saveSystemSettings()" class="btn btn-primary">
+                    Guardar Configuración
+                </button>
+            </div>
+
+            <!-- Información del sistema -->
+            <div class="card">
+                <h3 class="card-title">Información del Sistema</h3>
+                <div style="font-size: 0.875rem; color: var(--gray-600);">
+                    <p><strong>Versión:</strong> 1.0.0</p>
+                    <p><strong>Última actualización:</strong> <span id="last-update">-</span></p>
+                    <p><strong>Total de datos:</strong> <span id="total-data-size">-</span></p>
+                    <p><strong>Estado:</strong> <span style="color: var(--success);">●</span> Operativo</p>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Modal para confirmación -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirmar Acción</h3>
+                <button class="modal-close" onclick="closeModal('confirm-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-message"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('confirm-modal')">Cancelar</button>
+                <button id="confirm-btn" class="btn btn-primary">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/app.js"></script>
+    <script>
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            
+            // Verificar autenticación
+            if (!isAdminLoggedIn()) {
+                window.location.href = 'admin-login.html';
+                return;
+            }
+            
+            loadDashboardData();
+            loadSystemSettings();
+        });
+
+        function loadDashboardData() {
+            // Cargar estadísticas
+            loadStatistics();
+            loadPopularPackages();
+            loadRecentPackages();
+            updateSystemInfo();
+        }
+
+        function loadStatistics() {
+            const customerPackages = getCustomerPackages();
+            const uniqueCustomers = new Set(customerPackages.map(pkg => pkg.customerId)).size;
+            
+            document.getElementById('total-packages').textContent = customerPackages.length;
+            document.getElementById('total-customers').textContent = uniqueCustomers;
+        }
+
+        function loadPopularPackages() {
+            const customerPackages = getCustomerPackages();
+            const packageCounts = {};
+            
+            customerPackages.forEach(pkg => {
+                packageCounts[pkg.packageType] = (packageCounts[pkg.packageType] || 0) + 1;
+            });
+            
+            const sortedPackages = Object.entries(packageCounts)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 3);
+            
+            const container = document.getElementById('popular-packages');
+            
+            if (sortedPackages.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--gray-600);">No hay datos disponibles</p>';
+                return;
+            }
+            
+            container.innerHTML = sortedPackages.map(([type, count]) => `
+                <div class="selection-item">
+                    <div class="selection-name">Paquete ${type}</div>
+                    <div class="selection-price">${count} reservas</div>
+                </div>
+            `).join('');
+        }
+
+        function loadRecentPackages() {
+            const customerPackages = getCustomerPackages();
+            const recentPackages = customerPackages
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .slice(0, 5);
+            
+            const container = document.getElementById('recent-packages');
+            
+            if (recentPackages.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--gray-600);">No hay paquetes recientes</p>';
+                return;
+            }
+            
+            container.innerHTML = recentPackages.map(pkg => `
+                <div class="selection-item">
+                    <div>
+                        <div class="selection-name">Paquete ${pkg.packageType}</div>
+                        <div style="font-size: 0.875rem; color: var(--gray-600);">
+                            ${pkg.persons} personas - ${new Date(pkg.createdAt).toLocaleDateString()}
+                        </div>
+                    </div>
+                    <div class="selection-price">$${pkg.totalPrice}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateSystemInfo() {
+            const lastUpdate = localStorage.getItem('lastSystemUpdate') || new Date().toISOString();
+            const dataSize = JSON.stringify(localStorage).length;
+            
+            document.getElementById('last-update').textContent = new Date(lastUpdate).toLocaleDateString();
+            document.getElementById('total-data-size').textContent = `${(dataSize / 1024).toFixed(1)} KB`;
+        }
+
+        function loadSystemSettings() {
+            const settings = getSystemSettings();
+            document.getElementById('admin-whatsapp').value = settings.whatsappNumber;
+            document.getElementById('welcome-message').value = settings.welcomeMessage;
+        }
+
+        function saveSystemSettings() {
+            const settings = {
+                whatsappNumber: document.getElementById('admin-whatsapp').value,
+                welcomeMessage: document.getElementById('welcome-message').value,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            localStorage.setItem('systemSettings', JSON.stringify(settings));
+            localStorage.setItem('lastSystemUpdate', new Date().toISOString());
+            
+            showAlert('Configuración guardada correctamente', 'success');
+            updateSystemInfo();
+        }
+
+        function exportData() {
+            const data = {
+                customerPackages: getCustomerPackages(),
+                systemSettings: getSystemSettings(),
+                exportDate: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `ecuador-travel-data-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            showAlert('Datos exportados correctamente', 'success');
+        }
+
+        function logout() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                localStorage.removeItem('adminSession');
+                window.location.href = 'admin-login.html';
+            }
+        }
+    </script>
+</body>
+</html>

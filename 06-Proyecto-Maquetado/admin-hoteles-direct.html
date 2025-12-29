@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Hoteles - TravelApp Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .admin-welcome {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .admin-avatar {
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .admin-avatar:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Main Content */
+        .main {
+            padding: 2rem 0;
+            padding-bottom: 80px;
+        }
+
+        .management-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-btn {
+            padding: 0.75rem 1.5rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .hotels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .hotel-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .hotel-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .hotel-image {
+            height: 150px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .hotel-content {
+            padding: 1.5rem;
+        }
+
+        .hotel-name {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .hotel-location {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .hotel-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .hotel-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stars {
+            color: #ffc107;
+            margin-right: 0.5rem;
+        }
+
+        .rating-text {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #218838;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
+        .btn-block {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-block:hover {
+            background: #e0a800;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #f8f9ff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #e1e5e9;
+            padding: 0.5rem 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            transition: color 0.3s;
+            padding: 0.5rem;
+            border-radius: 10px;
+            min-width: 60px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-text {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        /* Alertas */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-success {
+            background: #28a745;
+        }
+
+        .alert-error {
+            background: #dc3545;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .search-bar {
+                flex-direction: column;
+            }
+            
+            .hotels-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="admin-info">
+                    <h1 class="logo">TravelApp Admin</h1>
+                    <p class="admin-welcome" id="adminWelcome">Gestión de Hoteles</p>
+                </div>
+                <div class="admin-avatar" id="adminAvatar" onclick="showAdminMenu()">👨‍💼</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Stats Section -->
+            <div class="management-section">
+                <h2 class="section-title">📊 Estadísticas de Hoteles</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">89</div>
+                        <div class="stat-label">Total Hoteles</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">76</div>
+                        <div class="stat-label">Hoteles Activos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">Hoteles Inactivos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">1</div>
+                        <div class="stat-label">Hoteles Pendientes</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hotels Management Section -->
+            <div class="management-section">
+                <h2 class="section-title">🏨 Gestión de Hoteles</h2>
+                
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Buscar hoteles..." id="searchInput">
+                    <select class="search-input" id="statusFilter">
+                        <option value="">Todos los estados</option>
+                        <option value="active">Activos</option>
+                        <option value="inactive">Inactivos</option>
+                        <option value="pending">Pendientes</option>
+                    </select>
+                    <button class="search-btn" onclick="searchHotels()">Buscar</button>
+                </div>
+
+                <div class="hotels-grid" id="hotelsGrid">
+                    <!-- Los hoteles se cargarán dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-content">
+            <a href="dashboard-admin-direct.html" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span class="nav-text">Dashboard</span>
+            </a>
+            <a href="admin-usuarios-direct.html" class="nav-item">
+                <span class="nav-icon">👥</span>
+                <span class="nav-text">Usuarios</span>
+            </a>
+            <a href="#" class="nav-item active">
+                <span class="nav-icon">🏨</span>
+                <span class="nav-text">Hoteles</span>
+            </a>
+            <a href="admin-restaurantes-direct.html" class="nav-item">
+                <span class="nav-icon">🍽️</span>
+                <span class="nav-text">Restaurantes</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showAdminMenu()">
+                <span class="nav-icon">👨‍💼</span>
+                <span class="nav-text">Admin</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Modal de Admin -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAdminModal()">&times;</span>
+            <h3>Panel de Administración</h3>
+            <div id="adminInfo"></div>
+            <div style="margin-top: 2rem;">
+                <button class="btn" onclick="goToProfile()">Mi Perfil</button>
+                <button class="btn" onclick="logout()" style="margin-left: 1rem; background: #6c757d;">Cerrar Sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="alertContainer"></div>
+
+    <script>
+        // Datos de hoteles de ejemplo
+        const hoteles = [
+            {
+                id: 1,
+                nombre: "Hotel Paradise",
+                ubicacion: "Cancún, México",
+                habitaciones: 120,
+                ocupacion: 89,
+                calificacion: 4.8,
+                estado: "active",
+                imagen: "🏖️"
+            },
+            {
+                id: 2,
+                nombre: "Grand Hotel",
+                ubicacion: "París, Francia",
+                habitaciones: 85,
+                ocupacion: 76,
+                calificacion: 4.6,
+                estado: "active",
+                imagen: "🏨"
+            },
+            {
+                id: 3,
+                nombre: "Mountain Lodge",
+                ubicacion: "Suiza",
+                habitaciones: 45,
+                ocupacion: 92,
+                calificacion: 4.9,
+                estado: "active",
+                imagen: "🏔️"
+            },
+            {
+                id: 4,
+                nombre: "City Center Hotel",
+                ubicacion: "Nueva York, USA",
+                habitaciones: 200,
+                ocupacion: 45,
+                calificacion: 4.2,
+                estado: "inactive",
+                imagen: "🏢"
+            },
+            {
+                id: 5,
+                nombre: "Beach Resort",
+                ubicacion: "Tailandia",
+                habitaciones: 150,
+                ocupacion: 0,
+                calificacion: 0,
+                estado: "pending",
+                imagen: "🏝️"
+            }
+        ];
+
+        // Funciones de utilidad
+        function showAlert(message, type = 'success') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+        }
+
+        function showAdminMenu() {
+            const modal = document.getElementById('adminModal');
+            const adminInfo = document.getElementById('adminInfo');
+            
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                adminInfo.innerHTML = `
+                    <p><strong>Nombre:</strong> ${user.name}</p>
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>Rol:</strong> ${getRoleDisplayName(user.role)}</p>
+                `;
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').style.display = 'none';
+        }
+
+        function getRoleDisplayName(role) {
+            const roleNames = {
+                'usuario': 'Usuario',
+                'admin': 'Administrador',
+                'hotel': 'Hotel',
+                'restaurante': 'Restaurante',
+                'actividades': 'Actividades'
+            };
+            return roleNames[role] || role;
+        }
+
+        function goToProfile() {
+            showAlert('Funcionalidad de perfil en desarrollo', 'success');
+            closeAdminModal();
+        }
+
+        function logout() {
+            localStorage.removeItem('current_user');
+            showAlert('Sesión cerrada correctamente', 'success');
+            setTimeout(() => {
+                window.location.href = 'login-direct.html';
+            }, 1000);
+        }
+
+        function searchHotels() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            
+            let filteredHotels = hoteles;
+            
+            if (searchTerm) {
+                filteredHotels = filteredHotels.filter(hotel => 
+                    hotel.nombre.toLowerCase().includes(searchTerm) ||
+                    hotel.ubicacion.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            if (statusFilter) {
+                filteredHotels = filteredHotels.filter(hotel => 
+                    hotel.estado === statusFilter
+                );
+            }
+            
+            displayHotels(filteredHotels);
+            showAlert(`Se encontraron ${filteredHotels.length} hoteles`, 'success');
+        }
+
+        function displayHotels(hotelsToShow) {
+            const grid = document.getElementById('hotelsGrid');
+            grid.innerHTML = '';
+            
+            hotelsToShow.forEach(hotel => {
+                const card = document.createElement('div');
+                card.className = 'hotel-card';
+                
+                const stars = '★'.repeat(Math.floor(hotel.calificacion));
+                
+                card.innerHTML = `
+                    <div class="hotel-image">${hotel.imagen}</div>
+                    <div class="hotel-content">
+                        <h3 class="hotel-name">${hotel.nombre}</h3>
+                        <p class="hotel-location">📍 ${hotel.ubicacion}</p>
+                        
+                        <div class="hotel-stats">
+                            <div class="stat-item">
+                                <div class="stat-number">${hotel.habitaciones}</div>
+                                <div class="stat-label">Habitaciones</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">${hotel.ocupacion}%</div>
+                                <div class="stat-label">Ocupación</div>
+                            </div>
+                        </div>
+                        
+                        <div class="hotel-rating">
+                            <span class="stars">${stars}</span>
+                            <span class="rating-text">${hotel.calificacion}/5</span>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn btn-edit" onclick="editHotel(${hotel.id})">Editar</button>
+                            <button class="btn btn-block" onclick="toggleHotelStatus(${hotel.id})">${hotel.estado === 'active' ? 'Desactivar' : 'Activar'}</button>
+                            <button class="btn btn-delete" onclick="deleteHotel(${hotel.id})">Eliminar</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function editHotel(hotelId) {
+            const hotel = hoteles.find(h => h.id === hotelId);
+            if (hotel) {
+                showAlert(`Editando hotel: ${hotel.nombre}`, 'success');
+            }
+        }
+
+        function toggleHotelStatus(hotelId) {
+            const hotel = hoteles.find(h => h.id === hotelId);
+            if (hotel) {
+                hotel.estado = hotel.estado === 'active' ? 'inactive' : 'active';
+                displayHotels(hoteles);
+                showAlert(`Estado de ${hotel.nombre} actualizado`, 'success');
+            }
+        }
+
+        function deleteHotel(hotelId) {
+            const hotel = hoteles.find(h => h.id === hotelId);
+            if (hotel && confirm(`¿Estás seguro de eliminar ${hotel.nombre}?`)) {
+                const index = hoteles.findIndex(h => h.id === hotelId);
+                hoteles.splice(index, 1);
+                displayHotels(hoteles);
+                showAlert(`Hotel ${hotel.nombre} eliminado`, 'success');
+            }
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('adminModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Inicializar página
+        window.addEventListener('load', function() {
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                if (user.role === 'admin') {
+                    document.getElementById('adminWelcome').textContent = `¡Hola ${user.name}!`;
+                    document.getElementById('adminAvatar').textContent = user.avatar || '👨‍💼';
+                } else {
+                    showAlert('Acceso denegado. Solo administradores pueden acceder a esta página.', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'login-direct.html';
+                    }, 2000);
+                }
+            } else {
+                showAlert('No hay usuario logueado. Redirigiendo al login...', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login-direct.html';
+                }, 2000);
+            }
+            
+            // Cargar hoteles iniciales
+            displayHotels(hoteles);
+        });
+    </script>
+</body>
+</html>

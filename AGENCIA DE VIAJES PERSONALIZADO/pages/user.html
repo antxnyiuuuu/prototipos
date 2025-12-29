@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuario - TravelApp</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="../assets/additional-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">
+                    <i class="fas fa-plane"></i>
+                    TravelApp
+                </h1>
+                <div class="user-menu">
+                    <span class="user-name" id="userNameDisplay">Usuario</span>
+                    <button class="btn btn-secondary" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Cerrar Sesión
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <div class="nav-container">
+                <button class="nav-link active" onclick="showSection('home')">
+                    <i class="fas fa-home"></i>
+                    Inicio
+                </button>
+                <button class="nav-link" onclick="showSection('packages')">
+                    <i class="fas fa-suitcase"></i>
+                    Mis Paquetes
+                </button>
+                <button class="nav-link" onclick="showSection('search')">
+                    <i class="fas fa-search"></i>
+                    Buscar
+                </button>
+                <button class="nav-link" onclick="showSection('profile')">
+                    <i class="fas fa-user"></i>
+                    Perfil
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Home Section -->
+            <section id="homeSection" class="content-section active">
+                <div class="page-header">
+                    <h2>¡Bienvenido a TravelApp!</h2>
+                    <p>Crea y gestiona tus paquetes de viaje personalizados</p>
+                </div>
+
+                <div class="quick-actions">
+                    <button class="action-card" onclick="showSection('packages')">
+                        <i class="fas fa-suitcase"></i>
+                        <h3>Mis Paquetes</h3>
+                        <p>Gestiona tus paquetes de viaje</p>
+                    </button>
+                    <button class="action-card" onclick="showSection('search')">
+                        <i class="fas fa-search"></i>
+                        <h3>Buscar Productos</h3>
+                        <p>Encuentra hoteles, restaurantes y actividades</p>
+                    </button>
+                    <button class="action-card" onclick="createNewPackage()">
+                        <i class="fas fa-plus"></i>
+                        <h3>Crear Paquete</h3>
+                        <p>Diseña tu paquete personalizado</p>
+                    </button>
+                </div>
+
+                <div class="recent-packages">
+                    <h3>Paquetes Recientes</h3>
+                    <div id="recentPackagesList" class="packages-grid">
+                        <!-- Se cargarán dinámicamente -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Packages Section -->
+            <section id="packagesSection" class="content-section">
+                <div class="page-header">
+                    <h2>Mis Paquetes</h2>
+                    <button class="btn btn-primary" onclick="createNewPackage()">
+                        <i class="fas fa-plus"></i> Crear Nuevo Paquete
+                    </button>
+                </div>
+
+                <div id="packagesList" class="packages-grid">
+                    <!-- Se cargarán dinámicamente -->
+                </div>
+            </section>
+
+            <!-- Search Section -->
+            <section id="searchSection" class="content-section">
+                <div class="page-header">
+                    <h2>Buscar Productos</h2>
+                    <p>Encuentra hoteles, restaurantes, actividades y comidas</p>
+                </div>
+
+                <div class="search-filters">
+                    <div class="filter-group">
+                        <label for="searchCategory">Categoría</label>
+                        <select id="searchCategory" onchange="filterProducts()">
+                            <option value="">Todas las categorías</option>
+                            <option value="hoteles">Hoteles</option>
+                            <option value="restaurantes">Restaurantes</option>
+                            <option value="actividades">Actividades</option>
+                            <option value="comidas">Comidas</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="searchLocation">Localidad</label>
+                        <select id="searchLocation" onchange="filterProducts()">
+                            <option value="">Todas las localidades</option>
+                            <!-- Se cargarán dinámicamente -->
+                        </select>
+                    </div>
+                </div>
+
+                <div id="searchResults" class="products-grid">
+                    <!-- Se cargarán dinámicamente -->
+                </div>
+            </section>
+
+            <!-- Profile Section -->
+            <section id="profileSection" class="content-section">
+                <div class="page-header">
+                    <h2>Mi Perfil</h2>
+                </div>
+
+                <div class="profile-content">
+                    <div class="profile-info">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="profile-details">
+                            <h3 id="userName">Usuario</h3>
+                            <p id="userEmail">email@ejemplo.com</p>
+                        </div>
+                    </div>
+
+                    <div class="profile-stats">
+                        <div class="stat-card">
+                            <i class="fas fa-suitcase"></i>
+                            <h4 id="totalPackages">0</h4>
+                            <p>Paquetes Creados</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-dollar-sign"></i>
+                            <h4 id="totalSpent">$0</h4>
+                            <p>Total Gastado</p>
+                        </div>
+                    </div>
+
+                    <div class="profile-actions">
+                        <button class="btn btn-primary" onclick="createNewPackage()">
+                            <i class="fas fa-plus"></i> Crear Nuevo Paquete
+                        </button>
+                        <button class="btn btn-secondary" onclick="showSection('packages')">
+                            <i class="fas fa-suitcase"></i> Ver Mis Paquetes
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../data/products.js"></script>
+    <script src="../assets/app.js"></script>
+    <script>
+        let currentUser = null;
+        let userPackages = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Verificar si hay usuario logueado
+            const storedUser = localStorage.getItem('currentUser');
+            if (!storedUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentUser = JSON.parse(storedUser);
+            document.getElementById('userNameDisplay').textContent = currentUser.name;
+            initializeUserPage();
+        });
+
+        function initializeUserPage() {
+            loadUserPackages();
+            loadSearchFilters();
+            loadRecentPackages();
+            updateProfileInfo();
+        }
+
+        function showSection(sectionName) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remover active de todos los nav-links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Mostrar la sección seleccionada
+            document.getElementById(sectionName + 'Section').classList.add('active');
+            
+            // Activar el nav-link correspondiente
+            event.target.classList.add('active');
+
+            // Cargar contenido específico de la sección
+            if (sectionName === 'packages') {
+                loadUserPackages();
+            } else if (sectionName === 'search') {
+                loadAllProducts();
+            }
+        }
+
+        function loadUserPackages() {
+            const packages = JSON.parse(localStorage.getItem(`packages_${currentUser.id}`) || '[]');
+            userPackages = packages;
+            
+            const packagesList = document.getElementById('packagesList');
+            if (!packagesList) return;
+
+            if (packages.length === 0) {
+                packagesList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-suitcase"></i>
+                        <h3>No tienes paquetes creados</h3>
+                        <p>Crea tu primer paquete de viaje</p>
+                        <button class="btn btn-primary" onclick="createNewPackage()">
+                            <i class="fas fa-plus"></i> Crear Paquete
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            packagesList.innerHTML = packages.map(pkg => `
+                <div class="package-card">
+                    <div class="package-image">
+                        <img src="https://placehold.co/600x300/1e3a8a/FFFFFF?text=Paquete" alt="${pkg.nombre}">
+                    </div>
+                    <div class="package-content">
+                        <h3 class="package-title">${pkg.nombre}</h3>
+                        <p class="package-description">${pkg.descripcion || 'Sin descripción'}</p>
+                        
+                        <div class="package-meta">
+                            <span class="package-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                ${pkg.localidad || 'Sin localidad'}
+                            </span>
+                            <span class="package-duration">
+                                <i class="fas fa-clock"></i>
+                                ${pkg.duracion || 'Sin duración'}
+                            </span>
+                        </div>
+                        
+                        <div class="package-products">
+                            <h4>Productos incluidos:</h4>
+                            <div class="products-summary">
+                                ${pkg.productos && pkg.productos.length > 0 
+                                    ? pkg.productos.map(product => `
+                                        <span class="product-tag ${product.categoria}">
+                                            <i class="fas fa-${getProductIcon(product.categoria)}"></i>
+                                            ${product.nombre}
+                                        </span>
+                                    `).join('')
+                                    : '<p class="no-products">No hay productos agregados</p>'
+                                }
+                            </div>
+                        </div>
+                        
+                        <div class="package-footer">
+                            <div class="package-price">
+                                <span class="price-label">Precio:</span>
+                                <span class="price-value">$${pkg.precio_total || pkg.precio || 0}</span>
+                            </div>
+                            
+                            <div class="package-actions">
+                                <button class="btn btn-primary btn-sm" onclick="purchasePackage(${pkg.id})">
+                                    <i class="fas fa-credit-card"></i> Comprar
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="editPackage(${pkg.id})">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                                <button class="btn btn-danger btn-sm" onclick="deletePackage(${pkg.id})">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadRecentPackages() {
+            const recentPackagesList = document.getElementById('recentPackagesList');
+            if (!recentPackagesList) return;
+
+            const recentPackages = userPackages.slice(0, 3);
+            
+            if (recentPackages.length === 0) {
+                recentPackagesList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-suitcase"></i>
+                        <h3>No tienes paquetes recientes</h3>
+                        <p>Crea tu primer paquete de viaje</p>
+                    </div>
+                `;
+                return;
+            }
+
+            recentPackagesList.innerHTML = recentPackages.map(pkg => `
+                <div class="package-card">
+                    <div class="package-image">
+                        <img src="https://placehold.co/600x300/1e3a8a/FFFFFF?text=Paquete" alt="${pkg.nombre}">
+                    </div>
+                    <div class="package-content">
+                        <h3 class="package-title">${pkg.nombre}</h3>
+                        <p class="package-description">${pkg.descripcion || 'Sin descripción'}</p>
+                        <div class="package-price">
+                            <span class="price-value">$${pkg.precio_total || pkg.precio || 0}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadSearchFilters() {
+            const searchLocation = document.getElementById('searchLocation');
+            if (!searchLocation || !products) return;
+
+            const locations = [...new Set(products.localidades.map(loc => loc.nombre))];
+            searchLocation.innerHTML = '<option value="">Todas las localidades</option>' +
+                locations.map(loc => `<option value="${loc}">${loc}</option>`).join('');
+        }
+
+        function loadAllProducts() {
+            const searchResults = document.getElementById('searchResults');
+            if (!searchResults || !products) return;
+
+            const allProducts = [
+                ...products.hoteles.map(p => ({...p, categoria: 'hoteles'})),
+                ...products.restaurantes.map(p => ({...p, categoria: 'restaurantes'})),
+                ...products.actividades.map(p => ({...p, categoria: 'actividades'})),
+                ...products.comidas.map(p => ({...p, categoria: 'comidas'}))
+            ];
+
+            searchResults.innerHTML = allProducts.map(product => `
+                <div class="product-card ${product.categoria}">
+                    <div class="product-image">
+                        <img src="${product.imagen}" alt="${product.nombre}">
+                        <div class="product-category-badge">${getCategoryName(product.categoria)}</div>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="product-title">${product.nombre}</h3>
+                        <p class="product-description">${product.descripcion}</p>
+                        <div class="product-meta">
+                            <span class="product-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                ${product.localidad}
+                            </span>
+                            <span class="product-price">$${product.precio}</span>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="addToPackage(${product.id})">
+                            <i class="fas fa-plus"></i> Agregar a Paquete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterProducts() {
+            const category = document.getElementById('searchCategory').value;
+            const location = document.getElementById('searchLocation').value;
+            
+            // Implementar filtrado
+            loadAllProducts(); // Por ahora mostrar todos
+        }
+
+        function updateProfileInfo() {
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userEmail').textContent = currentUser.email;
+            document.getElementById('totalPackages').textContent = userPackages.length;
+            
+            const totalSpent = userPackages.reduce((total, pkg) => total + (pkg.precio_total || 0), 0);
+            document.getElementById('totalSpent').textContent = `$${totalSpent}`;
+        }
+
+        function createNewPackage() {
+            // Crear nuevo paquete
+            const newPackage = {
+                id: Date.now(),
+                nombre: 'Nuevo Paquete',
+                descripcion: 'Paquete personalizado',
+                localidad: '',
+                transporteId: null,
+                productos: [],
+                precio_total: 0,
+                fechaCreacion: new Date().toISOString()
+            };
+
+            userPackages.push(newPackage);
+            localStorage.setItem(`packages_${currentUser.id}`, JSON.stringify(userPackages));
+            
+            showSection('packages');
+            loadUserPackages();
+        }
+
+        function editPackage(packageId) {
+            alert('Funcionalidad de edición próximamente');
+        }
+
+        function deletePackage(packageId) {
+            if (confirm('¿Estás seguro de que quieres eliminar este paquete?')) {
+                userPackages = userPackages.filter(pkg => pkg.id !== packageId);
+                localStorage.setItem(`packages_${currentUser.id}`, JSON.stringify(userPackages));
+                loadUserPackages();
+            }
+        }
+
+        function purchasePackage(packageId) {
+            alert('Funcionalidad de compra próximamente');
+        }
+
+        function addToPackage(productId) {
+            alert('Funcionalidad de agregar a paquete próximamente');
+        }
+
+        function getProductIcon(category) {
+            const icons = {
+                'hoteles': 'bed',
+                'restaurantes': 'utensils',
+                'actividades': 'hiking',
+                'comidas': 'coffee'
+            };
+            return icons[category] || 'tag';
+        }
+
+        function getCategoryName(category) {
+            const names = {
+                'hoteles': 'Hotel',
+                'restaurantes': 'Restaurante',
+                'actividades': 'Actividad',
+                'comidas': 'Comida'
+            };
+            return names[category] || 'Producto';
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

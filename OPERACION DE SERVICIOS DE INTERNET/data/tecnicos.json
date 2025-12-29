@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "nombre": "Juan Pérez",
+    "especialidad": "Instalaciones de Red",
+    "estado": "Disponible",
+    "telefono": "300-111-2222",
+    "experiencia": "5 años",
+    "zona": "Norte y Centro",
+    "tareas_completadas": 45
+  },
+  {
+    "id": 2,
+    "nombre": "Pedro García",
+    "especialidad": "Mantenimiento y Reparaciones",
+    "estado": "Disponible",
+    "telefono": "300-333-4444",
+    "experiencia": "7 años",
+    "zona": "Sur y Este",
+    "tareas_completadas": 62
+  },
+  {
+    "id": 3,
+    "nombre": "Miguel López",
+    "especialidad": "Configuración y Soporte",
+    "estado": "Disponible",
+    "telefono": "300-555-6666",
+    "experiencia": "4 años",
+    "zona": "Oeste y Centro",
+    "tareas_completadas": 38
+  }
+]

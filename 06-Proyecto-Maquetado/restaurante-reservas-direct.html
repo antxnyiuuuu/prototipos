@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Reservas - TravelApp Restaurante</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .restaurant-welcome {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .restaurant-avatar {
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .restaurant-avatar:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Main Content */
+        .main {
+            padding: 2rem 0;
+            padding-bottom: 80px;
+        }
+
+        .management-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-btn {
+            padding: 0.75rem 1.5rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .reservations-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+
+        .reservations-table th,
+        .reservations-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .reservations-table th {
+            background: #f8f9ff;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .reservations-table tr:hover {
+            background: #f8f9ff;
+        }
+
+        .guest-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .guest-avatar {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+
+        .guest-details h4 {
+            margin-bottom: 0.25rem;
+            color: #333;
+        }
+
+        .guest-details p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-completed {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-confirm {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background: #218838;
+        }
+
+        .btn-cancel {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: #c82333;
+        }
+
+        .btn-complete {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-complete:hover {
+            background: #138496;
+        }
+
+        .btn-view {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #5a6268;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #f8f9ff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #e1e5e9;
+            padding: 0.5rem 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            transition: color 0.3s;
+            padding: 0.5rem;
+            border-radius: 10px;
+            min-width: 60px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-text {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        /* Alertas */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-success {
+            background: #28a745;
+        }
+
+        .alert-error {
+            background: #dc3545;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .search-bar {
+                flex-direction: column;
+            }
+            
+            .reservations-table {
+                font-size: 0.8rem;
+            }
+            
+            .reservations-table th,
+            .reservations-table td {
+                padding: 0.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="restaurant-info">
+                    <h1 class="logo">TravelApp Restaurante</h1>
+                    <p class="restaurant-welcome" id="restaurantWelcome">Gestión de Reservas</p>
+                </div>
+                <div class="restaurant-avatar" id="restaurantAvatar" onclick="showRestaurantMenu()">🍽️</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Stats Section -->
+            <div class="management-section">
+                <h2 class="section-title">📊 Estadísticas de Reservas</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">28</div>
+                        <div class="stat-label">Reservas Hoy</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">15</div>
+                        <div class="stat-label">Reservas Pendientes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">Reservas Completadas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">$1,850</div>
+                        <div class="stat-label">Ingresos del Día</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reservations Management Section -->
+            <div class="management-section">
+                <h2 class="section-title">📅 Gestión de Reservas</h2>
+                
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Buscar por cliente..." id="searchInput">
+                    <select class="search-input" id="statusFilter">
+                        <option value="">Todos los estados</option>
+                        <option value="confirmed">Confirmada</option>
+                        <option value="pending">Pendiente</option>
+                        <option value="completed">Completada</option>
+                        <option value="cancelled">Cancelada</option>
+                    </select>
+                    <input type="date" class="search-input" id="dateFilter">
+                    <button class="search-btn" onclick="searchReservations()">Buscar</button>
+                </div>
+
+                <table class="reservations-table" id="reservationsTable">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Personas</th>
+                            <th>Mesa</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reservationsTableBody">
+                        <!-- Las reservas se cargarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-content">
+            <a href="dashboard-restaurante-direct.html" class="nav-item">
+                <span class="nav-icon">🍽️</span>
+                <span class="nav-text">Dashboard</span>
+            </a>
+            <a href="restaurante-menu-direct.html" class="nav-item">
+                <span class="nav-icon">🍽️</span>
+                <span class="nav-text">Menú</span>
+            </a>
+            <a href="#" class="nav-item active">
+                <span class="nav-icon">📅</span>
+                <span class="nav-text">Reservas</span>
+            </a>
+            <a href="restaurante-horarios-direct.html" class="nav-item">
+                <span class="nav-icon">🕒</span>
+                <span class="nav-text">Horarios</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showRestaurantMenu()">
+                <span class="nav-icon">🍽️</span>
+                <span class="nav-text">Restaurante</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Modal de Restaurante -->
+    <div id="restaurantModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRestaurantModal()">&times;</span>
+            <h3>Panel del Restaurante</h3>
+            <div id="restaurantInfo"></div>
+            <div style="margin-top: 2rem;">
+                <button class="btn" onclick="goToProfile()">Mi Perfil</button>
+                <button class="btn" onclick="logout()" style="margin-left: 1rem; background: #6c757d;">Cerrar Sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="alertContainer"></div>
+
+    <script>
+        // Datos de reservas de ejemplo
+        const reservas = [
+            {
+                id: 1,
+                cliente: "Juan Pérez",
+                email: "juan@example.com",
+                fecha: "2024-01-15",
+                hora: "19:30",
+                personas: 4,
+                mesa: "Mesa 5",
+                estado: "confirmed",
+                avatar: "👤"
+            },
+            {
+                id: 2,
+                cliente: "María García",
+                email: "maria@example.com",
+                fecha: "2024-01-15",
+                hora: "20:00",
+                personas: 2,
+                mesa: "Mesa 12",
+                estado: "pending",
+                avatar: "👩"
+            },
+            {
+                id: 3,
+                cliente: "Carlos López",
+                email: "carlos@example.com",
+                fecha: "2024-01-15",
+                hora: "18:00",
+                personas: 6,
+                mesa: "Mesa 8",
+                estado: "completed",
+                avatar: "👨"
+            },
+            {
+                id: 4,
+                cliente: "Ana Martínez",
+                email: "ana@example.com",
+                fecha: "2024-01-15",
+                hora: "21:00",
+                personas: 3,
+                mesa: "Mesa 3",
+                estado: "cancelled",
+                avatar: "👩‍💼"
+            },
+            {
+                id: 5,
+                cliente: "Roberto Silva",
+                email: "roberto@example.com",
+                fecha: "2024-01-15",
+                hora: "19:00",
+                personas: 2,
+                mesa: "Mesa 15",
+                estado: "confirmed",
+                avatar: "👨‍💼"
+            }
+        ];
+
+        // Funciones de utilidad
+        function showAlert(message, type = 'success') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+        }
+
+        function showRestaurantMenu() {
+            const modal = document.getElementById('restaurantModal');
+            const restaurantInfo = document.getElementById('restaurantInfo');
+            
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                restaurantInfo.innerHTML = `
+                    <p><strong>Nombre:</strong> ${user.name}</p>
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>Rol:</strong> ${getRoleDisplayName(user.role)}</p>
+                `;
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        function closeRestaurantModal() {
+            document.getElementById('restaurantModal').style.display = 'none';
+        }
+
+        function getRoleDisplayName(role) {
+            const roleNames = {
+                'usuario': 'Usuario',
+                'admin': 'Administrador',
+                'hotel': 'Hotel',
+                'restaurante': 'Restaurante',
+                'actividades': 'Actividades'
+            };
+            return roleNames[role] || role;
+        }
+
+        function goToProfile() {
+            showAlert('Funcionalidad de perfil en desarrollo', 'success');
+            closeRestaurantModal();
+        }
+
+        function logout() {
+            localStorage.removeItem('current_user');
+            showAlert('Sesión cerrada correctamente', 'success');
+            setTimeout(() => {
+                window.location.href = 'login-direct.html';
+            }, 1000);
+        }
+
+        function searchReservations() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const dateFilter = document.getElementById('dateFilter').value;
+            
+            let filteredReservations = reservas;
+            
+            if (searchTerm) {
+                filteredReservations = filteredReservations.filter(reservation => 
+                    reservation.cliente.toLowerCase().includes(searchTerm) ||
+                    reservation.email.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            if (statusFilter) {
+                filteredReservations = filteredReservations.filter(reservation => 
+                    reservation.estado === statusFilter
+                );
+            }
+            
+            if (dateFilter) {
+                filteredReservations = filteredReservations.filter(reservation => 
+                    reservation.fecha === dateFilter
+                );
+            }
+            
+            displayReservations(filteredReservations);
+            showAlert(`Se encontraron ${filteredReservations.length} reservas`, 'success');
+        }
+
+        function displayReservations(reservationsToShow) {
+            const tbody = document.getElementById('reservationsTableBody');
+            tbody.innerHTML = '';
+            
+            reservationsToShow.forEach(reservation => {
+                const row = document.createElement('tr');
+                
+                let statusClass = '';
+                let statusText = '';
+                
+                switch(reservation.estado) {
+                    case 'confirmed':
+                        statusClass = 'status-confirmed';
+                        statusText = 'Confirmada';
+                        break;
+                    case 'pending':
+                        statusClass = 'status-pending';
+                        statusText = 'Pendiente';
+                        break;
+                    case 'completed':
+                        statusClass = 'status-completed';
+                        statusText = 'Completada';
+                        break;
+                    case 'cancelled':
+                        statusClass = 'status-cancelled';
+                        statusText = 'Cancelada';
+                        break;
+                }
+                
+                row.innerHTML = `
+                    <td>
+                        <div class="guest-info">
+                            <span class="guest-avatar">${reservation.avatar}</span>
+                            <div class="guest-details">
+                                <h4>${reservation.cliente}</h4>
+                                <p>${reservation.email}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${reservation.fecha}</td>
+                    <td>${reservation.hora}</td>
+                    <td>${reservation.personas}</td>
+                    <td>${reservation.mesa}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-view" onclick="viewReservation(${reservation.id})">Ver</button>
+                            ${reservation.estado === 'pending' ? `<button class="btn btn-confirm" onclick="confirmReservation(${reservation.id})">Confirmar</button>` : ''}
+                            ${reservation.estado === 'confirmed' ? `<button class="btn btn-complete" onclick="completeReservation(${reservation.id})">Completar</button>` : ''}
+                            ${reservation.estado !== 'cancelled' && reservation.estado !== 'completed' ? `<button class="btn btn-cancel" onclick="cancelReservation(${reservation.id})">Cancelar</button>` : ''}
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function viewReservation(reservationId) {
+            const reservation = reservas.find(r => r.id === reservationId);
+            if (reservation) {
+                showAlert(`Viendo detalles de reserva: ${reservation.cliente}`, 'success');
+            }
+        }
+
+        function confirmReservation(reservationId) {
+            const reservation = reservas.find(r => r.id === reservationId);
+            if (reservation) {
+                reservation.estado = 'confirmed';
+                displayReservations(reservas);
+                showAlert(`Reserva de ${reservation.cliente} confirmada`, 'success');
+            }
+        }
+
+        function completeReservation(reservationId) {
+            const reservation = reservas.find(r => r.id === reservationId);
+            if (reservation) {
+                reservation.estado = 'completed';
+                displayReservations(reservas);
+                showAlert(`Reserva de ${reservation.cliente} completada`, 'success');
+            }
+        }
+
+        function cancelReservation(reservationId) {
+            const reservation = reservas.find(r => r.id === reservationId);
+            if (reservation && confirm(`¿Estás seguro de cancelar la reserva de ${reservation.cliente}?`)) {
+                reservation.estado = 'cancelled';
+                displayReservations(reservas);
+                showAlert(`Reserva de ${reservation.cliente} cancelada`, 'success');
+            }
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('restaurantModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Inicializar página
+        window.addEventListener('load', function() {
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                if (user.role === 'restaurante') {
+                    document.getElementById('restaurantWelcome').textContent = `¡Hola ${user.name}!`;
+                    document.getElementById('restaurantAvatar').textContent = user.avatar || '🍽️';
+                } else {
+                    showAlert('Acceso denegado. Solo restaurantes pueden acceder a esta página.', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'login-direct.html';
+                    }, 2000);
+                }
+            } else {
+                showAlert('No hay usuario logueado. Redirigiendo al login...', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login-direct.html';
+                }, 2000);
+            }
+            
+            // Cargar reservas iniciales
+            displayReservations(reservas);
+        });
+    </script>
+</body>
+</html>

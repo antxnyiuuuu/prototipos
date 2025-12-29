@@ -1,0 +1,75 @@
+{
+  "paquetes": [
+    {
+      "id": 1,
+      "nombre": "Paquete Normal",
+      "tipo": "Normal",
+      "precio_base": 150,
+      "duracion": "3 días / 2 noches",
+      "descripcion": "Paquete ideal para conocer lo esencial de Ecuador",
+      "incluye": [
+        "2 noches de alojamiento",
+        "Desayunos incluidos",
+        "2 actividades culturales",
+        "Transporte básico"
+      ],
+      "hotel_base": {
+        "id": 1,
+        "nombre": "Hotel Quito Centro",
+        "categoria": "3 estrellas"
+      },
+      "actividades_disponibles": [1, 2, 3],
+      "comidas_incluidas": [1, 2],
+      "destinos": ["Quito", "Mitad del Mundo"],
+      "imagen": "paquete-normal.jpg"
+    },
+    {
+      "id": 2,
+      "nombre": "Paquete Premium",
+      "tipo": "Premium",
+      "precio_base": 280,
+      "duracion": "5 días / 4 noches",
+      "descripcion": "Experiencia completa con alojamiento de lujo",
+      "incluye": [
+        "4 noches de alojamiento",
+        "Desayunos y almuerzos incluidos",
+        "4 actividades premium",
+        "Transporte privado"
+      ],
+      "hotel_base": {
+        "id": 2,
+        "nombre": "Hotel Plaza Grande",
+        "categoria": "4 estrellas"
+      },
+      "actividades_disponibles": [1, 2, 3, 4, 5],
+      "comidas_incluidas": [1, 2, 3, 4],
+      "destinos": ["Quito", "Mitad del Mundo", "Otavalo", "Baños"],
+      "imagen": "paquete-premium.jpg"
+    },
+    {
+      "id": 3,
+      "nombre": "Paquete Superpremium",
+      "tipo": "Superpremium",
+      "precio_base": 450,
+      "duracion": "7 días / 6 noches",
+      "descripcion": "Lujo y exclusividad en cada detalle",
+      "incluye": [
+        "6 noches de alojamiento de lujo",
+        "Todas las comidas gourmet incluidas",
+        "6 actividades exclusivas",
+        "Transporte ejecutivo privado",
+        "Guía personalizado"
+      ],
+      "hotel_base": {
+        "id": 3,
+        "nombre": "Hotel Casa Gangotena",
+        "categoria": "5 estrellas"
+      },
+      "actividades_disponibles": [1, 2, 3, 4, 5, 6],
+      "comidas_incluidas": [1, 2, 3, 4, 5],
+      "destinos": ["Quito", "Mitad del Mundo", "Otavalo", "Baños", "Cotopaxi"],
+      "imagen": "paquete-superpremium.jpg"
+    }
+  ]
+}
+

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motorgsa - Sobre Nosotros</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .about-section {
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border: 2px solid #333;
+        }
+
+        .about-section h3 {
+            color: #2E7D32;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .company-logo {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .company-logo img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid #2E7D32;
+            background-color: #2a2a2a;
+        }
+
+        .company-info {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .company-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2E7D32;
+            margin-bottom: 0.3rem;
+        }
+
+        .company-slogan {
+            color: #888;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            background-color: #2a2a2a;
+            border-radius: 8px;
+        }
+
+        .info-item i {
+            color: #2E7D32;
+            width: 20px;
+            text-align: center;
+        }
+
+        .info-item span {
+            font-size: 0.9rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .stat-item {
+            background-color: #2a2a2a;
+            padding: 0.8rem;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 3px solid #2E7D32;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2E7D32;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .mission-vision {
+            background: linear-gradient(135deg, #2E7D32, #1B5E20);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .mission-vision h4 {
+            color: white;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .mission-vision p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1><i class="fas fa-tractor"></i> Sobre Motorgsa</h1>
+            <p>Conoce nuestra empresa</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Logo y información principal -->
+            <div class="about-section">
+                <div class="company-logo">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtONIAaoyV9WCEtwCpVQDlC3GibrzI5kgEkw&s" alt="Motorgsa Logo">
+                </div>
+                
+                <div class="company-info">
+                    <div class="company-name">Motorgsa</div>
+                    <div class="company-slogan">"Potencia y calidad para tu maquinaria agrícola"</div>
+                </div>
+            </div>
+
+            <!-- Información de contacto -->
+            <div class="about-section">
+                <h3><i class="fas fa-map-marker-alt"></i> Información de Contacto</h3>
+                
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Av. Agrícola 456, Zona Industrial</span>
+                </div>
+                
+                <div class="info-item">
+                    <i class="fas fa-phone"></i>
+                    <span>+1 (555) 987-6543</span>
+                </div>
+                
+                <div class="info-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>info@motorgsa.com</span>
+                </div>
+                
+                <div class="info-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Lun - Vie: 7:00 AM - 7:00 PM</span>
+                </div>
+                
+                <div class="info-item">
+                    <i class="fas fa-globe"></i>
+                    <span>www.motorgsa.com</span>
+                </div>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="about-section">
+                <h3><i class="fas fa-chart-bar"></i> Nuestros Números</h3>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number">15+</span>
+                        <span class="stat-label">Años de Experiencia</span>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <span class="stat-number">10K+</span>
+                        <span class="stat-label">Clientes Satisfechos</span>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <span class="stat-number">500+</span>
+                        <span class="stat-label">Productos Disponibles</span>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Soporte Técnico</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Misión y Visión -->
+            <div class="about-section">
+                <h3><i class="fas fa-bullseye"></i> Misión y Visión</h3>
+                
+                <div class="mission-vision">
+                    <h4><i class="fas fa-rocket"></i> Nuestra Misión</h4>
+                    <p>Proporcionar repuestos y motores agrícolas de la más alta calidad, ofreciendo un servicio especializado y precios competitivos para mantener la maquinaria agrícola de nuestros clientes funcionando de manera óptima.</p>
+                </div>
+                
+                <div class="mission-vision">
+                    <h4><i class="fas fa-eye"></i> Nuestra Visión</h4>
+                    <p>Ser la empresa líder en la venta de repuestos y motores agrícolas, reconocida por la calidad de nuestros productos, la excelencia en el servicio al cliente y la innovación tecnológica en el sector agrícola. Motorgsa Cía. Ltda. Importadores directos de repuestos y maquinaria agrícola. Eficiencia y confianza para tu campo. Envíos a nivel nacional.</p>
+                </div>
+            </div>
+
+            <!-- Valores -->
+            <div class="about-section">
+                <h3><i class="fas fa-heart"></i> Nuestros Valores</h3>
+                
+                <div class="info-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span><strong>Calidad:</strong> Productos certificados y garantizados</span>
+                </div>
+                
+                <div class="info-item">
+                    <i class="fas fa-handshake"></i>
+                    <span><strong>Confianza:</strong> Relaciones duraderas con nuestros clientes</span>
+                </div>
+                
+                <div class="info-item">
+                    <i class="fas fa-users"></i>
+                    <span><strong>Servicio:</strong> Atención personalizada y profesional</span>
+                </div>
+                
+                <div class="info-item">
+                    <i class="fas fa-lightbulb"></i>
+                    <span><strong>Innovación:</strong> Tecnología de vanguardia</span>
+                </div>
+                
+                <div class="info-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span><strong>Seguridad:</strong> Productos seguros y confiables</span>
+                </div>
+            </div>
+
+            <!-- Servicios -->
+            <div class="about-section">
+                <h3><i class="fas fa-tools"></i> Nuestros Servicios</h3>
+                
+                <div class="info-item">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Venta de motores y repuestos agrícolas</span>
+                </div>
+                
+                <div class="info-item">
+                    <i class="fas fa-headset"></i>
+                    <span>Asesoría técnica especializada en maquinaria agrícola</span>
+                </div>
+                
+                <div class="info-item">
+                    <i class="fas fa-wrench"></i>
+                    <span>Instalación y mantenimiento de motores</span>
+                </div>
+                
+                <div class="info-item">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Financiamiento y crédito para distribuidores</span>
+                </div>
+            </div>
+
+            <!-- Botón de regreso -->
+            <div class="form-container" style="text-align: center;">
+                <button class="btn" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+                
+                <!-- Botón para ir al login si no está autenticado -->
+                <div id="loginButton" style="display: none; margin-top: 0.5rem;">
+                                    <button class="btn" style="background-color: #2E7D32;" onclick="goToLogin()">
+                    <i class="fas fa-sign-in-alt"></i> Ir al Login
+                </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barra de navegación -->
+        <div class="nav-bar">
+            <button class="nav-item" onclick="navigateTo('home')">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+            </button>
+            <button class="nav-item" onclick="navigateTo('cart')">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Carrito <span id="cartCount">0</span></span>
+            </button>
+            <button class="nav-item active" onclick="navigateTo('about')">
+                <i class="fas fa-info-circle"></i>
+                <span>Empresa</span>
+            </button>
+            <button class="nav-item" onclick="navigateTo('profile')">
+                <i class="fas fa-user"></i>
+                <span>Perfil</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="../data/users.js"></script>
+    <script src="../data/products.js"></script>
+    <script>
+        let currentUser = null;
+
+        window.onload = function() {
+            checkAuth();
+            updateCartCount();
+        };
+
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn !== 'true') {
+                // Permitir acceso sin autenticación para ver información de la empresa
+                // Solo ocultar elementos que requieren autenticación
+                const navBar = document.querySelector('.nav-bar');
+                if (navBar) {
+                    navBar.style.display = 'none';
+                }
+                // Mostrar el botón de login
+                document.getElementById('loginButton').style.display = 'block';
+                return;
+            }
+
+            currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                // Permitir acceso sin autenticación para ver información de la empresa
+                const navBar = document.querySelector('.nav-bar');
+                if (navBar) {
+                    navBar.style.display = 'none';
+                }
+                // Mostrar el botón de login
+                document.getElementById('loginButton').style.display = 'block';
+                return;
+            }
+            // Ocultar el botón de login si está autenticado
+            document.getElementById('loginButton').style.display = 'none';
+        }
+
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const count = cart.reduce((total, item) => total + item.quantity, 0);
+            const cartCountElement = document.getElementById('cartCount');
+            if (cartCountElement) {
+                cartCountElement.textContent = count;
+            }
+        }
+
+        function navigateTo(page) {
+            if (page === 'home') {
+                window.location.href = 'home.html';
+            } else if (page === 'cart') {
+                window.location.href = 'cart.html';
+            } else if (page === 'profile') {
+                window.location.href = 'profile.html';
+            } else if (page === 'about') {
+                window.location.href = 'about.html';
+            }
+        }
+
+        function goBack() {
+            // Si no está autenticado, regresar al login
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn !== 'true') {
+                window.location.href = 'login.html';
+            } else {
+                window.history.back();
+            }
+        }
+
+        function goToLogin() {
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

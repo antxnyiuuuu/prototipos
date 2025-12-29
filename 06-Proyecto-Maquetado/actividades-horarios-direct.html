@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Horarios - TravelApp Actividades</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .activities-welcome {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .activities-avatar {
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .activities-avatar:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Main Content */
+        .main {
+            padding: 2rem 0;
+            padding-bottom: 80px;
+        }
+
+        .management-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .schedule-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .schedule-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .schedule-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .activity-name {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .activity-type {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .schedule-content {
+            padding: 1.5rem;
+        }
+
+        .time-slots {
+            margin-bottom: 1.5rem;
+        }
+
+        .time-slot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: #f8f9ff;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+        }
+
+        .slot-time {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .slot-availability {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .availability-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .available {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .full {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .limited {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .participants-count {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .schedule-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #218838;
+        }
+
+        .btn-toggle {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-toggle:hover {
+            background: #e0a800;
+        }
+
+        .btn-special {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-special:hover {
+            background: #138496;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #f8f9ff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .special-schedules {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .special-schedules h3 {
+            color: #856404;
+            margin-bottom: 1rem;
+        }
+
+        .special-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #ffeaa7;
+        }
+
+        .special-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #e1e5e9;
+            padding: 0.5rem 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            transition: color 0.3s;
+            padding: 0.5rem;
+            border-radius: 10px;
+            min-width: 60px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-text {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        /* Alertas */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-success {
+            background: #28a745;
+        }
+
+        .alert-error {
+            background: #dc3545;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .schedule-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="activities-info">
+                    <h1 class="logo">TravelApp Actividades</h1>
+                    <p class="activities-welcome" id="activitiesWelcome">Gestión de Horarios</p>
+                </div>
+                <div class="activities-avatar" id="activitiesAvatar" onclick="showActivitiesMenu()">🎯</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Stats Section -->
+            <div class="management-section">
+                <h2 class="section-title">📊 Estadísticas de Horarios</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">25</div>
+                        <div class="stat-label">Actividades Programadas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">156</div>
+                        <div class="stat-label">Horarios Disponibles</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">89</div>
+                        <div class="stat-label">Horarios Ocupados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">67</div>
+                        <div class="stat-label">Horarios Libres</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Special Schedules Section -->
+            <div class="management-section">
+                <div class="special-schedules">
+                    <h3>🕒 Horarios Especiales</h3>
+                    <div class="special-item">
+                        <span><strong>Noche de Estrellas:</strong> Viernes 19:00 - 23:00</span>
+                        <button class="btn btn-special" onclick="editSpecialSchedule('estrellas')">Editar</button>
+                    </div>
+                    <div class="special-item">
+                        <span><strong>Tour de Amanecer:</strong> Sábado 05:00 - 09:00</span>
+                        <button class="btn btn-special" onclick="editSpecialSchedule('amanecer')">Editar</button>
+                    </div>
+                    <div class="special-item">
+                        <span><strong>Actividad Familiar:</strong> Domingo 10:00 - 14:00</span>
+                        <button class="btn btn-special" onclick="editSpecialSchedule('familiar')">Editar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schedule Management Section -->
+            <div class="management-section">
+                <h2 class="section-title">📅 Horarios por Actividad</h2>
+                
+                <div class="schedule-grid" id="scheduleGrid">
+                    <!-- Los horarios se cargarán dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-content">
+            <a href="dashboard-actividades-direct.html" class="nav-item">
+                <span class="nav-icon">🎯</span>
+                <span class="nav-text">Dashboard</span>
+            </a>
+            <a href="actividades-gestion-direct.html" class="nav-item">
+                <span class="nav-icon">🎯</span>
+                <span class="nav-text">Actividades</span>
+            </a>
+            <a href="actividades-reservas-direct.html" class="nav-item">
+                <span class="nav-icon">📅</span>
+                <span class="nav-text">Reservas</span>
+            </a>
+            <a href="#" class="nav-item active">
+                <span class="nav-icon">🕒</span>
+                <span class="nav-text">Horarios</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showActivitiesMenu()">
+                <span class="nav-icon">🎯</span>
+                <span class="nav-text">Actividades</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Modal de Actividades -->
+    <div id="activitiesModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeActivitiesModal()">&times;</span>
+            <h3>Panel de Actividades</h3>
+            <div id="activitiesInfo"></div>
+            <div style="margin-top: 2rem;">
+                <button class="btn" onclick="goToProfile()">Mi Perfil</button>
+                <button class="btn" onclick="logout()" style="margin-left: 1rem; background: #6c757d;">Cerrar Sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="alertContainer"></div>
+
+    <script>
+        // Datos de horarios de ejemplo
+        const horarios = [
+            {
+                actividad: "Trekking a Machu Picchu",
+                tipo: "Aventura",
+                slots: [
+                    { hora: "06:00 - 10:00", disponibilidad: "available", participantes: "8/16" },
+                    { hora: "10:00 - 14:00", disponibilidad: "full", participantes: "16/16" },
+                    { hora: "14:00 - 18:00", disponibilidad: "limited", participantes: "12/16" }
+                ]
+            },
+            {
+                actividad: "Tour Cultural Lima",
+                tipo: "Cultural",
+                slots: [
+                    { hora: "09:00 - 13:00", disponibilidad: "available", participantes: "12/20" },
+                    { hora: "13:00 - 17:00", disponibilidad: "available", participantes: "8/20" },
+                    { hora: "17:00 - 21:00", disponibilidad: "limited", participantes: "18/20" }
+                ]
+            },
+            {
+                actividad: "Kayak en el Lago Titicaca",
+                tipo: "Naturaleza",
+                slots: [
+                    { hora: "08:00 - 12:00", disponibilidad: "available", participantes: "6/12" },
+                    { hora: "12:00 - 16:00", disponibilidad: "full", participantes: "12/12" },
+                    { hora: "16:00 - 20:00", disponibilidad: "available", participantes: "4/12" }
+                ]
+            },
+            {
+                actividad: "Parapente en Miraflores",
+                tipo: "Aventura",
+                slots: [
+                    { hora: "10:00 - 12:00", disponibilidad: "available", participantes: "3/8" },
+                    { hora: "12:00 - 14:00", disponibilidad: "full", participantes: "8/8" },
+                    { hora: "14:00 - 16:00", disponibilidad: "limited", participantes: "6/8" }
+                ]
+            },
+            {
+                actividad: "Ciclismo de Montaña",
+                tipo: "Deportiva",
+                slots: [
+                    { hora: "07:00 - 12:00", disponibilidad: "available", participantes: "8/15" },
+                    { hora: "12:00 - 17:00", disponibilidad: "available", participantes: "5/15" }
+                ]
+            },
+            {
+                actividad: "Avistamiento de Ballenas",
+                tipo: "Naturaleza",
+                slots: [
+                    { hora: "06:00 - 14:00", disponibilidad: "available", participantes: "15/25" },
+                    { hora: "14:00 - 22:00", disponibilidad: "limited", participantes: "22/25" }
+                ]
+            }
+        ];
+
+        // Funciones de utilidad
+        function showAlert(message, type = 'success') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+        }
+
+        function showActivitiesMenu() {
+            const modal = document.getElementById('activitiesModal');
+            const activitiesInfo = document.getElementById('activitiesInfo');
+            
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                activitiesInfo.innerHTML = `
+                    <p><strong>Nombre:</strong> ${user.name}</p>
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>Rol:</strong> ${getRoleDisplayName(user.role)}</p>
+                `;
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        function closeActivitiesModal() {
+            document.getElementById('activitiesModal').style.display = 'none';
+        }
+
+        function getRoleDisplayName(role) {
+            const roleNames = {
+                'usuario': 'Usuario',
+                'admin': 'Administrador',
+                'hotel': 'Hotel',
+                'restaurante': 'Restaurante',
+                'actividades': 'Actividades'
+            };
+            return roleNames[role] || role;
+        }
+
+        function goToProfile() {
+            showAlert('Funcionalidad de perfil en desarrollo', 'success');
+            closeActivitiesModal();
+        }
+
+        function logout() {
+            localStorage.removeItem('current_user');
+            showAlert('Sesión cerrada correctamente', 'success');
+            setTimeout(() => {
+                window.location.href = 'login-direct.html';
+            }, 1000);
+        }
+
+        function editSpecialSchedule(type) {
+            showAlert(`Editando horario especial: ${type}`, 'success');
+        }
+
+        function editSchedule(activity) {
+            showAlert(`Editando horarios de ${activity}`, 'success');
+        }
+
+        function toggleScheduleStatus(activity) {
+            showAlert(`Cambiando estado de horarios de ${activity}`, 'success');
+        }
+
+        function displaySchedule() {
+            const grid = document.getElementById('scheduleGrid');
+            grid.innerHTML = '';
+            
+            horarios.forEach(schedule => {
+                const card = document.createElement('div');
+                card.className = 'schedule-card';
+                
+                card.innerHTML = `
+                    <div class="schedule-header">
+                        <h3 class="activity-name">${schedule.actividad}</h3>
+                        <p class="activity-type">${schedule.tipo}</p>
+                    </div>
+                    <div class="schedule-content">
+                        <div class="time-slots">
+                            ${schedule.slots.map(slot => {
+                                let availabilityClass = '';
+                                let availabilityText = '';
+                                
+                                switch(slot.disponibilidad) {
+                                    case 'available':
+                                        availabilityClass = 'available';
+                                        availabilityText = 'Disponible';
+                                        break;
+                                    case 'full':
+                                        availabilityClass = 'full';
+                                        availabilityText = 'Lleno';
+                                        break;
+                                    case 'limited':
+                                        availabilityClass = 'limited';
+                                        availabilityText = 'Limitado';
+                                        break;
+                                }
+                                
+                                return `
+                                    <div class="time-slot">
+                                        <span class="slot-time">${slot.hora}</span>
+                                        <div class="slot-availability">
+                                            <span class="availability-badge ${availabilityClass}">${availabilityText}</span>
+                                            <span class="participants-count">${slot.participantes}</span>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                        
+                        <div class="schedule-actions">
+                            <button class="btn btn-edit" onclick="editSchedule('${schedule.actividad}')">Editar</button>
+                            <button class="btn btn-toggle" onclick="toggleScheduleStatus('${schedule.actividad}')">Cambiar Estado</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('activitiesModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Inicializar página
+        window.addEventListener('load', function() {
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                if (user.role === 'actividades') {
+                    document.getElementById('activitiesWelcome').textContent = `¡Hola ${user.name}!`;
+                    document.getElementById('activitiesAvatar').textContent = user.avatar || '🎯';
+                } else {
+                    showAlert('Acceso denegado. Solo actividades pueden acceder a esta página.', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'login-direct.html';
+                    }, 2000);
+                }
+            } else {
+                showAlert('No hay usuario logueado. Redirigiendo al login...', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login-direct.html';
+                }, 2000);
+            }
+            
+            // Cargar horarios iniciales
+            displaySchedule();
+        });
+    </script>
+</body>
+</html>

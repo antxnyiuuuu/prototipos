@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecuador Travel - Paquetes Turísticos</title>
+    <link rel="stylesheet" href="assets/styles.css">
+    <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico">
+</head>
+<body>
+    <div class="container">
+
+        <!-- Navegación superior -->
+        <nav class="top-nav">
+            <div class="nav-brand">
+                <span>Ecuador Travel</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link active">Inicio</a>
+                <a href="pages/paquetes.html" class="nav-link">Mis Paquetes</a>
+                <a href="pages/fullday.html" class="nav-link">Full Day Tours</a>
+                <a href="pages/transportes.html" class="nav-link">Transportes</a>
+            </div>
+            <div class="nav-user">
+                <span id="user-greeting">Hola, <span id="user-name"></span></span>
+                <button onclick="logout()" class="btn btn-secondary btn-sm">Cerrar Sesión</button>
+            </div>
+        </nav>
+
+        <!-- Contenido principal -->
+        <main class="main-content">
+            <!-- Bienvenida personalizada -->
+            <div class="card welcome-card">
+                <h2 class="card-title">¡Bienvenido <span id="welcome-name"></span>!</h2>
+                <p class="card-description">
+                    Arma tu paquete turístico perfecto y vive una experiencia única en Ecuador. 
+                    Elige entre nuestros paquetes base y personalízalos según tus preferencias.
+                </p>
+            </div>
+
+            <!-- Paquetes disponibles -->
+            <div class="packages-section">
+                <h2 class="section-title">Nuestros Paquetes</h2>
+                <p class="section-description">Selecciona el paquete que mejor se adapte a tu viaje</p>
+                
+                <div class="packages-grid">
+                    <!-- Paquete Normal -->
+                    <div class="card package-card normal">
+                        <div class="package-badge">Normal</div>
+                        <div class="card-header">
+                            <h3 class="card-title">Paquete Normal</h3>
+                            <div class="card-price">$150</div>
+                        </div>
+                        <p class="card-description">
+                            Paquete ideal para conocer lo esencial de Ecuador. Incluye alojamiento, 
+                            desayunos y actividades culturales básicas.
+                        </p>
+                        <ul class="features-list">
+                            <li>2 noches de alojamiento</li>
+                            <li>Desayunos incluidos</li>
+                            <li>2 actividades culturales</li>
+                            <li>Transporte básico</li>
+                        </ul>
+                        <div class="card-description">
+                            <strong>Duración:</strong> 3 días / 2 noches<br>
+                            <strong>Destinos:</strong> Quito, Mitad del Mundo
+                        </div>
+                        <a href="pages/normal.html" class="btn btn-primary">Personalizar Paquete</a>
+                    </div>
+
+                    <!-- Paquete Premium -->
+                    <div class="card package-card premium">
+                        <div class="package-badge premium">Premium</div>
+                        <div class="card-header">
+                            <h3 class="card-title">Paquete Premium</h3>
+                            <div class="card-price">$280</div>
+                        </div>
+                        <p class="card-description">
+                            Experiencia completa con alojamiento de lujo. Incluye más actividades 
+                            y destinos para una experiencia inolvidable.
+                        </p>
+                        <ul class="features-list">
+                            <li>4 noches de alojamiento</li>
+                            <li>Desayunos y almuerzos incluidos</li>
+                            <li>4 actividades premium</li>
+                            <li>Transporte privado</li>
+                        </ul>
+                        <div class="card-description">
+                            <strong>Duración:</strong> 5 días / 4 noches<br>
+                            <strong>Destinos:</strong> Quito, Mitad del Mundo, Otavalo, Baños
+                        </div>
+                        <a href="pages/premium.html" class="btn btn-primary">Personalizar Paquete</a>
+                    </div>
+
+                    <!-- Paquete Superpremium -->
+                    <div class="card package-card superpremium">
+                        <div class="package-badge superpremium">Superpremium</div>
+                        <div class="card-header">
+                            <h3 class="card-title">Paquete Superpremium</h3>
+                            <div class="card-price">$450</div>
+                        </div>
+                        <p class="card-description">
+                            Lujo y exclusividad en cada detalle. La experiencia más completa 
+                            con alojamiento de 5 estrellas y guía personalizado.
+                        </p>
+                        <ul class="features-list">
+                            <li>6 noches de alojamiento de lujo</li>
+                            <li>Todas las comidas gourmet incluidas</li>
+                            <li>6 actividades exclusivas</li>
+                            <li>Transporte ejecutivo privado</li>
+                            <li>Guía personalizado</li>
+                        </ul>
+                        <div class="card-description">
+                            <strong>Duración:</strong> 7 días / 6 noches<br>
+                            <strong>Destinos:</strong> Quito, Mitad del Mundo, Otavalo, Baños, Cotopaxi
+                        </div>
+                        <a href="pages/superpremium.html" class="btn btn-primary">Personalizar Paquete</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información adicional -->
+            <div class="card">
+                <h3 class="card-title">¿Necesitas más opciones?</h3>
+                <p class="card-description">
+                    También puedes agregar tours Full Day y seleccionar transportes 
+                    específicos para tu viaje.
+                </p>
+                <div class="action-buttons">
+                    <a href="pages/fullday.html" class="btn btn-secondary">
+                        🌟 Full Day Tours
+                    </a>
+                    <a href="pages/transportes.html" class="btn btn-secondary">
+                        🚗 Transportes
+                    </a>
+                </div>
+            </div>
+
+            <!-- Resumen del paquete actual (si existe) -->
+            <div id="current-package-summary" class="package-summary hidden">
+                <h3 class="summary-title">Tu Paquete Actual</h3>
+                <div id="package-summary-content"></div>
+                <button id="send-whatsapp-btn" class="btn btn-whatsapp">
+                    📱 Enviar por WhatsApp
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal para confirmación -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirmar Acción</h3>
+                <button class="modal-close" onclick="closeModal('confirm-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-message"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('confirm-modal')">Cancelar</button>
+                <button id="confirm-btn" class="btn btn-primary">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/app.js"></script>
+    <script>
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            checkUserLogin();
+            updatePackageSummary();
+        });
+
+        function checkUserLogin() {
+            if (!isCustomerLoggedIn()) {
+                // Usuario no logueado - redirigir al login
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Usuario logueado - mostrar contenido
+            const customerSession = getCustomerSession();
+            if (customerSession) {
+                document.getElementById('user-name').textContent = customerSession.name;
+                document.getElementById('welcome-name').textContent = customerSession.name;
+            }
+        }
+
+        function logout() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                localStorage.removeItem('customerSession');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>

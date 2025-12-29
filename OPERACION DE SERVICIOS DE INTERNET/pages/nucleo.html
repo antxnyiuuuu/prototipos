@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Núcleo de 24 Hilos - Telecomunicaciones</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-info">
+                    <h1><i class="fas fa-network-wired"></i> Núcleo de 24 Hilos</h1>
+                    <p>Administración de la red de telecomunicaciones</p>
+                </div>
+                <div class="user-logo">
+                    <div class="user-logo-btn" onclick="toggleUserMenu()">
+                        <div class="user-initial" id="userInitial">A</div>
+                    </div>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="#" class="user-dropdown-item" onclick="showPerfilModal()">
+                            <i class="fas fa-user"></i>
+                            Mi Perfil
+                        </a>
+                        <a href="#" class="user-dropdown-item danger" onclick="cerrarSesion()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Cerrar Sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas del núcleo -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="hilosActivos">-</div>
+                <div class="stat-label">Activos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="hilosDisponibles">-</div>
+                <div class="stat-label">Disponibles</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="hilosTotal">-</div>
+                <div class="stat-label">Total</div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="card">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="btn btn-small btn-secondary" onclick="filterByStatus('all')" id="filterAll">
+                    Todos
+                </button>
+                <button class="btn btn-small btn-secondary" onclick="filterByStatus('Activo')" id="filterActivo">
+                    Activos
+                </button>
+                <button class="btn btn-small btn-secondary" onclick="filterByStatus('Disponible')" id="filterDisponible">
+                    Disponibles
+                </button>
+            </div>
+        </div>
+
+        <!-- Grid de hilos -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-sitemap"></i> Estado de los Hilos
+                </h3>
+                <button class="btn btn-small btn-primary" onclick="refreshNucleo()">
+                    <i class="fas fa-sync-alt"></i>
+                    Actualizar
+                </button>
+            </div>
+            
+            <div id="nucleoContainer">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar hilo -->
+    <div id="hiloModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Editar Hilo</h3>
+                <button class="modal-close" onclick="closeHiloModal()">&times;</button>
+            </div>
+            
+            <form id="hiloForm">
+                <input type="hidden" id="hiloId" value="">
+                
+                <div class="form-group">
+                    <label class="form-label">Color del Hilo</label>
+                    <div id="colorPreview" style="width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 16px; border: 3px solid #fff; box-shadow: 0 0 0 2px #ddd;"></div>
+                    <input 
+                        type="color" 
+                        id="colorHilo" 
+                        class="form-input" 
+                        style="width: 100%;"
+                        onchange="updateColorPreview()"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="coordenadaX" class="form-label">Coordenada X</label>
+                    <input 
+                        type="number" 
+                        id="coordenadaX" 
+                        class="form-input" 
+                        min="0" 
+                        max="100" 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="coordenadaY" class="form-label">Coordenada Y</label>
+                    <input 
+                        type="number" 
+                        id="coordenadaY" 
+                        class="form-input" 
+                        min="0" 
+                        max="100" 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="clienteSelect" class="form-label">Cliente Asignado</label>
+                    <select id="clienteSelect" class="form-select">
+                        <option value="">Sin asignar</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="zona" class="form-label">Zona</label>
+                    <input 
+                        type="text" 
+                        id="zona" 
+                        class="form-input" 
+                        placeholder="Nombre de la zona"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="estado" class="form-label">Estado</label>
+                    <select id="estado" class="form-select" required>
+                        <option value="Activo">Activo</option>
+                        <option value="Disponible">Disponible</option>
+                        <option value="Mantenimiento">Mantenimiento</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; gap: 12px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeHiloModal()" style="flex: 1;">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        <i class="fas fa-save"></i>
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Perfil -->
+    <div id="perfilModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Mi Perfil</h3>
+                <button class="modal-close" onclick="closePerfilModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div id="perfilInfo">
+                    <!-- Información del perfil se carga aquí -->
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closePerfilModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegación inferior -->
+    <div class="bottom-nav">
+        <a href="dashboard-coordinador.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="clientes.html" class="nav-item">
+            <i class="fas fa-users"></i>
+            <span>Clientes</span>
+        </a>
+        <a href="tareas.html" class="nav-item">
+            <i class="fas fa-tasks"></i>
+            <span>Tareas</span>
+        </a>
+        <a href="tecnicos.html" class="nav-item">
+            <i class="fas fa-tools"></i>
+            <span>Técnicos</span>
+        </a>
+        <a href="nucleo.html" class="nav-item active">
+            <i class="fas fa-network-wired"></i>
+            <span>Núcleo</span>
+        </a>
+    </div>
+
+    <script>
+        let nucleo = [];
+        let clientes = [];
+        let nucleoFiltrado = [];
+        let currentFilter = 'all';
+
+        // Verificar sesión
+        window.addEventListener('load', function() {
+            const userData = localStorage.getItem('userData');
+            if (!userData || JSON.parse(userData).rol !== 'coordinador') {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            loadData();
+            loadUserInitial();
+        });
+
+        // Cargar datos
+        async function loadData() {
+            try {
+                const [nucleoResponse, clientesResponse] = await Promise.all([
+                    fetch('../data/nucleo.json'),
+                    fetch('../data/clientes.json')
+                ]);
+                
+                nucleo = await nucleoResponse.json();
+                clientes = await clientesResponse.json();
+                
+                nucleoFiltrado = [...nucleo];
+                displayNucleo();
+                updateStats();
+                populateClienteSelect();
+            } catch (error) {
+                console.error('Error cargando datos:', error);
+                loadFromLocalStorage();
+            }
+        }
+
+        function loadFromLocalStorage() {
+            nucleo = JSON.parse(localStorage.getItem('nucleo') || '[]');
+            clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
+            
+            nucleoFiltrado = [...nucleo];
+            displayNucleo();
+            updateStats();
+            populateClienteSelect();
+        }
+
+        function populateClienteSelect() {
+            const select = document.getElementById('clienteSelect');
+            select.innerHTML = '<option value="">Sin asignar</option>' +
+                clientes.map(cliente => 
+                    `<option value="${cliente.id}">${cliente.nombre} - ${cliente.direccion}</option>`
+                ).join('');
+        }
+
+        function displayNucleo() {
+            const container = document.getElementById('nucleoContainer');
+            
+            container.innerHTML = `
+                <div class="nucleo-grid">
+                    ${nucleoFiltrado.map(hilo => `
+                        <div class="hilo-item" onclick="editHilo(${hilo.id})" style="cursor: pointer;">
+                            <div 
+                                class="hilo-color" 
+                                style="background-color: ${hilo.color};"
+                            ></div>
+                            <div class="hilo-info">
+                                <div class="hilo-coords">X: ${hilo.coordenada_x}, Y: ${hilo.coordenada_y}</div>
+                                <div style="font-size: 11px; margin: 4px 0;">${hilo.cliente_nombre}</div>
+                                <div style="font-size: 10px; color: #666;">${hilo.zona}</div>
+                                <span class="status-badge status-${hilo.estado.toLowerCase()}" style="font-size: 10px; margin-top: 4px; display: inline-block;">
+                                    ${hilo.estado}
+                                </span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function updateStats() {
+            const activos = nucleo.filter(h => h.estado === 'Activo').length;
+            const disponibles = nucleo.filter(h => h.estado === 'Disponible').length;
+            const total = nucleo.length;
+
+            document.getElementById('hilosActivos').textContent = activos;
+            document.getElementById('hilosDisponibles').textContent = disponibles;
+            document.getElementById('hilosTotal').textContent = total;
+        }
+
+        function filterByStatus(status) {
+            currentFilter = status;
+            
+            // Actualizar botones de filtro
+            document.querySelectorAll('[id^="filter"]').forEach(btn => {
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+            });
+            
+            document.getElementById(`filter${status === 'all' ? 'All' : status}`).classList.remove('btn-secondary');
+            document.getElementById(`filter${status === 'all' ? 'All' : status}`).classList.add('btn-primary');
+            
+            if (status === 'all') {
+                nucleoFiltrado = [...nucleo];
+            } else {
+                nucleoFiltrado = nucleo.filter(h => h.estado === status);
+            }
+            
+            displayNucleo();
+        }
+
+        function editHilo(id) {
+            const hilo = nucleo.find(h => h.id === id);
+            if (!hilo) return;
+            
+            document.getElementById('hiloId').value = hilo.id;
+            document.getElementById('colorHilo').value = hilo.color;
+            document.getElementById('coordenadaX').value = hilo.coordenada_x;
+            document.getElementById('coordenadaY').value = hilo.coordenada_y;
+            document.getElementById('clienteSelect').value = hilo.cliente_id || '';
+            document.getElementById('zona').value = hilo.zona;
+            document.getElementById('estado').value = hilo.estado;
+            
+            updateColorPreview();
+            document.getElementById('hiloModal').classList.add('show');
+        }
+
+        function updateColorPreview() {
+            const color = document.getElementById('colorHilo').value;
+            document.getElementById('colorPreview').style.backgroundColor = color;
+        }
+
+        function closeHiloModal() {
+            document.getElementById('hiloModal').classList.remove('show');
+        }
+
+        function refreshNucleo() {
+            loadData();
+        }
+
+        // Manejar envío del formulario
+        document.getElementById('hiloForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = parseInt(document.getElementById('hiloId').value);
+            const color = document.getElementById('colorHilo').value;
+            const coordenadaX = parseInt(document.getElementById('coordenadaX').value);
+            const coordenadaY = parseInt(document.getElementById('coordenadaY').value);
+            const clienteId = document.getElementById('clienteSelect').value;
+            const zona = document.getElementById('zona').value;
+            const estado = document.getElementById('estado').value;
+            
+            const cliente = clientes.find(c => c.id === parseInt(clienteId));
+            
+            const hiloData = {
+                id,
+                color,
+                coordenada_x: coordenadaX,
+                coordenada_y: coordenadaY,
+                cliente_id: clienteId ? parseInt(clienteId) : null,
+                cliente_nombre: cliente ? cliente.nombre : 'Disponible',
+                zona: zona || (cliente ? cliente.direccion.split(',')[1]?.trim() || 'Sin zona' : 'Sin asignar'),
+                estado
+            };
+            
+            // Actualizar el hilo
+            const index = nucleo.findIndex(h => h.id === id);
+            if (index !== -1) {
+                nucleo[index] = hiloData;
+            }
+            
+            saveNucleoToLocalStorage();
+            loadFromLocalStorage();
+            filterByStatus(currentFilter);
+            closeHiloModal();
+        });
+
+        function saveNucleoToLocalStorage() {
+            localStorage.setItem('nucleo', JSON.stringify(nucleo));
+        }
+
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('hiloModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeHiloModal();
+            }
+        });
+
+        // Funciones de perfil y sesión
+        function showPerfilModal() {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const perfilInfo = document.getElementById('perfilInfo');
+            
+            perfilInfo.innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="width: 80px; height: 80px; background: #007bff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: white; font-size: 32px;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3>${userData.usuario || 'Usuario'}</h3>
+                    <p style="color: #666; margin: 8px 0;">${userData.rol === 'coordinador' ? 'Coordinador' : 'Técnico'}</p>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                    <h4 style="margin: 0 0 12px 0; color: #333;">Información de Sesión</h4>
+                    <p style="margin: 4px 0;"><strong>Usuario:</strong> ${userData.usuario || 'N/A'}</p>
+                    <p style="margin: 4px 0;"><strong>Rol:</strong> ${userData.rol === 'coordinador' ? 'Coordinador' : 'Técnico'}</p>
+                    <p style="margin: 4px 0;"><strong>Inicio de sesión:</strong> ${userData.loginTime ? new Date(userData.loginTime).toLocaleString() : 'N/A'}</p>
+                </div>
+            `;
+            
+            document.getElementById('perfilModal').classList.add('show');
+        }
+
+        function closePerfilModal() {
+            document.getElementById('perfilModal').classList.remove('show');
+        }
+
+        function cerrarSesion() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                localStorage.removeItem('userData');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Función para toggle del menú de usuario
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            const userLogo = document.querySelector('.user-logo');
+            const dropdown = document.getElementById('userDropdown');
+            
+            if (!userLogo.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Cargar inicial del usuario
+        function loadUserInitial() {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const initial = userData.usuario ? userData.usuario.charAt(0).toUpperCase() : 'A';
+            document.getElementById('userInitial').textContent = initial;
+        }
+    </script>
+</body>
+</html>

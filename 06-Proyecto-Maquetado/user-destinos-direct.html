@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destinos - TravelApp</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .user-welcome {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .user-avatar {
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .user-avatar:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Main Content */
+        .main {
+            padding: 2rem 0;
+            padding-bottom: 80px;
+        }
+
+        /* Botón Flotante de Crear Paquete */
+        .floating-create-btn {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            z-index: 999;
+            background: linear-gradient(45deg, #1e3c72, #2a5298, #20c997);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .floating-create-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(30, 60, 114, 0.6);
+        }
+
+        /* Create Package Button */
+        .create-package-section {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .create-package-btn {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+        }
+
+        .create-package-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+        }
+
+        .btn-icon {
+            font-size: 1.2rem;
+        }
+
+        .btn-text {
+            font-weight: 600;
+        }
+
+        .search-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .search-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .form-group label {
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Autocompletado */
+        .autocomplete-container {
+            position: relative;
+        }
+
+        .autocomplete-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .autocomplete-suggestions.show {
+            display: block;
+        }
+
+        .suggestion-item {
+            padding: 0.8rem;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f8f9ff;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-icon {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        /* Selector de Personas */
+        .people-selector {
+            position: relative;
+        }
+
+        .people-display {
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: border-color 0.3s;
+        }
+
+        .people-display:hover {
+            border-color: #667eea;
+        }
+
+        .people-text {
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .people-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none;
+        }
+
+        .people-dropdown.show {
+            display: block;
+        }
+
+        .people-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .people-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .people-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .people-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .people-btn {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .people-btn:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .people-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .people-count {
+            min-width: 30px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* Calendario */
+        .calendar-container {
+            position: relative;
+        }
+
+        .calendar-display {
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: border-color 0.3s;
+        }
+
+        .calendar-display:hover {
+            border-color: #667eea;
+        }
+
+        .calendar-text {
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .calendar-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none;
+        }
+
+        .calendar-dropdown.show {
+            display: block;
+        }
+
+        .calendar-inputs {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .calendar-input {
+            padding: 0.5rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .calendar-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* Filters Section */
+        .filters-section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .filters-title {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.8rem;
+        }
+
+        .filter-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .filter-icon {
+            font-size: 1.5rem;
+        }
+
+        .filter-text {
+            font-weight: 600;
+        }
+
+        /* Responsive para móvil */
+        @media (max-width: 768px) {
+            .search-form {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .form-group {
+                width: 100%;
+            }
+            
+            .calendar-dropdown {
+                left: 0;
+                right: 0;
+                width: 100%;
+            }
+            
+            .people-dropdown {
+                left: 0;
+                right: 0;
+                width: 100%;
+            }
+            
+            .autocomplete-suggestions {
+                left: 0;
+                right: 0;
+                width: 100%;
+            }
+        }
+
+        .search-input {
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            min-width: 200px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-btn {
+            padding: 0.75rem 1.5rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .destinos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .destino-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .destino-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .destino-image {
+            height: 200px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+        }
+
+        .destino-content {
+            padding: 1.5rem;
+        }
+
+        .destino-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .destino-description {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .destino-features {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .feature {
+            background: #f8f9ff;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #667eea;
+        }
+
+        .destino-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #e1e5e9;
+            padding: 0.5rem 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            transition: color 0.3s;
+            padding: 0.5rem;
+            border-radius: 10px;
+            min-width: 60px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-text {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        /* Modal de Detalles del Producto */
+        .product-modal {
+            background: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .product-modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .product-modal-content {
+            padding: 2rem;
+        }
+
+        .product-image-large {
+            font-size: 8rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+            border-radius: 15px;
+        }
+
+        .product-details {
+            margin-bottom: 2rem;
+        }
+
+        .product-details h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .product-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .product-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-feature {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .product-price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn-facebook {
+            background: linear-gradient(135deg, #1877f2 0%, #42a5f5 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-facebook:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(24, 119, 242, 0.4);
+        }
+
+        /* Modal de Perfil del Producto (Solo Lectura) */
+        .profile-modal {
+            background: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .profile-edit-content {
+            padding: 2rem;
+        }
+
+        /* Cover Photo Section */
+        .cover-photo-section {
+            margin-bottom: 2rem;
+        }
+
+        .cover-photo-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: -50px;
+        }
+
+        .cover-photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Profile Photo Section */
+        .profile-photo-section {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .profile-photo-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .profile-photo-container img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Product Info Section */
+        .product-info-section {
+            margin-bottom: 2rem;
+        }
+
+        .product-info-section h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .info-display {
+            background: #f8f9ff;
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .info-item {
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-item label {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        .info-item span {
+            color: #333;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        /* Media Gallery Section */
+        .media-gallery-section {
+            margin-bottom: 2rem;
+        }
+
+        .media-gallery-section h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .media-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .media-item img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        /* Alertas */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-success {
+            background: #28a745;
+        }
+
+        .alert-error {
+            background: #dc3545;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .search-form {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .search-input {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .destinos-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="user-info">
+                    <h1 class="logo">TravelApp</h1>
+                    <p class="user-welcome" id="userWelcome">¡Explora Destinos!</p>
+                </div>
+                <div class="user-avatar" id="userAvatar" onclick="showUserMenu()">👤</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Create Package Button -->
+            <div class="create-package-section">
+                <button class="create-package-btn" onclick="createCustomPackage()">
+                    <span class="btn-icon">✨</span>
+                    <span class="btn-text">Crear Paquete</span>
+                </button>
+            </div>
+            
+            <!-- Search Section -->
+            <div class="search-section">
+                <h2 class="search-title">🌍 Buscar Destinos</h2>
+                <form class="search-form" onsubmit="searchDestinos(event)">
+                    <div class="form-group autocomplete-container">
+                        <label>Destino</label>
+                        <input type="text" class="search-input" placeholder="¿A dónde quieres viajar?" id="searchInput" autocomplete="off">
+                        <div class="autocomplete-suggestions" id="suggestions"></div>
+                    </div>
+                    
+                    <div class="form-group calendar-container">
+                        <label>Fechas</label>
+                        <div class="calendar-display" onclick="toggleCalendar()">
+                            <span class="calendar-text" id="calendarText">Seleccionar fechas</span>
+                            <span>📅</span>
+                        </div>
+                        <div class="calendar-dropdown" id="calendarDropdown">
+                            <div class="calendar-inputs">
+                                <input type="date" class="calendar-input" id="checkInDate" onchange="updateCalendarText()">
+                                <input type="date" class="calendar-input" id="checkOutDate" onchange="updateCalendarText()">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group people-selector">
+                        <label>Huéspedes</label>
+                        <div class="people-display" onclick="togglePeopleSelector()">
+                            <span class="people-text" id="peopleText">1 huésped</span>
+                            <span>👥</span>
+                        </div>
+                        <div class="people-dropdown" id="peopleDropdown">
+                            <div class="people-row">
+                                <span class="people-label">Adultos</span>
+                                <div class="people-controls">
+                                    <button type="button" class="people-btn" onclick="changePeople('adults', -1)">-</button>
+                                    <span class="people-count" id="adultsCount">1</span>
+                                    <button type="button" class="people-btn" onclick="changePeople('adults', 1)">+</button>
+                                </div>
+                            </div>
+                            <div class="people-row">
+                                <span class="people-label">Niños (2-12 años)</span>
+                                <div class="people-controls">
+                                    <button type="button" class="people-btn" onclick="changePeople('children', -1)">-</button>
+                                    <span class="people-count" id="childrenCount">0</span>
+                                    <button type="button" class="people-btn" onclick="changePeople('children', 1)">+</button>
+                                </div>
+                            </div>
+                            <div class="people-row">
+                                <span class="people-label">Bebés (0-2 años)</span>
+                                <div class="people-controls">
+                                    <button type="button" class="people-btn" onclick="changePeople('babies', -1)">-</button>
+                                    <span class="people-count" id="babiesCount">0</span>
+                                    <button type="button" class="people-btn" onclick="changePeople('babies', 1)">+</button>
+                                </div>
+                            </div>
+                            <div class="people-row">
+                                <span class="people-label">Mascotas</span>
+                                <div class="people-controls">
+                                    <button type="button" class="people-btn" onclick="changePeople('pets', -1)">-</button>
+                                    <span class="people-count" id="petsCount">0</span>
+                                    <button type="button" class="people-btn" onclick="changePeople('pets', 1)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="search-btn">🔍 Buscar</button>
+                </form>
+                
+                <!-- Filters Section -->
+                <div class="filters-section">
+                    <h3 class="filters-title">Filtrar por categoría:</h3>
+                    <div class="filters-grid">
+                        <button class="filter-btn active" data-filter="all" onclick="filterByCategory('all')">
+                            <span class="filter-icon">🌍</span>
+                            <span class="filter-text">Todos</span>
+                        </button>
+                        <button class="filter-btn" data-filter="hoteles" onclick="filterByCategory('hoteles')">
+                            <span class="filter-icon">🏨</span>
+                            <span class="filter-text">Hoteles</span>
+                        </button>
+                        <button class="filter-btn" data-filter="restaurantes" onclick="filterByCategory('restaurantes')">
+                            <span class="filter-icon">🍽️</span>
+                            <span class="filter-text">Restaurantes</span>
+                        </button>
+                        <button class="filter-btn" data-filter="actividades" onclick="filterByCategory('actividades')">
+                            <span class="filter-icon">🎯</span>
+                            <span class="filter-text">Actividades</span>
+                        </button>
+                        <button class="filter-btn" data-filter="destinos" onclick="filterByCategory('destinos')">
+                            <span class="filter-icon">📍</span>
+                            <span class="filter-text">Destinos</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Destinos Grid -->
+            <div class="destinos-grid" id="destinosGrid">
+                <!-- Los destinos se cargarán dinámicamente -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-content">
+            <a href="user-destacados-direct.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">Inicio</span>
+            </a>
+            <a href="#" class="nav-item active">
+                <span class="nav-icon">🌍</span>
+                <span class="nav-text">Destinos</span>
+            </a>
+            <a href="user-transporte-direct.html" class="nav-item">
+                <span class="nav-icon">🚗</span>
+                <span class="nav-text">Transporte</span>
+            </a>
+            <a href="user-paquetes-direct.html" class="nav-item">
+                <span class="nav-icon">📦</span>
+                <span class="nav-text">Paquetes</span>
+            </a>
+            <a href="user-perfil-direct.html" class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span class="nav-text">Perfil</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Modal de Usuario -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeUserModal()">&times;</span>
+            <h3>Mi Cuenta</h3>
+            <div id="userInfo"></div>
+            <div style="margin-top: 2rem;">
+                <button class="btn" onclick="goToProfile()">Mi Perfil</button>
+                <button class="btn" onclick="logout()" style="margin-top: 1rem; background: #6c757d;">Cerrar Sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Detalles del Producto -->
+    <div id="productModal" class="modal">
+        <div class="modal-content product-modal">
+            <div class="product-modal-header">
+                <h2>📋 Detalles del Destino</h2>
+                <span class="close" onclick="closeProductModal()">&times;</span>
+            </div>
+            <div class="product-modal-content">
+                <div class="product-image-large" id="productImageLarge"></div>
+                <div class="product-details">
+                    <h3 id="productTitle"></h3>
+                    <p class="product-description" id="productDescription"></p>
+                    <div class="product-features" id="productFeatures"></div>
+                    <div class="product-price" id="productPrice"></div>
+                    <div class="product-actions">
+                        <button class="btn-facebook" onclick="viewProductProfile()">
+                            📘 Ver Perfil del Producto
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Perfil del Producto (Solo Lectura) -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content profile-modal">
+            <div class="modal-header">
+                <h2>📸 Perfil del Producto</h2>
+                <span class="close" onclick="closeProfileModal()">&times;</span>
+            </div>
+            
+            <div class="profile-edit-content">
+                <!-- Cover Photo Section -->
+                <div class="cover-photo-section">
+                    <div class="cover-photo-container">
+                        <img id="profileCoverPhoto" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjNjY3ZWVhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7wn5GoIENvdmVyIFBob3RvPC90ZXh0Pjwvc3ZnPg==" alt="Cover Photo">
+                    </div>
+                </div>
+
+                <!-- Profile Photo Section -->
+                <div class="profile-photo-section">
+                    <div class="profile-photo-container">
+                        <img id="profileProfilePhoto" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI3NSIgY3k9Ijc1IiByPSI3NSIgZmlsbD0iIzY2N2VlYSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+RsTwvdGV4dD48L3N2Zz4=" alt="Profile Photo">
+                    </div>
+                </div>
+
+                <!-- Product Info Section -->
+                <div class="product-info-section">
+                    <h3>🏨 Información del Producto</h3>
+                    <div class="info-display">
+                        <div class="info-item">
+                            <label>Nombre:</label>
+                            <span id="profileProductName">Destino Ecuador</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Descripción:</label>
+                            <span id="profileProductDescription">Descubre los mejores destinos de Ecuador con experiencias únicas e inolvidables.</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Ubicación:</label>
+                            <span id="profileProductLocation">Ecuador</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Media Gallery Section -->
+                <div class="media-gallery-section">
+                    <h3>📸 Galería de Fotos y Videos</h3>
+                    <div class="media-grid" id="profileMediaGrid">
+                        <!-- Media items will be displayed here -->
+                        <div class="media-item">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPvCfkaggRGVzdGlubzwvdGV4dD48L3N2Zz4=" alt="Destino">
+                        </div>
+                        <div class="media-item">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPvCfkaggQXZlbnR1cmE8L3RleHQ+PC9zdmc+" alt="Aventura">
+                        </div>
+                        <div class="media-item">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPvCfkaggVHVyaXNtbzwvdGV4dD48L3N2Zz4=" alt="Turismo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="alertContainer">    </div>
+
+    <!-- Botón Flotante de Crear Paquete -->
+    <div class="floating-create-btn" onclick="createCustomPackage()">
+        +
+    </div>
+
+    <script>
+        // Datos de destinos de Ecuador
+        const destinos = [
+            {
+                id: 1,
+                nombre: "Galápagos, Ecuador",
+                descripcion: "Descubre las islas encantadas con su fauna única y paisajes volcánicos únicos en el mundo.",
+                imagen: "🐢",
+                categoria: "destinos",
+                features: ["Fauna Única", "Volcanes", "Buceo"]
+            },
+            {
+                id: 2,
+                nombre: "Quito, Ecuador",
+                descripcion: "La capital más alta del mundo con su centro histórico declarado Patrimonio de la Humanidad.",
+                imagen: "🏛️",
+                categoria: "destinos",
+                features: ["Historia", "Cultura", "Arquitectura Colonial"]
+            },
+            {
+                id: 3,
+                nombre: "Cuenca, Ecuador",
+                descripcion: "La Atenas del Ecuador con sus hermosas iglesias coloniales y ríos que la atraviesan.",
+                imagen: "⛪",
+                categoria: "destinos",
+                features: ["Patrimonio", "Arte", "Gastronomía"]
+            },
+            {
+                id: 4,
+                nombre: "Baños de Agua Santa",
+                descripcion: "La puerta del Amazonas con aguas termales, cascadas y aventuras extremas.",
+                imagen: "🌋",
+                categoria: "destinos",
+                features: ["Aguas Termales", "Cascadas", "Deportes Extremos"]
+            },
+            {
+                id: 5,
+                nombre: "Montañita, Ecuador",
+                descripcion: "El paraíso surfero de Ecuador con playas perfectas y ambiente bohemio.",
+                imagen: "🏄",
+                categoria: "destinos",
+                features: ["Surf", "Playa", "Vida Nocturna"]
+            },
+            {
+                id: 6,
+                nombre: "Otavalo, Ecuador",
+                descripcion: "Conoce el mercado indígena más famoso de Sudamérica y sus artesanías únicas.",
+                imagen: "🧵",
+                categoria: "destinos",
+                features: ["Mercado Indígena", "Artesanías", "Cultura Andina"]
+            },
+            {
+                id: 7,
+                nombre: "Mindo, Ecuador",
+                descripcion: "El paraíso de los colibríes con bosque nublado y mariposarios únicos.",
+                imagen: "🦋",
+                categoria: "destinos",
+                features: ["Aves", "Bosque Nublado", "Ecoturismo"]
+            },
+            {
+                id: 8,
+                nombre: "Cotopaxi, Ecuador",
+                descripcion: "Conquista uno de los volcanes activos más altos del mundo en el Parque Nacional Cotopaxi.",
+                imagen: "🏔️",
+                categoria: "destinos",
+                features: ["Volcán", "Trekking", "Aventura"]
+            }
+        ];
+
+        // Funciones de utilidad
+        function showAlert(message, type = 'success') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+        }
+
+        function showUserMenu() {
+            const modal = document.getElementById('userModal');
+            const userInfo = document.getElementById('userInfo');
+            
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                userInfo.innerHTML = `
+                    <p><strong>Nombre:</strong> ${user.name}</p>
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>Rol:</strong> ${getRoleDisplayName(user.role)}</p>
+                `;
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').style.display = 'none';
+        }
+
+        function getRoleDisplayName(role) {
+            const roleNames = {
+                'usuario': 'Usuario',
+                'admin': 'Administrador',
+                'hotel': 'Hotel',
+                'restaurante': 'Restaurante',
+                'actividades': 'Actividades'
+            };
+            return roleNames[role] || role;
+        }
+
+        function goToProfile() {
+            window.location.href = 'user-perfil-direct.html';
+        }
+
+        function logout() {
+            localStorage.removeItem('current_user');
+            showAlert('Sesión cerrada correctamente', 'success');
+            setTimeout(() => {
+                window.location.href = 'login-direct.html';
+            }, 1000);
+        }
+
+        function createCustomPackage() {
+            // Guardar los datos de búsqueda actuales en localStorage
+            const searchData = {
+                destination: document.getElementById('searchInput').value,
+                checkIn: document.getElementById('checkInDate').value,
+                checkOut: document.getElementById('checkOutDate').value,
+                people: { ...peopleCount }
+            };
+            
+            localStorage.setItem('packageSearchData', JSON.stringify(searchData));
+            
+            // Redirigir a la página principal donde está el modal
+            window.location.href = 'user-destacados-direct.html';
+        }
+
+        // Variables para la búsqueda
+        let peopleCount = {
+            adults: 1,
+            children: 0,
+            babies: 0,
+            pets: 0
+        };
+
+        // Datos de destinos para autocompletado
+        const destinationSuggestions = [
+            { name: 'Galápagos', icon: '🐢', category: 'naturaleza' },
+            { name: 'Quito', icon: '🏛️', category: 'ciudad' },
+            { name: 'Cuenca', icon: '🏘️', category: 'cultural' },
+            { name: 'Baños de Agua Santa', icon: '🌋', category: 'aventura' },
+            { name: 'Montañita', icon: '🏄', category: 'playa' },
+            { name: 'Otavalo', icon: '🧵', category: 'cultural' },
+            { name: 'Mindo', icon: '🦋', category: 'naturaleza' },
+            { name: 'Cotopaxi', icon: '🏔️', category: 'aventura' },
+            { name: 'Guayaquil', icon: '🌴', category: 'ciudad' },
+            { name: 'Riobamba', icon: '🚂', category: 'cultural' }
+        ];
+
+        // Datos adicionales para mostrar en la página
+        const hoteles = [
+            { id: 1, nombre: 'Hotel Paradise Galápagos', descripcion: 'Hotel de lujo con vista al mar', precio: '$150/noche', categoria: 'hoteles', icono: '🏨', ubicacion: 'Galápagos' },
+            { id: 2, nombre: 'Hotel Colonial Quito', descripcion: 'Hotel histórico en el centro', precio: '$80/noche', categoria: 'hoteles', icono: '🏨', ubicacion: 'Quito' },
+            { id: 3, nombre: 'Hotel Boutique Cuenca', descripcion: 'Hotel pequeño y acogedor', precio: '$95/noche', categoria: 'hoteles', icono: '🏨', ubicacion: 'Cuenca' }
+        ];
+
+        const restaurantes = [
+            { id: 1, nombre: 'Restaurante Deluxe', descripcion: 'Cocina gourmet ecuatoriana', precio: '$25/persona', categoria: 'restaurantes', icono: '🍽️', ubicacion: 'Quito' },
+            { id: 2, nombre: 'Mariscos del Pacífico', descripcion: 'Los mejores mariscos frescos', precio: '$30/persona', categoria: 'restaurantes', icono: '🍽️', ubicacion: 'Guayaquil' },
+            { id: 3, nombre: 'Café Cultural', descripcion: 'Café y comida tradicional', precio: '$15/persona', categoria: 'restaurantes', icono: '🍽️', ubicacion: 'Cuenca' }
+        ];
+
+        const actividades = [
+            { id: 1, nombre: 'Tours Galápagos', descripcion: 'Explora las islas encantadas', precio: '$120/persona', categoria: 'actividades', icono: '🎯', ubicacion: 'Galápagos' },
+            { id: 2, nombre: 'Aventura Cotopaxi', descripcion: 'Escalada y senderismo', precio: '$80/persona', categoria: 'actividades', icono: '🎯', ubicacion: 'Cotopaxi' },
+            { id: 3, nombre: 'Tour Cultural Quito', descripcion: 'Recorrido histórico por la ciudad', precio: '$35/persona', categoria: 'actividades', icono: '🎯', ubicacion: 'Quito' }
+        ];
+
+        // Variable para el filtro activo
+        let currentFilter = 'all';
+
+        // Autocompletado
+        function setupAutocomplete() {
+            const searchInput = document.getElementById('searchInput');
+            const suggestions = document.getElementById('suggestions');
+
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                
+                if (query.length < 2) {
+                    suggestions.classList.remove('show');
+                    return;
+                }
+
+                const filtered = destinationSuggestions.filter(dest => 
+                    dest.name.toLowerCase().includes(query)
+                );
+
+                if (filtered.length > 0) {
+                    suggestions.innerHTML = filtered.map(dest => `
+                        <div class="suggestion-item" onclick="selectSuggestion('${dest.name}')">
+                            <span class="suggestion-icon">${dest.icon}</span>
+                            <span>${dest.name}</span>
+                        </div>
+                    `).join('');
+                    suggestions.classList.add('show');
+                } else {
+                    suggestions.classList.remove('show');
+                }
+            });
+
+            // Cerrar sugerencias al hacer clic fuera
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !suggestions.contains(e.target)) {
+                    suggestions.classList.remove('show');
+                }
+            });
+        }
+
+        function selectSuggestion(destinationName) {
+            document.getElementById('searchInput').value = destinationName;
+            document.getElementById('suggestions').classList.remove('show');
+        }
+
+        // Calendario
+        function toggleCalendar() {
+            const dropdown = document.getElementById('calendarDropdown');
+            dropdown.classList.toggle('show');
+            
+            // Cerrar otros dropdowns
+            document.getElementById('peopleDropdown').classList.remove('show');
+        }
+
+        function updateCalendarText() {
+            const checkIn = document.getElementById('checkInDate').value;
+            const checkOut = document.getElementById('checkOutDate').value;
+            const text = document.getElementById('calendarText');
+
+            if (checkIn && checkOut) {
+                const checkInDate = new Date(checkIn);
+                const checkOutDate = new Date(checkOut);
+                const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+                
+                text.textContent = `${formatDate(checkInDate)} - ${formatDate(checkOutDate)} (${nights} noches)`;
+            } else if (checkIn) {
+                text.textContent = `Desde ${formatDate(new Date(checkIn))}`;
+            } else {
+                text.textContent = 'Seleccionar fechas';
+            }
+        }
+
+        function formatDate(date) {
+            return date.toLocaleDateString('es-ES', { 
+                day: 'numeric', 
+                month: 'short' 
+            });
+        }
+
+        // Selector de Personas
+        function togglePeopleSelector() {
+            const dropdown = document.getElementById('peopleDropdown');
+            dropdown.classList.toggle('show');
+            
+            // Cerrar otros dropdowns
+            document.getElementById('calendarDropdown').classList.remove('show');
+        }
+
+        function changePeople(type, change) {
+            const newValue = peopleCount[type] + change;
+            
+            if (type === 'adults' && newValue < 1) return; // Mínimo 1 adulto
+            if (newValue < 0) return; // No valores negativos
+            
+            peopleCount[type] = newValue;
+            document.getElementById(`${type}Count`).textContent = newValue;
+            updatePeopleText();
+        }
+
+        function updatePeopleText() {
+            const total = peopleCount.adults + peopleCount.children + peopleCount.babies;
+            const pets = peopleCount.pets;
+            
+            let text = `${total} huésped${total !== 1 ? 'es' : ''}`;
+            if (pets > 0) {
+                text += `, ${pets} mascota${pets !== 1 ? 's' : ''}`;
+            }
+            
+            document.getElementById('peopleText').textContent = text;
+        }
+
+        function searchDestinos(event) {
+            event.preventDefault();
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const checkIn = document.getElementById('checkInDate').value;
+            const checkOut = document.getElementById('checkOutDate').value;
+            
+            // Combinar todos los elementos
+            let allItems = [...destinos, ...hoteles, ...restaurantes, ...actividades];
+            
+            // Filtrar por término de búsqueda
+            if (searchTerm) {
+                allItems = allItems.filter(item => 
+                    item.nombre.toLowerCase().includes(searchTerm) ||
+                    item.descripcion.toLowerCase().includes(searchTerm) ||
+                    (item.ubicacion && item.ubicacion.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            // Aplicar filtro de categoría
+            if (currentFilter !== 'all') {
+                allItems = allItems.filter(item => item.categoria === currentFilter);
+            }
+            
+            // Mostrar resultados
+            displayAllItems(allItems);
+            
+            // Mostrar información de búsqueda
+            let searchInfo = `Búsqueda: "${searchTerm || 'Todos los destinos'}"`;
+            if (checkIn && checkOut) {
+                const checkInDate = new Date(checkIn);
+                const checkOutDate = new Date(checkOut);
+                const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+                searchInfo += ` | ${nights} noches`;
+            }
+            if (peopleCount.adults > 0 || peopleCount.children > 0 || peopleCount.babies > 0) {
+                const total = peopleCount.adults + peopleCount.children + peopleCount.babies;
+                searchInfo += ` | ${total} huésped${total !== 1 ? 'es' : ''}`;
+            }
+            if (peopleCount.pets > 0) {
+                searchInfo += ` | ${peopleCount.pets} mascota${peopleCount.pets !== 1 ? 's' : ''}`;
+            }
+            
+            // Mostrar mensaje si no hay resultados
+            if (allItems.length === 0) {
+                showAlert('No se encontraron destinos con esos criterios', 'info');
+            } else {
+                showAlert(`Encontrados ${allItems.length} destino${allItems.length !== 1 ? 's' : ''} | ${searchInfo}`, 'success');
+            }
+        }
+
+        function filterByCategory(category) {
+            currentFilter = category;
+            
+            // Actualizar botones activos
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-filter="${category}"]`).classList.add('active');
+            
+            // Obtener todos los elementos
+            let allItems = [...destinos, ...hoteles, ...restaurantes, ...actividades];
+            
+            // Aplicar filtro
+            if (category !== 'all') {
+                allItems = allItems.filter(item => item.categoria === category);
+            }
+            
+            // Mostrar resultados
+            displayAllItems(allItems);
+        }
+
+        function displayAllItems(itemsToShow) {
+            const grid = document.getElementById('destinosGrid');
+            grid.innerHTML = '';
+            
+            itemsToShow.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'destino-card';
+                card.innerHTML = `
+                    <div class="destino-image">
+                        <div class="destino-placeholder">
+                            <span class="destino-icon">${item.icono || '📍'}</span>
+                        </div>
+                        <div class="destino-category">${getCategoryName(item.categoria)}</div>
+                    </div>
+                    <div class="destino-content">
+                        <h3 class="destino-title">${item.nombre}</h3>
+                        <p class="destino-description">${item.descripcion}</p>
+                        ${item.ubicacion ? `<p class="destino-location">📍 ${item.ubicacion}</p>` : ''}
+                        <div class="destino-footer">
+                            ${item.categoria !== 'destinos' ? `<span class="destino-price">${item.precio || 'Consultar precio'}</span>` : ''}
+                            <button class="btn btn-primary" onclick="viewDetails('${item.categoria}', ${item.id})">Ver Detalles</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function getCategoryName(category) {
+            const names = {
+                'destinos': 'Destino',
+                'hoteles': 'Hotel',
+                'restaurantes': 'Restaurante',
+                'actividades': 'Actividad'
+            };
+            return names[category] || 'Destino';
+        }
+
+        function displayDestinos(destinosToShow) {
+            const grid = document.getElementById('destinosGrid');
+            grid.innerHTML = '';
+            
+            destinosToShow.forEach(destino => {
+                const card = document.createElement('div');
+                card.className = 'destino-card';
+                card.innerHTML = `
+                    <div class="destino-image">${destino.imagen}</div>
+                    <div class="destino-content">
+                        <h3 class="destino-title">${destino.nombre}</h3>
+                        <p class="destino-description">${destino.descripcion}</p>
+                        <div class="destino-features">
+                            ${destino.features.map(feature => `<span class="feature">${feature}</span>`).join('')}
+                        </div>
+                        <button class="btn" onclick="verDestino(${destino.id})">Ver Detalles</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function verDestino(destinoId) {
+            const destino = destinos.find(d => d.id === destinoId);
+            if (destino) {
+                // Llenar el modal con los datos del destino
+                document.getElementById('productImageLarge').textContent = destino.imagen;
+                document.getElementById('productTitle').textContent = destino.nombre;
+                document.getElementById('productDescription').textContent = destino.descripcion;
+                
+                // Solo mostrar precio si no es un destino
+                const priceElement = document.getElementById('productPrice');
+                if (destino.categoria !== 'destinos' && destino.precio) {
+                    priceElement.textContent = `Desde ${destino.precio}`;
+                    priceElement.style.display = 'block';
+                } else {
+                    priceElement.style.display = 'none';
+                }
+                
+                // Llenar las características
+                const featuresContainer = document.getElementById('productFeatures');
+                featuresContainer.innerHTML = '';
+                destino.features.forEach(feature => {
+                    const featureElement = document.createElement('span');
+                    featureElement.className = 'product-feature';
+                    featureElement.textContent = feature;
+                    featuresContainer.appendChild(featureElement);
+                });
+                
+                // Mostrar el modal
+                document.getElementById('productModal').style.display = 'block';
+            }
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').style.display = 'none';
+        }
+
+        function viewDetails(categoria, id) {
+            let item = null;
+            
+            // Buscar el elemento según su categoría
+            if (categoria === 'destinos') {
+                item = destinos.find(d => d.id === id);
+            } else if (categoria === 'hoteles') {
+                item = hoteles.find(h => h.id === id);
+            } else if (categoria === 'restaurantes') {
+                item = restaurantes.find(r => r.id === id);
+            } else if (categoria === 'actividades') {
+                item = actividades.find(a => a.id === id);
+            }
+            
+            if (item) {
+                // Llenar el modal con los datos del elemento
+                document.getElementById('productImageLarge').textContent = item.icono || item.imagen || '📍';
+                document.getElementById('productTitle').textContent = item.nombre;
+                document.getElementById('productDescription').textContent = item.descripcion;
+                
+                // Solo mostrar precio si no es un destino
+                const priceElement = document.getElementById('productPrice');
+                if (categoria !== 'destinos' && item.precio) {
+                    priceElement.textContent = item.precio;
+                    priceElement.style.display = 'block';
+                } else {
+                    priceElement.style.display = 'none';
+                }
+                
+                // Llenar las características si existen
+                const featuresContainer = document.getElementById('productFeatures');
+                featuresContainer.innerHTML = '';
+                if (item.features) {
+                    item.features.forEach(feature => {
+                        const featureElement = document.createElement('span');
+                        featureElement.className = 'product-feature';
+                        featureElement.textContent = feature;
+                        featuresContainer.appendChild(featureElement);
+                    });
+                }
+                
+                // Mostrar el modal
+                document.getElementById('productModal').style.display = 'block';
+            }
+        }
+
+        function viewProductProfile() {
+            // Mostrar el modal del perfil del producto
+            document.getElementById('profileModal').style.display = 'block';
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').style.display = 'none';
+        }
+
+        function editProduct() {
+            // Simular edición del producto
+            showAlert('Función de edición del producto - En desarrollo', 'info');
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const userModal = document.getElementById('userModal');
+            const productModal = document.getElementById('productModal');
+            const profileModal = document.getElementById('profileModal');
+            if (event.target == userModal) {
+                closeUserModal();
+            }
+            if (event.target == productModal) {
+                closeProductModal();
+            }
+            if (event.target == profileModal) {
+                closeProfileModal();
+            }
+        }
+
+        // Inicializar página
+        window.addEventListener('load', function() {
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                if (user.role === 'usuario') {
+                    document.getElementById('userWelcome').textContent = `¡Hola ${user.name}!`;
+                    document.getElementById('userAvatar').textContent = user.avatar || '👤';
+                } else {
+                    showAlert('Acceso denegado. Solo usuarios pueden acceder a esta página.', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'login-direct.html';
+                    }, 2000);
+                }
+            } else {
+                showAlert('No hay usuario logueado. Redirigiendo al login...', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login-direct.html';
+                }, 2000);
+            }
+            
+            // Cargar todos los elementos iniciales
+            const allItems = [...destinos, ...hoteles, ...restaurantes, ...actividades];
+            displayAllItems(allItems);
+            
+            // Inicializar funcionalidades
+            setupAutocomplete();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras - ViajesMundo</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="Carrito de compras de ViajesMundo - resumen y métodos de pago">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-globe-americas"></i>
+                <span>ViajesMundo</span>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="../index.html">Inicio</a></li>
+                    <li><a href="paquetes.html">Paquetes</a></li>
+                    <li><a href="agenda.html">Agenda</a></li>
+                    <li><a href = "carrito.html" class="active">Carrito</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                    <li><a href="login.html" class="login-link">Iniciar Sesión</a></li>
+
+                </ul>
+            </nav>
+            <div class="profile-menu-container">
+                <div class="profile-avatar" id="profileAvatar">
+                    <img src="../assets/img/default-avatar.svg" alt="Avatar del usuario">
+                </div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="dropdown-header">
+                        <img src="../assets/img/default-avatar.svg" alt="Avatar del usuario">
+                        <div class="dropdown-user-info">
+                            <h4>Usuario</h4>
+                            <p>usuario@viajesmundo.com</p>
+                        </div>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="editarPerfil.html" class="dropdown-item">
+                            <i class="fas fa-edit"></i>
+                            <span>Editar perfil</span>
+                        </a>
+                        <a href="login.html" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Cerrar sesión</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Carrito de Compras</h1>
+                <p>Revisa tus paquetes seleccionados y elige tu método de pago</p>
+            </div>
+
+            <section class="cart-wrapper">
+                <div class="cart-grid">
+                    <!-- Lista de items del carrito -->
+                    <div class="cart-items" id="cartItems">
+                        <!-- Items generados dinámicamente -->
+                    </div>
+
+                    <!-- Resumen y pago -->
+                    <aside class="cart-summary">
+                        <h2>Resumen del Pedido</h2>
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span id="subtotalAmount">€0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Impuestos (simulado 12%)</span>
+                            <span id="taxAmount">€0.00</span>
+                        </div>
+                        <div class="summary-total">
+                            <span>Total</span>
+                            <span id="totalAmount">€0.00</span>
+                        </div>
+
+                        <div class="payment-methods">
+                            <h3>Método de Pago</h3>
+                            <label class="payment-option">
+                                <input type="radio" name="paymentMethod" value="card" checked>
+                                <i class="fas fa-credit-card"></i>
+                                <span>Tarjeta de crédito / débito</span>
+                            </label>
+                            <label class="payment-option">
+                                <input type="radio" name="paymentMethod" value="paypal">
+                                <i class="fab fa-paypal"></i>
+                                <span>PayPal</span>
+                            </label>
+                            <label class="payment-option">
+                                <input type="radio" name="paymentMethod" value="pichincha">
+                                <i class="fas fa-university"></i>
+                                <span>Banco Pichincha</span>
+                            </label>
+                        </div>
+
+                        <div class="payment-content" id="paymentContent">
+                            <!-- Render dinámico según método seleccionado -->
+                        </div>
+
+                        <button class="btn btn-primary btn-full" id="confirmPaymentBtn">Confirmar Pago</button>
+                    </aside>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ViajesMundo</h3>
+                    <p>Tu agencia de confianza para explorar el mundo</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Enlaces Rápidos</h4>
+                    <ul>
+                        <li><a href="../index.html">Inicio</a></li>
+                        <li><a href="paquetes.html">Paquetes</a></li>
+                        <li><a href="agenda.html">Agenda</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <p><i class="fas fa-phone"></i> +34 900 123 456</p>
+                    <p><i class="fas fa-envelope"></i> info@viajesmundo.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Quito, Ecuador</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 ViajesMundo. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/carrito.js"></script>
+    <script src="../assets/js/profileMenu.js"></script>
+</body>
+</html>
+
+

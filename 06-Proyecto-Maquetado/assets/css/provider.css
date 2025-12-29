@@ -1,0 +1,537 @@
+/* Estilos específicos para proveedores de servicios (hoteles, restaurantes, actividades) */
+
+/* Información del proveedor */
+.hotel-info-section,
+.restaurante-info-section,
+.actividades-info-section {
+    margin-bottom: 30px;
+}
+
+.hotel-info-card,
+.restaurante-info-card,
+.actividades-info-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-left: 4px solid #667eea;
+}
+
+.info-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.info-icon {
+    font-size: 3rem;
+    margin-right: 15px;
+}
+
+.info-details h3 {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.info-details p {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.info-item-icon {
+    margin-right: 8px;
+    font-size: 1.1rem;
+}
+
+.info-item strong {
+    color: #333;
+    margin-right: 5px;
+}
+
+/* Estados de verificación */
+.estado-verificado {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.estado-pendiente {
+    color: #ffc107;
+    font-weight: 600;
+}
+
+.estado-rechazado {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+/* Lista de reservas */
+.reservas-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.reserva-item {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-left: 4px solid #667eea;
+}
+
+.reserva-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.reserva-titulo {
+    font-size: 1.1rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.reserva-estado {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.reserva-estado.confirmada {
+    background: #d4edda;
+    color: #155724;
+}
+
+.reserva-estado.pendiente {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.reserva-estado.cancelada {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.reserva-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.reserva-detail {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.reserva-detail strong {
+    color: #333;
+}
+
+.reserva-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.reserva-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.reserva-btn.confirmar {
+    background: #28a745;
+    color: white;
+}
+
+.reserva-btn.confirmar:hover {
+    background: #218838;
+    transform: translateY(-2px);
+}
+
+.reserva-btn.cancelar {
+    background: #dc3545;
+    color: white;
+}
+
+.reserva-btn.cancelar:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+.reserva-btn.detalles {
+    background: #17a2b8;
+    color: white;
+}
+
+.reserva-btn.detalles:hover {
+    background: #138496;
+    transform: translateY(-2px);
+}
+
+/* Gestión de habitaciones */
+.habitaciones-content {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.habitacion-item {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-left: 4px solid #ffc107;
+}
+
+.habitacion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.habitacion-tipo {
+    font-size: 1.1rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.habitacion-precio {
+    background: #ffc107;
+    color: #333;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.habitacion-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.habitacion-detail {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.habitacion-detail strong {
+    color: #333;
+}
+
+.habitacion-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.habitacion-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.habitacion-btn.editar {
+    background: #17a2b8;
+    color: white;
+}
+
+.habitacion-btn.editar:hover {
+    background: #138496;
+    transform: translateY(-2px);
+}
+
+.habitacion-btn.eliminar {
+    background: #dc3545;
+    color: white;
+}
+
+.habitacion-btn.eliminar:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+/* Gestión de servicios */
+.servicios-content {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.servicio-item {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-left: 4px solid #28a745;
+}
+
+.servicio-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.servicio-nombre {
+    font-size: 1.1rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.servicio-disponible {
+    background: #28a745;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.servicio-no-disponible {
+    background: #dc3545;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.servicio-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.servicio-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.servicio-btn.toggle {
+    background: #ffc107;
+    color: #333;
+}
+
+.servicio-btn.toggle:hover {
+    background: #e0a800;
+    transform: translateY(-2px);
+}
+
+.servicio-btn.editar {
+    background: #17a2b8;
+    color: white;
+}
+
+.servicio-btn.editar:hover {
+    background: #138496;
+    transform: translateY(-2px);
+}
+
+/* Perfil del proveedor */
+.perfil-content {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.perfil-form {
+    display: grid;
+    gap: 20px;
+}
+
+.perfil-section {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.perfil-section h4 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 15px;
+    font-weight: 600;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 8px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.checkbox-item input[type="checkbox"] {
+    margin-right: 8px;
+    transform: scale(1.2);
+}
+
+.checkbox-item label {
+    font-size: 0.9rem;
+    color: #333;
+    cursor: pointer;
+}
+
+.perfil-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.perfil-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.perfil-btn.primary {
+    background: #667eea;
+    color: white;
+}
+
+.perfil-btn.primary:hover {
+    background: #764ba2;
+    transform: translateY(-2px);
+}
+
+.perfil-btn.secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.perfil-btn.secondary:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 360px) {
+    .info-grid,
+    .reserva-details,
+    .habitacion-details,
+    .form-row,
+    .checkbox-group {
+        grid-template-columns: 1fr;
+    }
+    
+    .reserva-actions,
+    .habitacion-actions,
+    .servicio-actions,
+    .perfil-actions {
+        flex-direction: column;
+    }
+    
+    .info-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .info-icon {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+}
+
+/* Animaciones */
+.reserva-item,
+.habitacion-item,
+.servicio-item {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.reserva-item:nth-child(1) { animation-delay: 0.1s; }
+.reserva-item:nth-child(2) { animation-delay: 0.2s; }
+.reserva-item:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

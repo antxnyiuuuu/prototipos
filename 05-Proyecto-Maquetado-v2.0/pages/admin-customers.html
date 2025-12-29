@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes - Admin</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.ico">
+</head>
+<body>
+    <div class="container">
+
+        <!-- Navegación superior -->
+        <nav class="top-nav">
+            <div class="nav-brand">
+                <span>Ecuador Travel - Admin</span>
+            </div>
+            <div class="nav-links">
+                <a href="admin-home.html" class="nav-link">Dashboard</a>
+                <a href="admin-packages.html" class="nav-link">Paquetes</a>
+                <a href="admin-products.html" class="nav-link">Productos</a>
+                <a href="admin-customers.html" class="nav-link active">Clientes</a>
+                <a href="../index.html" class="nav-link">Volver al Inicio</a>
+            </div>
+            <div class="nav-user">
+                <span>Administrador</span>
+                <button class="btn btn-sm btn-secondary" onclick="logout()">Cerrar Sesión</button>
+            </div>
+        </nav>
+
+        <!-- Contenido principal -->
+        <main class="main-content">
+            <!-- Filtros -->
+            <div class="card">
+                <h2 class="card-title">Filtros</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Paquete</label>
+                        <select id="package-filter" class="form-select" onchange="filterPackages()">
+                            <option value="">Todos los paquetes</option>
+                            <option value="normal">Normal</option>
+                            <option value="premium">Premium</option>
+                            <option value="superpremium">Superpremium</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Estado</label>
+                        <select id="status-filter" class="form-select" onchange="filterPackages()">
+                            <option value="">Todos los estados</option>
+                            <option value="pending">Pendiente</option>
+                            <option value="confirmed">Confirmado</option>
+                            <option value="completed">Completado</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="card">
+                <h3 class="card-title">Estadísticas</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                    <div style="text-align: center; padding: 1rem; background: var(--light-blue); border-radius: 8px;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary-blue);" id="total-customer-packages">0</div>
+                        <div style="color: var(--gray-600); font-size: 0.875rem;">Total Paquetes</div>
+                    </div>
+                    <div style="text-align: center; padding: 1rem; background: var(--light-blue); border-radius: 8px;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--success);" id="total-revenue">$0</div>
+                        <div style="color: var(--gray-600); font-size: 0.875rem;">Ingresos</div>
+                    </div>
+                    <div style="text-align: center; padding: 1rem; background: var(--light-blue); border-radius: 8px;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--warning);" id="pending-packages">0</div>
+                        <div style="color: var(--gray-600); font-size: 0.875rem;">Pendientes</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de paquetes de clientes -->
+            <div class="card">
+                <h3 class="card-title">Paquetes de Clientes</h3>
+                <div id="customer-packages-list">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Cargando paquetes de clientes...
+                    </div>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Modal para detalles del paquete -->
+    <div id="package-detail-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Detalles del Paquete</h3>
+                <button class="modal-close" onclick="closeModal('package-detail-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="package-detail-content"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('package-detail-modal')">Cerrar</button>
+                <button id="update-status-btn" class="btn btn-primary">Actualizar Estado</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/app.js"></script>
+    <script>
+        let customerPackages = [];
+        let filteredPackages = [];
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            
+            // Verificar autenticación
+            if (!isAdminLoggedIn()) {
+                window.location.href = 'admin-login.html';
+                return;
+            }
+            
+            loadCustomerPackages();
+        });
+
+        function loadCustomerPackages() {
+            customerPackages = getCustomerPackages();
+            filteredPackages = [...customerPackages];
+            
+            updateStatistics();
+            renderPackages();
+        }
+
+        function updateStatistics() {
+            const total = customerPackages.length;
+            const revenue = customerPackages.reduce((sum, pkg) => sum + (pkg.totalPrice || 0), 0);
+            const pending = customerPackages.filter(pkg => pkg.status === 'pending').length;
+            
+            document.getElementById('total-customer-packages').textContent = total;
+            document.getElementById('total-revenue').textContent = `$${revenue}`;
+            document.getElementById('pending-packages').textContent = pending;
+        }
+
+        function filterPackages() {
+            const packageFilter = document.getElementById('package-filter').value;
+            const statusFilter = document.getElementById('status-filter').value;
+            
+            filteredPackages = customerPackages.filter(pkg => {
+                const matchesPackage = !packageFilter || pkg.packageType === packageFilter;
+                const matchesStatus = !statusFilter || pkg.status === statusFilter;
+                return matchesPackage && matchesStatus;
+            });
+            
+            renderPackages();
+        }
+
+        function renderPackages() {
+            const container = document.getElementById('customer-packages-list');
+            
+            if (filteredPackages.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--gray-600);">No hay paquetes que coincidan con los filtros</p>';
+                return;
+            }
+
+            container.innerHTML = filteredPackages.map(pkg => `
+                <div class="selection-item">
+                    <div>
+                        <div class="selection-name">Paquete ${pkg.packageType}</div>
+                        <div style="font-size: 0.875rem; color: var(--gray-600);">
+                            ${pkg.persons} personas - ${new Date(pkg.createdAt).toLocaleDateString()}
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--gray-500);">
+                            Estado: <span style="color: ${getStatusColor(pkg.status)}">${getStatusText(pkg.status)}</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end;">
+                        <div class="selection-price">$${pkg.totalPrice}</div>
+                        <button onclick="viewPackageDetails('${pkg.id}')" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">
+                            Ver Detalles
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getStatusColor(status) {
+            switch (status) {
+                case 'pending': return 'var(--warning)';
+                case 'confirmed': return 'var(--success)';
+                case 'completed': return 'var(--primary-blue)';
+                default: return 'var(--gray-600)';
+            }
+        }
+
+        function getStatusText(status) {
+            switch (status) {
+                case 'pending': return 'Pendiente';
+                case 'confirmed': return 'Confirmado';
+                case 'completed': return 'Completado';
+                default: return 'Desconocido';
+            }
+        }
+
+        function viewPackageDetails(packageId) {
+            const pkg = customerPackages.find(p => p.id === packageId);
+            if (!pkg) return;
+
+            const content = document.getElementById('package-detail-content');
+            content.innerHTML = `
+                <div class="card-description">
+                    <h4>Información General</h4>
+                    <p><strong>Tipo de Paquete:</strong> ${pkg.packageType}</p>
+                    <p><strong>Personas:</strong> ${pkg.persons}</p>
+                    <p><strong>Precio Total:</strong> $${pkg.totalPrice}</p>
+                    <p><strong>Fecha de Creación:</strong> ${new Date(pkg.createdAt).toLocaleString()}</p>
+                    <p><strong>Estado:</strong> <span style="color: ${getStatusColor(pkg.status)}">${getStatusText(pkg.status)}</span></p>
+                </div>
+                
+                <h4>Actividades Seleccionadas</h4>
+                <ul class="features-list">
+                    ${pkg.activities ? pkg.activities.map(activity => `<li>${activity}</li>`).join('') : '<li>No hay actividades seleccionadas</li>'}
+                </ul>
+                
+                <h4>Comidas Seleccionadas</h4>
+                <ul class="features-list">
+                    ${pkg.meals ? pkg.meals.map(meal => `<li>${meal}</li>`).join('') : '<li>No hay comidas seleccionadas</li>'}
+                </ul>
+                
+                <h4>Tours Full Day</h4>
+                <ul class="features-list">
+                    ${pkg.fullDayTours ? pkg.fullDayTours.map(tour => `<li>${tour}</li>`).join('') : '<li>No hay tours Full Day</li>'}
+                </ul>
+                
+                <h4>Transporte</h4>
+                <p>${pkg.transport || 'No hay transporte seleccionado'}</p>
+                
+                <h4>Mensaje de WhatsApp</h4>
+                <div style="background: var(--gray-100); padding: 1rem; border-radius: 8px; font-size: 0.875rem;">
+                    ${pkg.whatsappMessage || 'No hay mensaje disponible'}
+                </div>
+            `;
+
+            // Configurar botón de actualizar estado
+            const updateBtn = document.getElementById('update-status-btn');
+            updateBtn.onclick = () => updatePackageStatus(packageId);
+
+            showModal('package-detail-modal');
+        }
+
+        function updatePackageStatus(packageId) {
+            const pkg = customerPackages.find(p => p.id === packageId);
+            if (!pkg) return;
+
+            const currentStatus = pkg.status;
+            let newStatus;
+            
+            switch (currentStatus) {
+                case 'pending':
+                    newStatus = 'confirmed';
+                    break;
+                case 'confirmed':
+                    newStatus = 'completed';
+                    break;
+                case 'completed':
+                    newStatus = 'pending';
+                    break;
+                default:
+                    newStatus = 'pending';
+            }
+
+            pkg.status = newStatus;
+            pkg.updatedAt = new Date().toISOString();
+
+            // Guardar cambios
+            localStorage.setItem('customerPackages', JSON.stringify(customerPackages));
+            
+            showAlert(`Estado actualizado a: ${getStatusText(newStatus)}`, 'success');
+            closeModal('package-detail-modal');
+            
+            // Recargar datos
+            loadCustomerPackages();
+        }
+
+        function logout() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                localStorage.removeItem('adminSession');
+                window.location.href = 'admin-login.html';
+            }
+        }
+    </script>
+</body>
+</html>

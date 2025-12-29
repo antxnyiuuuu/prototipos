@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "nombre": "María González",
+    "direccion": "Calle 123 #45-67, Barrio Centro",
+    "telefono": "300-123-4567",
+    "servicios": ["Internet", "TV"],
+    "estado": "Activo"
+  },
+  {
+    "id": 2,
+    "nombre": "Carlos Rodríguez",
+    "direccion": "Carrera 8 #12-34, Barrio Norte",
+    "telefono": "310-987-6543",
+    "servicios": ["Internet"],
+    "estado": "Activo"
+  },
+  {
+    "id": 3,
+    "nombre": "Ana Martínez",
+    "direccion": "Calle 45 #78-90, Barrio Sur",
+    "telefono": "315-456-7890",
+    "servicios": ["Internet", "TV", "Teléfono"],
+    "estado": "Pendiente"
+  },
+  {
+    "id": 4,
+    "nombre": "Luis Pérez",
+    "direccion": "Carrera 15 #23-45, Barrio Este",
+    "telefono": "320-789-1234",
+    "servicios": ["Internet"],
+    "estado": "Activo"
+  },
+  {
+    "id": 5,
+    "nombre": "Sofia Herrera",
+    "direccion": "Calle 90 #12-34, Barrio Oeste",
+    "telefono": "305-234-5678",
+    "servicios": ["TV"],
+    "estado": "Activo"
+  }
+]

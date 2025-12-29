@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Paquetes - Ecuador Travel</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.ico">
+</head>
+<body>
+    <div class="container">
+        <!-- Navegación superior -->
+        <nav class="top-nav">
+            <div class="nav-brand">
+                <span>Ecuador Travel</span>
+            </div>
+            <div class="nav-links">
+                <a href="../index.html" class="nav-link">Inicio</a>
+                <a href="paquetes.html" class="nav-link active">Mis Paquetes</a>
+                <a href="fullday.html" class="nav-link">Full Day Tours</a>
+                <a href="transportes.html" class="nav-link">Transportes</a>
+            </div>
+            <div class="nav-user">
+                <span id="user-greeting"></span>
+                <button class="btn btn-sm btn-secondary" onclick="EcuadorTravel.logoutCustomer(); window.location.href='../login.html';">Salir</button>
+            </div>
+        </nav>
+
+        <!-- Contenido principal -->
+        <main class="main-content">
+            <h1 class="section-title">Mis Paquetes Creados</h1>
+            <p class="section-description">
+                Aquí puedes ver todos los paquetes que has creado y personalizado. 
+                Puedes editarlos, enviarlos por WhatsApp o crear nuevos paquetes.
+            </p>
+
+            <!-- Estadísticas rápidas -->
+            <div class="card">
+                <h3 class="card-title">Resumen</h3>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="total-packages">0</div>
+                        <div class="stat-label">Paquetes Creados</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="total-value">$0</div>
+                        <div class="stat-label">Valor Total</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="favorite-type">-</div>
+                        <div class="stat-label">Tipo Favorito</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="card">
+                <h3 class="card-title">Filtros</h3>
+                <div class="form-group">
+                    <label class="form-label">Buscar paquete</label>
+                    <input type="text" id="search-input" class="form-input" placeholder="Buscar por nombre, destino o tipo..." onkeyup="filterPackages()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Filtrar por tipo</label>
+                    <select id="type-filter" class="form-select" onchange="filterPackages()">
+                        <option value="">Todos los tipos</option>
+                        <option value="normal">Normal</option>
+                        <option value="premium">Premium</option>
+                        <option value="superpremium">Superpremium</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Lista de paquetes -->
+            <div class="card">
+                <h3 class="card-title">Mis Paquetes</h3>
+                <div id="packages-container">
+                    <div id="no-packages-message" class="alert alert-info">
+                        <h4>¡Aún no tienes paquetes creados!</h4>
+                        <p>Ve a la página de inicio y personaliza tu primer paquete turístico.</p>
+                        <a href="../index.html" class="btn btn-primary">Crear Mi Primer Paquete</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acciones rápidas -->
+            <div class="card">
+                <h3 class="card-title">Acciones Rápidas</h3>
+                <div class="action-buttons">
+                    <a href="../index.html" class="btn btn-primary">Crear Nuevo Paquete</a>
+                    <a href="fullday.html" class="btn btn-secondary">Agregar Full Day Tours</a>
+                    <a href="transportes.html" class="btn btn-secondary">Seleccionar Transportes</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal para detalles del paquete -->
+    <div id="package-detail-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Detalles del Paquete</h3>
+                <button class="modal-close" onclick="closeModal('package-detail-modal')">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Contenido dinámico -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('package-detail-modal')">Cerrar</button>
+                <button class="btn btn-whatsapp" onclick="sendPackageToWhatsApp()">📱 Enviar por WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para confirmación de eliminación -->
+    <div id="delete-confirm-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirmar Eliminación</h3>
+                <button class="modal-close" onclick="closeModal('delete-confirm-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que quieres eliminar este paquete? Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('delete-confirm-modal')">Cancelar</button>
+                <button class="btn btn-danger" onclick="confirmDeletePackage()">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/app.js"></script>
+    <script>
+        let allPackages = [];
+        let filteredPackages = [];
+        let currentPackageToDelete = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            EcuadorTravel.initializeApp();
+            loadUserPackages();
+            updateUserGreeting();
+        });
+
+        function loadUserPackages() {
+            // Obtener paquetes del localStorage
+            const savedPackages = EcuadorTravel.getSavedPackages();
+            allPackages = savedPackages || [];
+            filteredPackages = [...allPackages];
+            
+            updateStats();
+            displayPackages();
+        }
+
+        function updateStats() {
+            const totalPackages = allPackages.length;
+            const totalValue = allPackages.reduce((sum, pkg) => sum + (pkg.totalPrice || 0), 0);
+            
+            // Encontrar tipo más común
+            const typeCount = {};
+            allPackages.forEach(pkg => {
+                typeCount[pkg.type] = (typeCount[pkg.type] || 0) + 1;
+            });
+            const favoriteType = Object.keys(typeCount).reduce((a, b) => 
+                typeCount[a] > typeCount[b] ? a : b, '-');
+
+            document.getElementById('total-packages').textContent = totalPackages;
+            document.getElementById('total-value').textContent = `$${totalValue.toLocaleString()}`;
+            document.getElementById('favorite-type').textContent = favoriteType;
+        }
+
+        function displayPackages() {
+            const container = document.getElementById('packages-container');
+            const noPackagesMessage = document.getElementById('no-packages-message');
+            
+            if (filteredPackages.length === 0) {
+                noPackagesMessage.style.display = 'block';
+                container.innerHTML = '';
+                container.appendChild(noPackagesMessage);
+                return;
+            }
+
+            noPackagesMessage.style.display = 'none';
+            
+            const packagesHTML = filteredPackages.map((pkg, index) => `
+                <div class="package-card ${pkg.type}">
+                    <div class="package-badge">${pkg.type.charAt(0).toUpperCase() + pkg.type.slice(1)}</div>
+                    <div class="card-header">
+                        <h4 class="card-title">${pkg.name || 'Paquete Personalizado'}</h4>
+                        <div class="card-price">$${pkg.totalPrice || 0}</div>
+                    </div>
+                    <div class="card-description">
+                        <p><strong>Destinos:</strong> ${pkg.destinations || 'No especificado'}</p>
+                        <p><strong>Duración:</strong> ${pkg.duration || 'No especificado'}</p>
+                        <p><strong>Creado:</strong> ${new Date(pkg.createdAt || Date.now()).toLocaleDateString()}</p>
+                    </div>
+                    <div class="package-features">
+                        ${pkg.features ? pkg.features.slice(0, 3).map(f => `<span class="feature-tag">${f}</span>`).join('') : ''}
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary btn-sm" onclick="viewPackageDetails(${index})">Ver Detalles</button>
+                        <button class="btn btn-whatsapp btn-sm" onclick="sendPackageToWhatsApp(${index})">📱 WhatsApp</button>
+                        <button class="btn btn-danger btn-sm" onclick="deletePackage(${index})">🗑️ Eliminar</button>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = packagesHTML;
+        }
+
+        function filterPackages() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const typeFilter = document.getElementById('type-filter').value;
+
+            filteredPackages = allPackages.filter(pkg => {
+                const matchesSearch = !searchTerm || 
+                    (pkg.name && pkg.name.toLowerCase().includes(searchTerm)) ||
+                    (pkg.destinations && pkg.destinations.toLowerCase().includes(searchTerm)) ||
+                    pkg.type.toLowerCase().includes(searchTerm);
+                
+                const matchesType = !typeFilter || pkg.type === typeFilter;
+                
+                return matchesSearch && matchesType;
+            });
+
+            displayPackages();
+        }
+
+        function viewPackageDetails(index) {
+            const pkg = filteredPackages[index];
+            const modal = document.getElementById('package-detail-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+
+            modalTitle.textContent = pkg.name || 'Paquete Personalizado';
+            
+            modalBody.innerHTML = `
+                <div class="package-details">
+                    <div class="detail-section">
+                        <h4>Información General</h4>
+                        <p><strong>Tipo:</strong> ${pkg.type.charAt(0).toUpperCase() + pkg.type.slice(1)}</p>
+                        <p><strong>Precio Total:</strong> $${pkg.totalPrice || 0}</p>
+                        <p><strong>Destinos:</strong> ${pkg.destinations || 'No especificado'}</p>
+                        <p><strong>Duración:</strong> ${pkg.duration || 'No especificado'}</p>
+                        <p><strong>Creado:</strong> ${new Date(pkg.createdAt || Date.now()).toLocaleDateString()}</p>
+                    </div>
+                    
+                    ${pkg.features ? `
+                    <div class="detail-section">
+                        <h4>Características</h4>
+                        <ul>
+                            ${pkg.features.map(f => `<li>${f}</li>`).join('')}
+                        </ul>
+                    </div>
+                    ` : ''}
+                    
+                    ${pkg.selectedTours && pkg.selectedTours.length > 0 ? `
+                    <div class="detail-section">
+                        <h4>Tours Seleccionados</h4>
+                        <ul>
+                            ${pkg.selectedTours.map(tour => `<li>${tour.name} - $${tour.price}</li>`).join('')}
+                        </ul>
+                    </div>
+                    ` : ''}
+                    
+                    ${pkg.selectedTransport ? `
+                    <div class="detail-section">
+                        <h4>Transporte Seleccionado</h4>
+                        <p><strong>${pkg.selectedTransport.name}</strong> - $${pkg.selectedTransport.price}</p>
+                        <p>${pkg.selectedTransport.description}</p>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+
+            modal.style.display = 'block';
+        }
+
+        function sendPackageToWhatsApp(index = null) {
+            const pkg = index !== null ? filteredPackages[index] : null;
+            if (pkg) {
+                EcuadorTravel.generateWhatsAppMessage(pkg);
+            } else {
+                // Si no se especifica índice, usar el paquete del modal
+                const modalBody = document.getElementById('modal-body');
+                if (modalBody.innerHTML.includes('package-details')) {
+                    // Encontrar el paquete actual en el modal
+                    const currentIndex = filteredPackages.findIndex(p => 
+                        document.getElementById('modal-title').textContent === (p.name || 'Paquete Personalizado')
+                    );
+                    if (currentIndex !== -1) {
+                        EcuadorTravel.generateWhatsAppMessage(filteredPackages[currentIndex]);
+                    }
+                }
+            }
+        }
+
+        function deletePackage(index) {
+            currentPackageToDelete = index;
+            document.getElementById('delete-confirm-modal').style.display = 'block';
+        }
+
+        function confirmDeletePackage() {
+            if (currentPackageToDelete !== null) {
+                const pkgToDelete = filteredPackages[currentPackageToDelete];
+                
+                // Eliminar del array principal
+                const mainIndex = allPackages.findIndex(p => p === pkgToDelete);
+                if (mainIndex !== -1) {
+                    allPackages.splice(mainIndex, 1);
+                }
+                
+                // Guardar en localStorage
+                EcuadorTravel.savePackage(allPackages);
+                
+                // Recargar la vista
+                loadUserPackages();
+                
+                closeModal('delete-confirm-modal');
+                currentPackageToDelete = null;
+                
+                showMessage('Paquete eliminado', 'El paquete ha sido eliminado correctamente.', 'success');
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function updateUserGreeting() {
+            const userGreeting = document.getElementById('user-greeting');
+            const customerSession = EcuadorTravel.getCustomerSession();
+            if (customerSession && customerSession.isLoggedIn) {
+                userGreeting.textContent = `Hola, ${customerSession.name}`;
+            } else {
+                window.location.href = '../login.html';
+            }
+        }
+
+        function showMessage(title, content, type) {
+            EcuadorTravel.showMessage(title, content, type);
+        }
+
+        // Cerrar modales al hacer clic fuera
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoteles - TravelApp Ecuador</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-welcome {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+        }
+
+        .main {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .search-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .search-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .form-group label {
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .search-input {
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .hoteles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .hotel-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hotel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .hotel-image {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .hotel-content {
+            padding: 1.5rem;
+        }
+
+        .hotel-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .hotel-description {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .hotel-location {
+            color: #888;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .hotel-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hotel-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            padding: 0.5rem 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-around;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            padding: 0.5rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-item:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .nav-text {
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .main {
+            padding-bottom: 80px;
+        }
+
+        .floating-create-btn {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .floating-create-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.6);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .search-form {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .hoteles-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                padding: 0 1rem;
+            }
+            
+            .main {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">🏨 TravelApp Ecuador</div>
+            <div class="user-info">
+                <span class="user-welcome" id="userWelcome">¡Hola Usuario!</span>
+                <div class="user-avatar" id="userAvatar" onclick="showUserMenu()">👤</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <h1 class="page-title">🏨 Hoteles en Ecuador</h1>
+            
+            <div class="search-section">
+                <h2 class="search-title">🔍 Buscar Hoteles</h2>
+                <form class="search-form" onsubmit="searchHoteles(event)">
+                    <div class="form-group">
+                        <label>Ubicación</label>
+                        <input type="text" class="search-input" placeholder="¿Dónde quieres hospedarte?" id="locationInput">
+                    </div>
+                    <div class="form-group">
+                        <label>Check-in</label>
+                        <input type="date" class="search-input" id="checkInDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Check-out</label>
+                        <input type="date" class="search-input" id="checkOutDate">
+                    </div>
+                    <button type="submit" class="search-btn">🔍 Buscar</button>
+                </form>
+            </div>
+
+            <div class="hoteles-grid" id="hotelesGrid">
+                <!-- Los hoteles se cargarán dinámicamente -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Create Button -->
+    <button class="floating-create-btn" onclick="createCustomPackage()" title="Crear Paquete">
+        ✨
+    </button>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-content">
+            <a href="#" class="nav-item" onclick="goToHome()">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">Inicio</span>
+            </a>
+            <a href="#" class="nav-item" onclick="goToDestinos()">
+                <span class="nav-icon">🌍</span>
+                <span class="nav-text">Destinos</span>
+            </a>
+            <a href="#" class="nav-item" onclick="goToTransporte()">
+                <span class="nav-icon">🚗</span>
+                <span class="nav-text">Transporte</span>
+            </a>
+            <a href="#" class="nav-item active" onclick="goToHoteles()">
+                <span class="nav-icon">🏨</span>
+                <span class="nav-text">Hoteles</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showUserMenu()">
+                <span class="nav-icon">👤</span>
+                <span class="nav-text">Perfil</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- User Modal -->
+    <div id="userModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Mi Perfil</h3>
+                <span class="close" onclick="closeUserModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p><strong>Nombre:</strong> <span id="modalUserName">Usuario</span></p>
+                <p><strong>Rol:</strong> <span id="modalUserRole">Usuario</span></p>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="goToProfile()">Mi Perfil</button>
+                    <button class="btn btn-danger" onclick="logout()">Cerrar Sesión</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de hoteles
+        const hoteles = [
+            {
+                id: 1,
+                nombre: 'Hotel Paradise Galápagos',
+                descripcion: 'Hotel de lujo con vista al mar y todas las comodidades para una estadía inolvidable en las Islas Galápagos.',
+                precio: '$150/noche',
+                ubicacion: 'Galápagos',
+                icono: '🏨',
+                categoria: 'hoteles'
+            },
+            {
+                id: 2,
+                nombre: 'Hotel Colonial Quito',
+                descripcion: 'Hotel histórico en el centro de Quito, perfecto para explorar la ciudad colonial.',
+                precio: '$80/noche',
+                ubicacion: 'Quito',
+                icono: '🏨',
+                categoria: 'hoteles'
+            },
+            {
+                id: 3,
+                nombre: 'Hotel Boutique Cuenca',
+                descripcion: 'Hotel pequeño y acogedor en el corazón de Cuenca, patrimonio de la humanidad.',
+                precio: '$95/noche',
+                ubicacion: 'Cuenca',
+                icono: '🏨',
+                categoria: 'hoteles'
+            },
+            {
+                id: 4,
+                nombre: 'Hotel Montañita Beach',
+                descripcion: 'Hotel frente al mar en Montañita, ideal para surfistas y amantes de la playa.',
+                precio: '$70/noche',
+                ubicacion: 'Montañita',
+                icono: '🏨',
+                categoria: 'hoteles'
+            },
+            {
+                id: 5,
+                nombre: 'Hotel Baños Spa',
+                descripcion: 'Hotel con aguas termales en Baños de Agua Santa, perfecto para relajarse.',
+                precio: '$60/noche',
+                ubicacion: 'Baños',
+                icono: '🏨',
+                categoria: 'hoteles'
+            },
+            {
+                id: 6,
+                nombre: 'Hotel Mindo Cloud Forest',
+                descripcion: 'Hotel ecológico en la selva nublada de Mindo, rodeado de naturaleza.',
+                precio: '$85/noche',
+                ubicacion: 'Mindo',
+                icono: '🏨',
+                categoria: 'hoteles'
+            }
+        ];
+
+        // Funciones de navegación
+        function goToHome() {
+            window.location.href = 'user-destacados-direct.html';
+        }
+
+        function goToDestinos() {
+            window.location.href = 'user-destinos-direct.html';
+        }
+
+        function goToTransporte() {
+            window.location.href = 'user-transporte-direct.html';
+        }
+
+        function goToHoteles() {
+            showAlert('Ya estás en la página de hoteles', 'success');
+        }
+
+        function createCustomPackage() {
+            // Guardar los datos de búsqueda actuales en localStorage
+            const searchData = {
+                destination: document.getElementById('locationInput').value,
+                checkIn: document.getElementById('checkInDate').value,
+                checkOut: document.getElementById('checkOutDate').value,
+                people: {
+                    adults: 1,
+                    children: 0,
+                    babies: 0,
+                    pets: 0
+                }
+            };
+            
+            localStorage.setItem('packageSearchData', JSON.stringify(searchData));
+            
+            // Redirigir a la página principal donde está el modal
+            window.location.href = 'user-destacados-direct.html';
+        }
+
+        // Funciones del modal de usuario
+        function showUserMenu() {
+            const modal = document.getElementById('userModal');
+            modal.style.display = 'block';
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').style.display = 'none';
+        }
+
+        function goToProfile() {
+            showAlert('Funcionalidad de perfil en desarrollo', 'success');
+            closeUserModal();
+        }
+
+        function logout() {
+            localStorage.removeItem('current_user');
+            showAlert('Sesión cerrada correctamente', 'success');
+            setTimeout(() => {
+                window.location.href = 'login-direct.html';
+            }, 1000);
+        }
+
+        function getRoleDisplayName(role) {
+            const roles = {
+                'usuario': 'Usuario',
+                'admin': 'Administrador',
+                'hotel': 'Hotel',
+                'restaurante': 'Restaurante',
+                'actividad': 'Actividad',
+                'transporte': 'Transporte'
+            };
+            return roles[role] || 'Usuario';
+        }
+
+        // Función de búsqueda
+        function searchHoteles(event) {
+            event.preventDefault();
+            const location = document.getElementById('locationInput').value.toLowerCase();
+            const checkIn = document.getElementById('checkInDate').value;
+            const checkOut = document.getElementById('checkOutDate').value;
+            
+            let filteredHoteles = hoteles;
+            
+            if (location) {
+                filteredHoteles = filteredHoteles.filter(hotel => 
+                    hotel.nombre.toLowerCase().includes(location) ||
+                    hotel.ubicacion.toLowerCase().includes(location) ||
+                    hotel.descripcion.toLowerCase().includes(location)
+                );
+            }
+            
+            displayHoteles(filteredHoteles);
+            
+            let searchInfo = `Búsqueda: "${location || 'Todos los hoteles'}"`;
+            if (checkIn && checkOut) {
+                const checkInDate = new Date(checkIn);
+                const checkOutDate = new Date(checkOut);
+                const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+                searchInfo += ` | ${nights} noches`;
+            }
+            
+            if (filteredHoteles.length === 0) {
+                showAlert('No se encontraron hoteles con esos criterios', 'info');
+            } else {
+                showAlert(`Encontrados ${filteredHoteles.length} hotel${filteredHoteles.length !== 1 ? 'es' : ''} | ${searchInfo}`, 'success');
+            }
+        }
+
+        function displayHoteles(hotelesToShow) {
+            const grid = document.getElementById('hotelesGrid');
+            grid.innerHTML = '';
+            
+            hotelesToShow.forEach(hotel => {
+                const card = document.createElement('div');
+                card.className = 'hotel-card';
+                card.innerHTML = `
+                    <div class="hotel-image">
+                        <span>${hotel.icono}</span>
+                    </div>
+                    <div class="hotel-content">
+                        <h3 class="hotel-title">${hotel.nombre}</h3>
+                        <p class="hotel-description">${hotel.descripcion}</p>
+                        <p class="hotel-location">📍 ${hotel.ubicacion}</p>
+                        <div class="hotel-footer">
+                            <span class="hotel-price">${hotel.precio}</span>
+                            <button class="btn btn-primary" onclick="viewHotelDetails(${hotel.id})">Ver Detalles</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function viewHotelDetails(hotelId) {
+            const hotel = hoteles.find(h => h.id === hotelId);
+            if (hotel) {
+                showAlert(`Detalles de ${hotel.nombre}\n\n${hotel.descripcion}\n\nPrecio: ${hotel.precio}\nUbicación: ${hotel.ubicacion}`, 'info');
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 2rem;
+                border-radius: 10px;
+                color: white;
+                font-weight: bold;
+                z-index: 10000;
+                max-width: 400px;
+                word-wrap: break-word;
+            `;
+            
+            if (type === 'success') {
+                alertDiv.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
+            } else if (type === 'error') {
+                alertDiv.style.background = 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)';
+            } else if (type === 'info') {
+                alertDiv.style.background = 'linear-gradient(135deg, #17a2b8 0%, #138496 100%)';
+            } else {
+                alertDiv.style.background = 'linear-gradient(135deg, #6c757d 0%, #5a6268 100%)';
+            }
+            
+            alertDiv.textContent = message;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+
+        // Cargar información del usuario
+        function loadUserInfo() {
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                document.getElementById('userWelcome').textContent = `¡Hola ${user.name}!`;
+                document.getElementById('userAvatar').textContent = user.avatar || '👤';
+                document.getElementById('modalUserName').textContent = user.name;
+                document.getElementById('modalUserRole').textContent = getRoleDisplayName(user.role);
+            }
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const userModal = document.getElementById('userModal');
+            if (event.target == userModal) {
+                closeUserModal();
+            }
+        }
+
+        // Inicializar página
+        window.addEventListener('load', function() {
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                if (user.role === 'usuario') {
+                    loadUserInfo();
+                } else {
+                    showAlert('Acceso denegado. Solo usuarios pueden acceder a esta página.', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'login-direct.html';
+                    }, 2000);
+                }
+            } else {
+                showAlert('No hay usuario logueado. Redirigiendo al login...', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login-direct.html';
+                }, 2000);
+            }
+            
+            // Cargar hoteles iniciales
+            displayHoteles(hoteles);
+        });
+    </script>
+</body>
+</html>

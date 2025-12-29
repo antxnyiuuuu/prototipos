@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViajesMundo - Explora el mundo con nosotros</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-globe-americas"></i>
+                <span>ViajesMundo</span>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="active">Inicio</a></li>
+                    <li><a href="pages/paquetes.html">Paquetes</a></li>
+                    <li><a href="pages/agenda.html">Agenda</a></li>
+                    <li><a href="pages/carrito.html">Carrito</a></li>
+                    <li><a href="pages/contacto.html">Contacto</a></li>
+                    <li><a href="pages/login.html" class="login-link">Iniciar Sesión</a></li>
+                </ul>
+            </nav>
+            <div class="profile-menu-container">
+                <div class="profile-avatar" id="profileAvatar">
+                    <img src="assets/img/default-avatar.svg" alt="Avatar del usuario">
+                </div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="dropdown-header">
+                        <img src="assets/img/default-avatar.svg" alt="Avatar del usuario">
+                        <div class="dropdown-user-info">
+                            <h4>Usuario</h4>
+                            <p>usuario@viajesmundo.com</p>
+                        </div>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="pages/editarPerfil.html" class="dropdown-item">
+                            <i class="fas fa-edit"></i>
+                            <span>Editar perfil</span>
+                        </a>
+                        <a href="pages/login.html" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Cerrar sesión</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Banner Principal -->
+    <section class="hero">
+        <div class="hero-content" id="hero-content">
+            <h1>Explora el mundo con nosotros</h1>
+            <p>Descubre destinos increíbles y crea recuerdos inolvidables</p>
+            <a href="pages/paquetes.html" class="btn btn-primary">Ver Paquetes</a>
+        </div>
+        <div class="hero-image">
+            <img src="assets/img/hero-bg.jpg" alt="Destinos de viaje" id="hero-image">
+        </div>
+    </section>
+
+    <!-- Carrusel de Destinos -->
+    <section class="destinations-carousel">
+        <div class="container">
+            <h2>Destinos Destacados</h2>
+            <div class="carousel">
+                <div class="carousel-container">
+                    <div class="carousel-slide active">
+                        <img src="assets/img/destino1.jpg" alt="París">
+                        <div class="slide-content">
+                            <h1 class="destino-paris">París, Francia</h1>
+                            <p>La ciudad del amor te espera</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="assets/img/destino2.jpg" alt="Tokio">
+                        <div class="slide-content">
+                            <h1 class="destino-tokio">Tokio, Japón</h1>
+                            <p>Futuro y tradición en armonía</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="assets/img/destino3.jpg" alt="Nueva York">
+                        <div class="slide-content">
+                            <h1 class="destino-nueva-york">Nueva York, USA</h1>
+                            <p>La ciudad que nunca duerme</p>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-btn prev"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-btn next"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Paquetes Destacados -->
+    <section class="featured-packages">
+        <div class="container">
+            <h2>Paquetes Destacados</h2>
+            <div class="packages-grid">
+                <div class="package-card">
+                    <div class="package-image">
+                        <img src="assets/img/package1.jpg" alt="Europa Clásica">
+                        <div class="package-price">€1,299</div>
+                    </div>
+                    <div class="package-content">
+                        <h3>Europa Clásica</h3>
+                        <p>8 días visitando París, Roma y Barcelona</p>
+                        <div class="package-details">
+                            <span><i class="fas fa-calendar"></i> 8 días</span>
+                            <span><i class="fas fa-star"></i> 4.8</span>
+                        </div>
+                        <a href="pages/agenda.html" class="btn btn-secondary">Reservar</a>
+                    </div>
+                </div>
+
+                <div class="package-card">
+                    <div class="package-image">
+                        <img src="assets/img/package2.jpg" alt="Caribe Exótico">
+                        <div class="package-price">$899</div>
+                    </div>
+                    <div class="package-content">
+                        <h3>Caribe Exótico</h3>
+                        <p>6 días en Cancún con todo incluido</p>
+                        <div class="package-details">
+                            <span><i class="fas fa-calendar"></i> 6 días</span>
+                            <span><i class="fas fa-star"></i> 4.9</span>
+                        </div>
+                        <a href="pages/agenda.html" class="btn btn-secondary">Reservar</a>
+                    </div>
+                </div>
+
+                <div class="package-card">
+                    <div class="package-image">
+                        <img src="assets/img/package3.jpg" alt="Asia Misteriosa">
+                        <div class="package-price">$1,599</div>
+                    </div>
+                    <div class="package-content">
+                        <h3>Asia Misteriosa</h3>
+                        <p>10 días explorando Tailandia y Vietnam</p>
+                        <div class="package-details">
+                            <span><i class="fas fa-calendar"></i> 10 días</span>
+                            <span><i class="fas fa-star"></i> 4.7</span>
+                        </div>
+                        <a href="pages/agenda.html" class="btn btn-secondary">Reservar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Servicios -->
+    <section class="services">
+        <div class="container">
+            <h2>Nuestros Servicios</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-plane"></i>
+                    <h3>Vuelos</h3>
+                    <p>Encuentra las mejores tarifas aéreas</p>
+                    <button class="btn btn-outline" onclick="window.open('https://www.despegar.com.ec/?adjust_adgroup=163208767657&adjust_campaign=21517362679&adjust_t=ovd1mo_r45y7l_v9v5li&clt_n=g&clt_c=707297504319&clt_kw=despegar&adjust_creative=707297504319&adjust_tracker_limit=1000000000&gad_source=1&gad_campaignid=21517362679&gbraid=0AAAAADy0RUCsO0LAfekuWhrCZVxHoZnau&gclid=Cj0KCQjwh5vFBhCyARIsAHBx2wxusV36Qv-HWl3e4WaLrKWkg2N4oO2zTCFolrKQ0Y3RpQvMyj57xy8aAgNCEALw_wcB&mktdata=accountid%3D8247072125%26pr%3DG%26cc%3DEC%26adjust_t%3Dovd1mo_r45y7l_v9v5li%26kw%3Ddespegar%26c%3D707297504319%26mt%3Dp%26n%3Dg%26p%3D%26ap%3D%26d%3Dc%26dm%3D%26targetid%3Dkwd-302493639300%26campaignid%3D21517362679%26adgroupid%3D163208767657%26ExperimentId%3D%26locationid%3D9069516%26adjust_adgroup%3D163208767657%26adjust_campaign%3D21517362679%26adjust_creative%3D707297504319%26key%3DUT81AK9JAFEGJ4D69OVO6J673E%26adjust_tracker_limit%3D1000000000%26gclid%3DCj0KCQjwh5vFBhCyARIsAHBx2wxusV36Qv-HWl3e4WaLrKWkg2N4oO2zTCFolrKQ0Y3RpQvMyj57xy8aAgNCEALw_wcB%26id%3D20250821140318132649613283239629%26trackeame_user_id%3D18af91a9-d97a-4aaf-af91-a9d97afaafbb', '_blank')">Buscar Vuelos</button>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-hotel"></i>
+                    <h3>Hoteles</h3>
+                    <p>Alojamiento de calidad en todo el mundo</p>
+                    <button class="btn btn-outline" onclick="window.open('https://www.booking.com/index.es.html?aid=2311236;label=es-ec-booking-desktop-5uh4Wt5Iha89WQZdQomtPwS652829001292:pl:ta:p1:p2:ac:ap:neg:fi:tikwd-65526620:lp9069516:li:dec:dm;ws=&gad_source=1&gad_campaignid=19655506296&gbraid=0AAAAAD_Ls1KolJ88pc-FDMj8MxdsqWaBG&gclid=Cj0KCQjwh5vFBhCyARIsAHBx2wzN-FgbpL6jeU-eVY5p9MS5l1OHhD44ExuL9WkWSTy_MJt8-sf8LWMaAhtKEALw_wcB&chal_t=1755784737521&force_referer=https%3A%2F%2Fwww.google.com%2F', '_blank')">
+                        Buscar Hoteles
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ViajesMundo</h3>
+                    <p>Tu agencia de confianza para explorar el mundo</p>
+                    <div class="social-links" id="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Enlaces Rápidos</h4>
+                    <ul>
+                        <li><a href="index.html">Inicio</a></li>
+                        <li><a href="pages/paquetes.html">Paquetes</a></li>
+                        <li><a href="pages/agenda.html">Agenda</a></li>
+                        <li><a href="pages/contacto.html">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <p><i class="fas fa-phone"></i> +34 900 123 456</p>
+                    <p><i class="fas fa-envelope"></i> info@viajesmundo.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Quito, Ecuador</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 ViajesMundo. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/packageManager.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/profileMenu.js"></script>
+</body>
+
+</html>

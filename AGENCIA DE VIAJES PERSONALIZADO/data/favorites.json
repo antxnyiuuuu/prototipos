@@ -1,0 +1,49 @@
+{
+  "favoritos": [
+    {
+      "usuario_id": 1,
+      "productos": [
+        {
+          "id": 4,
+          "nombre": "Hotel Quito",
+          "descripcion": "Hotel de lujo en el centro histórico de Quito",
+          "categoria": "hoteles",
+          "precio": 120,
+          "creador": "Hotel Quito",
+          "imagen": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=300&h=200&fit=crop",
+          "fecha_agregado": "2024-01-15"
+        },
+        {
+          "id": 7,
+          "nombre": "Restaurante La Mar",
+          "descripcion": "Gastronomía peruana de autor con vista al mar",
+          "categoria": "restaurantes",
+          "precio": 45,
+          "creador": "Chef Gastón",
+          "imagen": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=300&h=200&fit=crop",
+          "fecha_agregado": "2024-01-15"
+        },
+        {
+          "id": 12,
+          "nombre": "Ceviche de Camarón",
+          "descripcion": "Plato típico de la costa ecuatoriana con camarones frescos",
+          "categoria": "comidas",
+          "precio": 18,
+          "creador": "Mariscos Ecuador",
+          "imagen": "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=200&fit=crop",
+          "fecha_agregado": "2024-01-15"
+        },
+        {
+          "id": 15,
+          "nombre": "Hotel Mindo",
+          "descripcion": "Ecolodge en el bosque nublado",
+          "categoria": "hoteles",
+          "precio": 85,
+          "creador": "Hotel Mindo",
+          "imagen": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=300&h=200&fit=crop",
+          "fecha_agregado": "2024-01-15"
+        }
+      ]
+    }
+  ]
+}

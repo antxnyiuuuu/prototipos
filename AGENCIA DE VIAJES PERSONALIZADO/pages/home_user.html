@@ -1,0 +1,309 @@
+<header class="header">
+  <div class="header-content">
+    <h1 class="header-title">Viajes Ecuador</h1>
+    <p class="header-subtitle">Descubre las maravillas de nuestro país</p>
+  </div>
+</header>
+
+<main class="main-content">
+  <!-- Barra superior de categorías -->
+  <div class="top-categories">
+    <button class="category-btn active" data-category="all">
+      <i class="fas fa-th"></i>
+      <span>Todos</span>
+    </button>
+    <button class="category-btn" data-category="hoteles">
+      <i class="fas fa-hotel"></i>
+      <span>Hoteles</span>
+    </button>
+    <button class="category-btn" data-category="restaurantes">
+      <i class="fas fa-utensils"></i>
+      <span>Restaurantes</span>
+    </button>
+    <button class="category-btn" data-category="actividades">
+      <i class="fas fa-hiking"></i>
+      <span>Actividades</span>
+    </button>
+    <button class="category-btn" data-category="comidas">
+      <i class="fas fa-utensils"></i>
+      <span>Comidas</span>
+    </button>
+  </div>
+
+  <!-- Paquetes Precargados -->
+  <section class="preloaded-packages-section">
+    <div class="section-header">
+      <h2>Paquetes Precargados</h2>
+      <p>Opciones prediseñadas para inspirar tu viaje</p>
+    </div>
+    
+    <div id="preloadedPackagesGrid" class="packages-grid">
+      <!-- Los paquetes precargados se cargarán dinámicamente aquí -->
+    </div>
+  </section>
+
+  <!-- Filtro por localidad -->
+  <div class="location-filter-section">
+    <label for="homeLocationSelect">Filtrar por localidad:</label>
+    <select id="homeLocationSelect" class="location-select">
+      <option value="">Todas las localidades</option>
+      <!-- Las localidades se cargarán dinámicamente -->
+    </select>
+  </div>
+
+  <!-- Productos recomendados -->
+  <section class="recommended-section">
+    <div class="section-header">
+      <h2 id="sectionTitle">Productos Recomendados</h2>
+      <p id="sectionDescription">Descubre las mejores opciones para tu viaje</p>
+    </div>
+    
+    <div id="productsGrid" class="products-grid">
+      <!-- Los productos se cargarán dinámicamente aquí -->
+    </div>
+    
+    <!-- Estado vacío -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <div class="empty-icon">
+        <i class="fas fa-search"></i>
+      </div>
+      <h3>No se encontraron productos</h3>
+      <p>Intenta ajustar los filtros o selecciona otra categoría</p>
+    </div>
+  </section>
+</main>
+
+<nav class="bottom-nav user-nav">
+  <div class="nav-item active" data-page="home">
+    <i class="fas fa-home"></i>
+    <span>Inicio</span>
+  </div>
+  <div class="nav-item" data-page="search">
+    <i class="fas fa-search"></i>
+    <span>Buscar</span>
+  </div>
+  <div class="nav-item" data-page="packages">
+    <i class="fas fa-suitcase"></i>
+    <span>Paquetes</span>
+  </div>
+  <div class="nav-item" data-page="profile">
+    <i class="fas fa-user"></i>
+    <span>Perfil</span>
+  </div>
+</nav>
+
+<!-- El modal se crea dinámicamente desde app.js -->
+
+<link rel="stylesheet" href="../assets/layout-consistency.css">
+<link rel="stylesheet" href="../assets/preloaded-packages.css">
+<script src="../data/products.js"></script>
+
+<script>
+// Inicializar usuario si no existe
+if (!window.app) {
+  window.app = {
+    currentUser: { id: 1, tipo: 'user' }
+  };
+}
+
+// Los paquetes de prueba se crean desde app.js
+
+let currentCategory = 'all';
+let currentLocation = '';
+let allProducts = [];
+
+document.addEventListener('DOMContentLoaded', function() {
+  loadLocalidades();
+  setupEventListeners();
+  loadAllProducts();
+  updateDisplay();
+});
+
+function loadLocalidades() {
+  const locationSelect = document.getElementById('homeLocationSelect');
+  const localidades = getLocalidades();
+  
+  localidades.forEach(localidad => {
+    const option = document.createElement('option');
+    option.value = localidad.nombre;
+    option.textContent = localidad.nombre;
+    locationSelect.appendChild(option);
+  });
+}
+
+function setupEventListeners() {
+  // Botones de categoría
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      currentCategory = this.dataset.category;
+      updateDisplay();
+    });
+  });
+  
+  // Filtro por localidad
+  document.getElementById('homeLocationSelect').addEventListener('change', function() {
+    currentLocation = this.value;
+    updateDisplay();
+  });
+}
+
+function loadAllProducts() {
+  // Cargar todos los productos de todas las categorías
+  allProducts = [];
+  ['hoteles', 'restaurantes', 'actividades'].forEach(category => {
+    const products = getProductsByCategory(category);
+    allProducts.push(...products);
+  });
+}
+
+// La función loadPreloadedPackages ahora está en app.js
+
+function updateDisplay() {
+  let filteredProducts = allProducts;
+  
+  // Filtrar por categoría
+  if (currentCategory !== 'all') {
+    filteredProducts = filteredProducts.filter(product => product.categoria === currentCategory);
+  }
+  
+  // Filtrar por localidad
+  if (currentLocation) {
+    filteredProducts = filteredProducts.filter(product => product.localidad === currentLocation);
+  }
+  
+  // Actualizar título y descripción de la sección
+  updateSectionHeader();
+  
+  // Mostrar productos
+  displayProducts(filteredProducts);
+}
+
+function updateSectionHeader() {
+  const sectionTitle = document.getElementById('sectionTitle');
+  const sectionDescription = document.getElementById('sectionDescription');
+  
+  if (currentCategory === 'all') {
+    sectionTitle.textContent = 'Productos Recomendados';
+    sectionDescription.textContent = 'Descubre las mejores opciones para tu viaje';
+  } else {
+    const categoryNames = {
+      'hoteles': 'Hoteles',
+      'restaurantes': 'Restaurantes',
+      'actividades': 'Actividades'
+    };
+    
+    sectionTitle.textContent = categoryNames[currentCategory];
+    sectionDescription.textContent = `Explora los mejores ${categoryNames[currentCategory].toLowerCase()} disponibles`;
+  }
+  
+  if (currentLocation) {
+    sectionDescription.textContent += ` en ${currentLocation}`;
+  }
+}
+
+function displayProducts(products) {
+  const productsGrid = document.getElementById('productsGrid');
+  const emptyState = document.getElementById('emptyState');
+  
+  if (!products || products.length === 0) {
+    productsGrid.style.display = 'none';
+    emptyState.style.display = 'block';
+    return;
+  }
+  
+  emptyState.style.display = 'none';
+  productsGrid.style.display = 'grid';
+  
+  productsGrid.innerHTML = products.map(product => `
+    <div class="product-card ${product.categoria}">
+      <div class="product-image">
+        <img src="${product.imagen}" alt="${product.nombre}">
+        <div class="product-category-badge">
+          ${getCategoryDisplayName(product.categoria)}
+        </div>
+      </div>
+      
+      <div class="product-content">
+        <h3 class="product-title">${product.nombre}</h3>
+        <p class="product-creator">${product.creador}</p>
+        <p class="product-description">${product.descripcion}</p>
+        
+        <div class="product-meta">
+          <span class="product-location">
+            <i class="fas fa-map-marker-alt"></i>
+            ${product.localidad}
+          </span>
+          
+          ${product.estrellas ? `
+            <span class="product-rating">
+              <i class="fas fa-star"></i>
+              ${product.estrellas} estrellas
+            </span>
+          ` : ''}
+          
+          <span class="product-price">
+            <i class="fas fa-dollar-sign"></i>
+            $${product.precio}
+          </span>
+        </div>
+        
+        <div class="product-actions">
+          <button class="btn btn-favorite btn-small" onclick="toggleFavorite(${product.id})">
+            <i class="fas fa-heart"></i>
+          </button>
+          <button class="btn btn-primary btn-small" onclick="app.addToPackage(${product.id})">
+            <i class="fas fa-plus"></i> Agregar
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function getCategoryDisplayName(category) {
+  const names = {
+    'hoteles': 'Hotel',
+    'restaurantes': 'Restaurante',
+    'actividades': 'Actividad'
+  };
+  return names[category] || 'Producto';
+}
+
+async function toggleFavorite(productId) {
+  try {
+    const userId = app.currentUser?.id || 1;
+    const product = getProductById(productId);
+    
+    if (product) {
+      const isInFavorites = await isProductInFavorites(userId, productId);
+      
+      if (isInFavorites) {
+        const success = await removeFromFavorites(userId, productId);
+        if (success) {
+          alert('Producto removido de favoritos');
+        }
+      } else {
+        const success = await addToFavorites(userId, product);
+        if (success) {
+          alert('Producto agregado a favoritos');
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error manejando favoritos:', error);
+    alert('Error al manejar favoritos');
+  }
+}
+
+// La función addToPackage ahora está en app.js como app.addToPackage()
+
+// La función showAddToPackageModal ahora está en app.js
+
+// La función loadUserPackagesForModal ahora está en app.js
+
+// Todas las funciones del modal ahora están en app.js
+
+// Las funciones de paquetes precargados ahora están en app.js
+</script>

@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transporte - TravelApp</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .user-welcome {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .user-avatar {
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .user-avatar:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Main Content */
+        .main {
+            padding: 2rem 0;
+            padding-bottom: 80px;
+        }
+
+        /* Botón Flotante de Crear Paquete */
+        .floating-create-btn {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            z-index: 999;
+            background: linear-gradient(45deg, #1e3c72, #2a5298, #20c997);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .floating-create-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(30, 60, 114, 0.6);
+        }
+
+        .search-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .search-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-input {
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-btn {
+            padding: 0.75rem 1.5rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            grid-column: 1 / -1;
+        }
+
+        .search-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .transport-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .transport-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .transport-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .transport-image {
+            height: 150px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .transport-content {
+            padding: 1.5rem;
+        }
+
+        .transport-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .transport-description {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .transport-features {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .feature {
+            background: #f8f9ff;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #667eea;
+        }
+
+        .transport-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #e1e5e9;
+            padding: 0.5rem 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            transition: color 0.3s;
+            padding: 0.5rem;
+            border-radius: 10px;
+            min-width: 60px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-text {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        /* Modal de Detalles del Producto */
+        .product-modal {
+            background: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .product-modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .product-modal-content {
+            padding: 2rem;
+        }
+
+        .product-image-large {
+            font-size: 8rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+            border-radius: 15px;
+        }
+
+        .product-details {
+            margin-bottom: 2rem;
+        }
+
+        .product-details h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .product-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .product-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-feature {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .product-price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn-facebook {
+            background: linear-gradient(135deg, #1877f2 0%, #42a5f5 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-facebook:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(24, 119, 242, 0.4);
+        }
+
+        /* Modal de Perfil del Producto (Solo Lectura) */
+        .profile-modal {
+            background: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .profile-edit-content {
+            padding: 2rem;
+        }
+
+        /* Cover Photo Section */
+        .cover-photo-section {
+            margin-bottom: 2rem;
+        }
+
+        .cover-photo-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: -50px;
+        }
+
+        .cover-photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Profile Photo Section */
+        .profile-photo-section {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .profile-photo-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .profile-photo-container img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Product Info Section */
+        .product-info-section {
+            margin-bottom: 2rem;
+        }
+
+        .product-info-section h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .info-display {
+            background: #f8f9ff;
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .info-item {
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-item label {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        .info-item span {
+            color: #333;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        /* Media Gallery Section */
+        .media-gallery-section {
+            margin-bottom: 2rem;
+        }
+
+        .media-gallery-section h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .media-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .media-item img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        /* Alertas */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-success {
+            background: #28a745;
+        }
+
+        .alert-error {
+            background: #dc3545;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .transport-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="user-info">
+                    <h1 class="logo">TravelApp</h1>
+                    <p class="user-welcome" id="userWelcome">¡Encuentra Transporte!</p>
+                </div>
+                <div class="user-avatar" id="userAvatar" onclick="showUserMenu()">👤</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Search Section -->
+            <div class="search-section">
+                <h2 class="search-title">🚗 Buscar Transporte</h2>
+                <form class="search-form" onsubmit="searchTransport(event)">
+                    <input type="text" class="search-input" placeholder="Origen" id="originInput">
+                    <input type="text" class="search-input" placeholder="Destino" id="destinationInput">
+                    <input type="date" class="search-input" id="dateInput">
+                    <select class="search-input" id="typeSelect">
+                        <option value="">Tipo de transporte</option>
+                        <option value="avion">Avión</option>
+                        <option value="bus">Autobús</option>
+                        <option value="tren">Tren</option>
+                        <option value="taxi">Taxi</option>
+                        <option value="renta">Renta de Auto</option>
+                        <option value="barco">Barco/Lancha</option>
+                        <option value="teleferico">Teleférico</option>
+                        <option value="bicicleta">Bicicleta</option>
+                    </select>
+                    <button type="submit" class="search-btn">Buscar Transporte</button>
+                </form>
+            </div>
+
+            <!-- Transport Grid -->
+            <div class="transport-grid" id="transportGrid">
+                <!-- El transporte se cargará dinámicamente -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Botón Flotante de Crear Paquete -->
+    <div class="floating-create-btn" onclick="createCustomPackage()">
+        +
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-content">
+            <a href="user-destacados-direct.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">Inicio</span>
+            </a>
+            <a href="user-destinos-direct.html" class="nav-item">
+                <span class="nav-icon">🌍</span>
+                <span class="nav-text">Destinos</span>
+            </a>
+            <a href="#" class="nav-item active">
+                <span class="nav-icon">🚗</span>
+                <span class="nav-text">Transporte</span>
+            </a>
+            <a href="user-paquetes-direct.html" class="nav-item">
+                <span class="nav-icon">📦</span>
+                <span class="nav-text">Paquetes</span>
+            </a>
+            <a href="user-perfil-direct.html" class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span class="nav-text">Perfil</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Modal de Usuario -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeUserModal()">&times;</span>
+            <h3>Mi Cuenta</h3>
+            <div id="userInfo"></div>
+            <div style="margin-top: 2rem;">
+                <button class="btn" onclick="goToProfile()">Mi Perfil</button>
+                <button class="btn" onclick="logout()" style="margin-top: 1rem; background: #6c757d;">Cerrar Sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Detalles del Producto -->
+    <div id="productModal" class="modal">
+        <div class="modal-content product-modal">
+            <div class="product-modal-header">
+                <h2>🚌 Detalles del Transporte</h2>
+                <span class="close" onclick="closeProductModal()">&times;</span>
+            </div>
+            <div class="product-modal-content">
+                <div class="product-image-large" id="productImageLarge"></div>
+                <div class="product-details">
+                    <h3 id="productTitle"></h3>
+                    <p class="product-description" id="productDescription"></p>
+                    <div class="product-features" id="productFeatures"></div>
+                    <div class="product-price" id="productPrice"></div>
+                    <div class="product-actions">
+                        <button class="btn-facebook" onclick="viewProductProfile()">
+                            📘 Ver Perfil del Producto
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Perfil del Producto (Solo Lectura) -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content profile-modal">
+            <div class="modal-header">
+                <h2>📸 Perfil del Producto</h2>
+                <span class="close" onclick="closeProfileModal()">&times;</span>
+            </div>
+            
+            <div class="profile-edit-content">
+                <!-- Cover Photo Section -->
+                <div class="cover-photo-section">
+                    <div class="cover-photo-container">
+                        <img id="profileCoverPhoto" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjNjY3ZWVhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7wn5GoIENvdmVyIFBob3RvPC90ZXh0Pjwvc3ZnPg==" alt="Cover Photo">
+                    </div>
+                </div>
+
+                <!-- Profile Photo Section -->
+                <div class="profile-photo-section">
+                    <div class="profile-photo-container">
+                        <img id="profileProfilePhoto" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI3NSIgY3k9Ijc1IiByPSI3NSIgZmlsbD0iIzY2N2VlYSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+RsTwvdGV4dD48L3N2Zz4=" alt="Profile Photo">
+                    </div>
+                </div>
+
+                <!-- Product Info Section -->
+                <div class="product-info-section">
+                    <h3>🚌 Información del Transporte</h3>
+                    <div class="info-display">
+                        <div class="info-item">
+                            <label>Nombre:</label>
+                            <span id="profileProductName">Transporte Ecuador</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Descripción:</label>
+                            <span id="profileProductDescription">Servicios de transporte confiables y seguros para explorar Ecuador.</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Ubicación:</label>
+                            <span id="profileProductLocation">Ecuador</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Media Gallery Section -->
+                <div class="media-gallery-section">
+                    <h3>📸 Galería de Fotos y Videos</h3>
+                    <div class="media-grid" id="profileMediaGrid">
+                        <!-- Media items will be displayed here -->
+                        <div class="media-item">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPvCfkaggVHJhbnNwb3J0ZTwvdGV4dD48L3N2Zz4=" alt="Transporte">
+                        </div>
+                        <div class="media-item">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPvCfkaggQXV0b2bDvXM8L3RleHQ+PC9zdmc+" alt="Autobús">
+                        </div>
+                        <div class="media-item">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPvCfkaggVGF4aTwvdGV4dD48L3N2Zz4=" alt="Taxi">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="alertContainer"></div>
+
+    <script>
+        // Datos de transporte de Ecuador
+        const transportes = [
+            {
+                id: 1,
+                nombre: "Vuelo Nacional Ecuador",
+                descripcion: "Vuelos domésticos con TAME, Avianca y LATAM a Quito, Guayaquil, Cuenca y más destinos.",
+                imagen: "✈️",
+                tipo: "avion",
+                precio: "$120",
+                features: ["Equipaje Incluido", "WiFi", "Snacks"]
+            },
+            {
+                id: 2,
+                nombre: "Bus Interprovincial",
+                descripcion: "Viaja por Ecuador en buses cómodos con rutas a todas las provincias del país.",
+                imagen: "🚌",
+                tipo: "bus",
+                precio: "$25",
+                features: ["Aire Acondicionado", "Baño", "Asientos Reclinables"]
+            },
+            {
+                id: 3,
+                nombre: "Tren de los Andes",
+                descripcion: "Disfruta del famoso tren que recorre los Andes ecuatorianos con vistas espectaculares.",
+                imagen: "🚂",
+                tipo: "tren",
+                precio: "$85",
+                features: ["Vistas Andinas", "Comodidad", "Historia"]
+            },
+            {
+                id: 4,
+                nombre: "Taxi Ciudad",
+                descripcion: "Servicio de taxi confiable en las principales ciudades de Ecuador.",
+                imagen: "🚕",
+                tipo: "taxi",
+                precio: "$8",
+                features: ["Precio Justo", "Seguridad", "Disponibilidad 24h"]
+            },
+            {
+                id: 5,
+                nombre: "Renta de Auto Ecuador",
+                descripcion: "Renta un auto para explorar Ecuador a tu ritmo con total libertad.",
+                imagen: "🚗",
+                tipo: "renta",
+                precio: "$45/día",
+                features: ["Seguro Incluido", "Kilometraje Libre", "Entrega en Hotel"]
+            },
+            {
+                id: 6,
+                nombre: "Lancha a Galápagos",
+                descripcion: "Crucero en lancha para explorar las islas Galápagos con guías especializados.",
+                imagen: "⛵",
+                tipo: "barco",
+                precio: "$200",
+                features: ["Guía Naturalista", "Equipos de Buceo", "Comidas Incluidas"]
+            },
+            {
+                id: 7,
+                nombre: "Teleférico Quito",
+                descripcion: "Sube al Teleférico de Quito para disfrutar de vistas panorámicas de la ciudad.",
+                imagen: "🚠",
+                tipo: "teleferico",
+                precio: "$12",
+                features: ["Vistas Panorámicas", "Aventura", "Fotografía"]
+            },
+            {
+                id: 8,
+                nombre: "Bicicleta de Montaña",
+                descripcion: "Renta una bicicleta para explorar los senderos de montaña de Ecuador.",
+                imagen: "🚴",
+                tipo: "bicicleta",
+                precio: "$20/día",
+                features: ["Eco-amigable", "Aventura", "Ejercicio"]
+            }
+        ];
+
+        // Funciones de utilidad
+        function showAlert(message, type = 'success') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+        }
+
+        function showUserMenu() {
+            const modal = document.getElementById('userModal');
+            const userInfo = document.getElementById('userInfo');
+            
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                userInfo.innerHTML = `
+                    <p><strong>Nombre:</strong> ${user.name}</p>
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>Rol:</strong> ${getRoleDisplayName(user.role)}</p>
+                `;
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').style.display = 'none';
+        }
+
+        function getRoleDisplayName(role) {
+            const roleNames = {
+                'usuario': 'Usuario',
+                'admin': 'Administrador',
+                'hotel': 'Hotel',
+                'restaurante': 'Restaurante',
+                'actividades': 'Actividades'
+            };
+            return roleNames[role] || role;
+        }
+
+        function goToProfile() {
+            window.location.href = 'user-perfil-direct.html';
+        }
+
+        function logout() {
+            localStorage.removeItem('current_user');
+            showAlert('Sesión cerrada correctamente', 'success');
+            setTimeout(() => {
+                window.location.href = 'login-direct.html';
+            }, 1000);
+        }
+
+        function createCustomPackage() {
+            // Redirigir a la página principal donde está el modal
+            window.location.href = 'user-destacados-direct.html';
+        }
+
+        function searchTransport(event) {
+            event.preventDefault();
+            const origin = document.getElementById('originInput').value.toLowerCase();
+            const destination = document.getElementById('destinationInput').value.toLowerCase();
+            const date = document.getElementById('dateInput').value;
+            const type = document.getElementById('typeSelect').value;
+            
+            let filteredTransport = transportes;
+            
+            if (type) {
+                filteredTransport = filteredTransport.filter(transport => 
+                    transport.tipo === type
+                );
+            }
+            
+            displayTransport(filteredTransport);
+            showAlert(`Se encontraron ${filteredTransport.length} opciones de transporte`, 'success');
+        }
+
+        function displayTransport(transportToShow) {
+            const grid = document.getElementById('transportGrid');
+            grid.innerHTML = '';
+            
+            transportToShow.forEach(transport => {
+                const card = document.createElement('div');
+                card.className = 'transport-card';
+                card.innerHTML = `
+                    <div class="transport-image">${transport.imagen}</div>
+                    <div class="transport-content">
+                        <h3 class="transport-title">${transport.nombre}</h3>
+                        <p class="transport-description">${transport.descripcion}</p>
+                        <div class="transport-features">
+                            ${transport.features.map(feature => `<span class="feature">${feature}</span>`).join('')}
+                        </div>
+                        <div class="transport-price">Desde ${transport.precio}</div>
+                        <button class="btn" onclick="verTransporte(${transport.id})">Ver Detalles</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function verTransporte(transportId) {
+            const transport = transportes.find(t => t.id === transportId);
+            if (transport) {
+                // Llenar el modal con los datos del transporte
+                document.getElementById('productImageLarge').textContent = transport.imagen;
+                document.getElementById('productTitle').textContent = transport.nombre;
+                document.getElementById('productDescription').textContent = transport.descripcion;
+                document.getElementById('productPrice').textContent = `Desde ${transport.precio}`;
+                
+                // Llenar las características
+                const featuresContainer = document.getElementById('productFeatures');
+                featuresContainer.innerHTML = '';
+                transport.features.forEach(feature => {
+                    const featureElement = document.createElement('span');
+                    featureElement.className = 'product-feature';
+                    featureElement.textContent = feature;
+                    featuresContainer.appendChild(featureElement);
+                });
+                
+                // Mostrar el modal
+                document.getElementById('productModal').style.display = 'block';
+            }
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').style.display = 'none';
+        }
+
+        function viewProductProfile() {
+            // Mostrar el modal del perfil del producto
+            document.getElementById('profileModal').style.display = 'block';
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').style.display = 'none';
+        }
+
+        function editProduct() {
+            // Simular edición del producto
+            showAlert('Función de edición del producto - En desarrollo', 'info');
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const userModal = document.getElementById('userModal');
+            const productModal = document.getElementById('productModal');
+            const profileModal = document.getElementById('profileModal');
+            if (event.target == userModal) {
+                closeUserModal();
+            }
+            if (event.target == productModal) {
+                closeProductModal();
+            }
+            if (event.target == profileModal) {
+                closeProfileModal();
+            }
+        }
+
+        // Inicializar página
+        window.addEventListener('load', function() {
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                if (user.role === 'usuario') {
+                    document.getElementById('userWelcome').textContent = `¡Hola ${user.name}!`;
+                    document.getElementById('userAvatar').textContent = user.avatar || '👤';
+                } else {
+                    showAlert('Acceso denegado. Solo usuarios pueden acceder a esta página.', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'login-direct.html';
+                    }, 2000);
+                }
+            } else {
+                showAlert('No hay usuario logueado. Redirigiendo al login...', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login-direct.html';
+                }, 2000);
+            }
+            
+            // Cargar transporte inicial
+            displayTransport(transportes);
+        });
+    </script>
+</body>
+</html>

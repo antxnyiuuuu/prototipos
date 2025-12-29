@@ -1,0 +1,190 @@
+<header class="header">
+  <div class="header-content">
+    <h1 class="header-title">Mis Paquetes</h1>
+  </div>
+</header>
+
+<main class="main-content">
+  <div class="packages-header">
+    <h2>Tus Paquetes de Viaje</h2>
+    <p>Organiza y personaliza tus aventuras</p>
+  </div>
+  
+  <div class="create-package-section">
+    <button id="createPackageBtn" class="btn btn-primary btn-large">
+      <i class="fas fa-plus"></i>
+      Crear Nuevo Paquete
+    </button>
+  </div>
+  
+  <!-- Estado vacío -->
+  <div id="emptyState" class="empty-state" style="display: none;">
+    <div class="empty-icon">
+      <i class="fas fa-suitcase"></i>
+    </div>
+    <h3>No tienes paquetes creados</h3>
+    <p>Comienza creando tu primer paquete turístico personalizado</p>
+    <button class="btn btn-primary btn-large" onclick="createNewPackage()">
+      <i class="fas fa-plus"></i>
+      Crear Nuevo Paquete
+    </button>
+  </div>
+  
+  <!-- Lista de paquetes -->
+  <div id="userPackages" class="packages-grid">
+    <!-- Los paquetes se cargarán dinámicamente aquí -->
+  </div>
+</main>
+
+<nav class="bottom-nav user-nav">
+  <div class="nav-item" data-page="home">
+    <i class="fas fa-home"></i>
+    <span>Inicio</span>
+  </div>
+  <div class="nav-item" data-page="search">
+    <i class="fas fa-search"></i>
+    <span>Buscar</span>
+  </div>
+  <div class="nav-item active" data-page="packages">
+    <i class="fas fa-suitcase"></i>
+    <span>Paquetes</span>
+  </div>
+  <div class="nav-item" data-page="profile">
+    <i class="fas fa-user"></i>
+    <span>Perfil</span>
+  </div>
+</nav>
+
+<link rel="stylesheet" href="../assets/layout-consistency.css">
+  
+<script>
+// Cargar paquetes cuando se carga la página
+document.addEventListener('DOMContentLoaded', function() {
+  app.loadUserPackages();
+  
+  // Configurar el botón de crear paquete
+  document.getElementById('createPackageBtn').addEventListener('click', function() {
+    createNewPackage();
+  });
+});
+
+// Función para crear nuevo paquete
+function createNewPackage() {
+  window.location.href = 'new-package.html';
+}
+
+// Función para eliminar paquete
+async function deletePackage(packageId) {
+  if (confirm('¿Estás seguro de que quieres eliminar este paquete? Esta acción no se puede deshacer.')) {
+    try {
+      const userId = app.currentUser?.id || 1;
+      const success = await deleteUserPackage(userId, packageId);
+      
+      if (success) {
+        // Recargar la lista de paquetes
+        app.loadUserPackages();
+      } else {
+        alert('Error al eliminar el paquete');
+      }
+    } catch (error) {
+      console.error('Error eliminando paquete:', error);
+      alert('Error al eliminar el paquete');
+    }
+  }
+}
+
+// Función para renderizar paquetes
+function renderPackages(packages) {
+  const container = document.getElementById('userPackages');
+  const emptyState = document.getElementById('emptyState');
+  
+  if (!packages || packages.length === 0) {
+    container.style.display = 'none';
+    emptyState.style.display = 'block';
+    return;
+  }
+  
+  emptyState.style.display = 'none';
+  container.style.display = 'grid';
+  
+  container.innerHTML = packages.map(package => `
+    <div class="package-card" data-id="${package.id}">
+      <div class="package-image">
+        <img src="${package.imagen || 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=300&h=200&fit=crop'}" 
+             alt="${package.nombre}">
+      </div>
+      <div class="package-content">
+        <h3 class="package-title">${package.nombre}</h3>
+        <p class="package-description">${package.descripcion}</p>
+        
+        <div class="package-meta">
+          <span class="package-location">
+            <i class="fas fa-map-marker-alt"></i>
+            ${package.localidad || 'Sin localidad'}
+          </span>
+          <span class="package-duration">
+            <i class="fas fa-clock"></i>
+            ${package.duracion || 'Sin duración'}
+          </span>
+        </div>
+        
+        <div class="package-products">
+          <h4>Productos incluidos:</h4>
+          <div class="products-summary">
+            ${package.productos && package.productos.length > 0 
+              ? package.productos.map(product => `
+                  <span class="product-tag ${product.categoria}">
+                    <i class="fas fa-${getProductIcon(product.categoria)}"></i>
+                    ${product.nombre}
+                  </span>
+                `).join('')
+              : '<p class="no-products">No hay productos agregados</p>'
+            }
+          </div>
+        </div>
+        
+        <div class="package-footer">
+          <div class="package-price">
+            <span class="price-label">Precio:</span>
+            <span class="price-value">$${package.precio_total || package.precio || 0}</span>
+          </div>
+          
+          <div class="package-actions">
+            <button class="btn btn-secondary btn-sm" onclick="app.editPackage(${package.id})">
+              <i class="fas fa-edit"></i> Editar
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="app.deletePackage(${package.id})">
+              <i class="fas fa-trash"></i> Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Función para obtener el ícono del producto según la categoría
+function getProductIcon(category) {
+  const icons = {
+    'hoteles': 'hotel',
+    'restaurantes': 'utensils',
+    'actividades': 'hiking'
+  };
+  return icons[category] || 'tag';
+}
+
+
+
+// Sobrescribir la función loadUserPackages para usar nuestro renderizado personalizado
+const originalLoadUserPackages = app.loadUserPackages;
+app.loadUserPackages = async function() {
+  try {
+    const userId = this.currentUser?.id || 1;
+    const packages = await loadUserPackages(userId);
+    renderPackages(packages);
+  } catch (error) {
+    console.error('Error cargando paquetes:', error);
+    renderPackages([]);
+  }
+};
+</script>

@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Técnico - Telecomunicaciones</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-info">
+                    <h1><i class="fas fa-tools"></i> Dashboard Técnico</h1>
+                    <p>Mis tareas asignadas</p>
+                </div>
+                <div class="user-logo">
+                    <div class="user-logo-btn" onclick="toggleUserMenu()">
+                        <div class="user-initial" id="userInitial">T</div>
+                    </div>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="#" class="user-dropdown-item" onclick="showPerfilModal()">
+                            <i class="fas fa-user"></i>
+                            Mi Perfil
+                        </a>
+                        <a href="#" class="user-dropdown-item" onclick="showNotificationsModal()">
+                            <i class="fas fa-bell"></i>
+                            Notificaciones
+                            <span id="notificacionesBadgeHeader" class="notification-badge" style="display: none;">!</span>
+                        </a>
+                        <a href="#" class="user-dropdown-item danger" onclick="cerrarSesion()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Cerrar Sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas del técnico -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="misTareas">-</div>
+                <div class="stat-label">Mis Tareas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="enProgreso">-</div>
+                <div class="stat-label">En Progreso</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completadas">-</div>
+                <div class="stat-label">Completadas</div>
+            </div>
+        </div>
+
+        <!-- Tareas asignadas -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-list-check"></i> Mis Tareas
+                </h3>
+                <button class="btn btn-small btn-primary" onclick="refreshTareas()">
+                    <i class="fas fa-sync-alt"></i> Actualizar
+                </button>
+            </div>
+            <div id="tareasContainer">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón para reportar nueva tarea -->
+        <div class="card">
+            <button class="btn btn-success btn-full" onclick="showReporteModal()">
+                <i class="fas fa-plus"></i>
+                Reportar Finalización de Tarea
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal de perfil -->
+    <div id="perfilModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Mi Perfil</h3>
+                <button class="modal-close" onclick="closePerfilModal()">&times;</button>
+            </div>
+            
+            <form id="perfilForm">
+                <div class="form-group">
+                    <label for="perfilUsuario" class="form-label">Usuario</label>
+                    <input 
+                        type="text" 
+                        id="perfilUsuario" 
+                        class="form-input" 
+                        readonly
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="perfilRol" class="form-label">Rol</label>
+                    <input 
+                        type="text" 
+                        id="perfilRol" 
+                        class="form-input" 
+                        readonly
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="perfilNombre" class="form-label">Nombre Completo</label>
+                    <input 
+                        type="text" 
+                        id="perfilNombre" 
+                        class="form-input" 
+                        placeholder="Ingresa tu nombre completo"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="perfilEmail" class="form-label">Email</label>
+                    <input 
+                        type="email" 
+                        id="perfilEmail" 
+                        class="form-input" 
+                        placeholder="tu@email.com"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="perfilTelefono" class="form-label">Teléfono</label>
+                    <input 
+                        type="tel" 
+                        id="perfilTelefono" 
+                        class="form-input" 
+                        placeholder="300-123-4567"
+                    >
+                </div>
+
+                <div style="display: flex; gap: 12px;">
+                    <button type="button" class="btn btn-secondary" onclick="closePerfilModal()" style="flex: 1;">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        <i class="fas fa-save"></i>
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para reportar tarea -->
+    <div id="reporteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Reportar Tarea Completada</h3>
+                <button class="modal-close" onclick="closeReporteModal()">&times;</button>
+            </div>
+            
+            <form id="reporteForm">
+                <div class="form-group">
+                    <label for="tareaSelect" class="form-label">Seleccionar Tarea</label>
+                    <select id="tareaSelect" class="form-select" required>
+                        <option value="">Selecciona una tarea</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="observaciones" class="form-label">Observaciones Técnicas</label>
+                    <textarea 
+                        id="observaciones" 
+                        class="form-textarea" 
+                        placeholder="Describe el trabajo realizado, problemas encontrados, soluciones aplicadas..."
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="fotos" class="form-label">Fotografías (Opcional)</label>
+                    <input 
+                        type="file" 
+                        id="fotos" 
+                        class="form-input" 
+                        multiple 
+                        accept="image/*"
+                    >
+                    <small style="color: #666; font-size: 12px;">
+                        Puedes subir múltiples fotos del trabajo realizado
+                    </small>
+                </div>
+
+                <div style="display: flex; gap: 12px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeReporteModal()" style="flex: 1;">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-success" style="flex: 1;">
+                        <i class="fas fa-check"></i>
+                        Reportar Completada
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Notificaciones -->
+    <div id="notificationsModal" class="notifications-modal">
+        <div class="notifications-modal-content">
+            <div class="notifications-modal-header">
+                <h3><i class="fas fa-bell"></i> Notificaciones</h3>
+                <button class="notifications-modal-close" onclick="closeNotificationsModal()">&times;</button>
+            </div>
+            <div class="notifications-modal-body" id="notificationsList">
+                <!-- Las notificaciones se cargarán aquí -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Tareas Asignadas -->
+    <div id="tareasModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-tasks"></i> Mis Tareas Asignadas
+                </h3>
+                <button class="modal-close" onclick="closeTareasModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="tareasModalList">
+                <!-- Las tareas se cargarán aquí -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegación inferior -->
+    <div class="bottom-nav">
+        <a href="dashboard-tecnico.html" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showTareasModal()">
+            <i class="fas fa-tasks"></i>
+            <span>Tareas Asignadas</span>
+        </a>
+    </div>
+
+    <script>
+        let misTareas = [];
+        let tecnicoId = null; // Se obtendrá del login
+
+        // Datos por defecto
+        const defaultTareas = [
+            {
+                "id": 1,
+                "descripcion": "Instalación de internet en casa de María González",
+                "cliente_id": 1,
+                "cliente_nombre": "María González",
+                "direccion": "Calle 123 #45-67, Barrio Centro",
+                "tecnico_id": 1,
+                "tecnico_nombre": "Juan Pérez",
+                "estado": "En Progreso",
+                "fecha_creacion": "2024-01-15",
+                "fecha_vencimiento": "2024-01-20",
+                "observaciones": "",
+                "fotos": []
+            },
+            {
+                "id": 2,
+                "descripcion": "Mantenimiento de TV en oficina de Carlos Rodríguez",
+                "cliente_id": 2,
+                "cliente_nombre": "Carlos Rodríguez",
+                "direccion": "Carrera 8 #12-34, Barrio Norte",
+                "tecnico_id": 2,
+                "tecnico_nombre": "Pedro García",
+                "estado": "Pendiente",
+                "fecha_creacion": "2024-01-16",
+                "fecha_vencimiento": "2024-01-22",
+                "observaciones": "",
+                "fotos": []
+            },
+            {
+                "id": 3,
+                "descripcion": "Instalación completa en casa de Ana Martínez",
+                "cliente_id": 3,
+                "cliente_nombre": "Ana Martínez",
+                "direccion": "Calle 45 #78-90, Barrio Sur",
+                "tecnico_id": 1,
+                "tecnico_nombre": "Juan Pérez",
+                "estado": "Completada",
+                "fecha_creacion": "2024-01-10",
+                "fecha_vencimiento": "2024-01-15",
+                "observaciones": "Instalación exitosa, cliente satisfecho",
+                "fotos": ["foto1.jpg", "foto2.jpg"]
+            }
+        ];
+
+        // Verificar sesión
+        window.addEventListener('load', function() {
+            const userData = localStorage.getItem('userData');
+            if (!userData || JSON.parse(userData).rol !== 'tecnico') {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Obtener ID del técnico del login
+            const user = JSON.parse(userData);
+            tecnicoId = user.tecnico_id;
+            
+            if (!tecnicoId) {
+                alert('Error: No se encontró el ID del técnico. Por favor, inicia sesión nuevamente.');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            loadTareas();
+            loadPerfilData();
+            checkNotificaciones();
+            loadUserInitial();
+        });
+
+        // Cargar tareas del técnico
+        function loadTareas() {
+            try {
+                // Intentar cargar desde localStorage primero
+                let todasLasTareas = JSON.parse(localStorage.getItem('tareas') || '[]');
+                
+                // Si no hay datos en localStorage, usar datos por defecto
+                if (todasLasTareas.length === 0) {
+                    todasLasTareas = defaultTareas;
+                    localStorage.setItem('tareas', JSON.stringify(todasLasTareas));
+                }
+                
+                // Filtrar tareas del técnico actual
+                misTareas = todasLasTareas.filter(tarea => tarea.tecnico_id === tecnicoId);
+                
+                displayTareas();
+                updateStats();
+                populateTareaSelect();
+
+            } catch (error) {
+                console.error('Error cargando tareas:', error);
+            }
+        }
+
+        function displayTareas() {
+            const container = document.getElementById('tareasContainer');
+            
+            if (misTareas.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #666;">
+                        <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                        <p>No tienes tareas asignadas</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = misTareas.map(tarea => `
+                <div class="list-item">
+                    <div class="list-item-header">
+                        <div>
+                            <div class="list-item-title">${tarea.descripcion}</div>
+                            <div class="list-item-subtitle">
+                                <i class="fas fa-user"></i> ${tarea.cliente_nombre}<br>
+                                <i class="fas fa-map-marker-alt"></i> ${tarea.direccion}<br>
+                                <i class="fas fa-calendar"></i> Vence: ${new Date(tarea.fecha_vencimiento).toLocaleDateString()}
+                            </div>
+                        </div>
+                        <span class="status-badge status-${tarea.estado.toLowerCase().replace(' ', '-')}">
+                            ${tarea.estado}
+                        </span>
+                    </div>
+                    
+                    ${tarea.estado === 'En Progreso' ? `
+                        <div style="margin-top: 12px;">
+                            <button class="btn btn-small btn-success" onclick="marcarCompletada(${tarea.id})">
+                                <i class="fas fa-check"></i>
+                                Marcar Completada
+                            </button>
+                        </div>
+                    ` : ''}
+                    
+                    ${tarea.observaciones ? `
+                        <div style="margin-top: 12px; padding: 12px; background: #f5f5f5; border-radius: 6px;">
+                            <strong>Observaciones:</strong><br>
+                            ${tarea.observaciones}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            const total = misTareas.length;
+            const enProgreso = misTareas.filter(t => t.estado === 'En Progreso').length;
+            const completadas = misTareas.filter(t => t.estado === 'Completada').length;
+
+            document.getElementById('misTareas').textContent = total;
+            document.getElementById('enProgreso').textContent = enProgreso;
+            document.getElementById('completadas').textContent = completadas;
+        }
+
+        function populateTareaSelect() {
+            const select = document.getElementById('tareaSelect');
+            const tareasEnProgreso = misTareas.filter(t => t.estado === 'En Progreso');
+            
+            select.innerHTML = '<option value="">Selecciona una tarea</option>' +
+                tareasEnProgreso.map(tarea => 
+                    `<option value="${tarea.id}">${tarea.descripcion}</option>`
+                ).join('');
+        }
+
+        function marcarCompletada(tareaId) {
+            const tarea = misTareas.find(t => t.id === tareaId);
+            if (tarea) {
+                document.getElementById('tareaSelect').value = tareaId;
+                showReporteModal();
+            }
+        }
+
+        function showReporteModal() {
+            document.getElementById('reporteModal').classList.add('show');
+        }
+
+        function closeReporteModal() {
+            document.getElementById('reporteModal').classList.remove('show');
+            document.getElementById('reporteForm').reset();
+        }
+
+        // Manejar envío del reporte
+        document.getElementById('reporteForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const tareaId = parseInt(document.getElementById('tareaSelect').value);
+            const observaciones = document.getElementById('observaciones').value;
+            const fotos = document.getElementById('fotos').files;
+            
+            if (!tareaId) {
+                alert('Por favor selecciona una tarea');
+                return;
+            }
+            
+            // Actualizar la tarea
+            const tarea = misTareas.find(t => t.id === tareaId);
+            if (tarea) {
+                tarea.estado = 'Completada';
+                tarea.observaciones = observaciones;
+                tarea.fecha_completada = new Date().toISOString();
+                
+                // Simular subida de fotos
+                if (fotos.length > 0) {
+                    tarea.fotos = Array.from(fotos).map(foto => foto.name);
+                }
+                
+                // Guardar en localStorage
+                saveTareasToLocalStorage();
+                
+                // Crear notificación para el admin
+                const notificacionAdmin = {
+                    id: Date.now(),
+                    admin_id: 1,
+                    tecnico_id: tecnicoId,
+                    tarea_id: tareaId,
+                    tipo: 'completada',
+                    titulo: 'Tarea Completada',
+                    mensaje: `El técnico ha completado la tarea: ${tarea.descripcion}`,
+                    fecha: new Date().toISOString(),
+                    leida: false
+                };
+                
+                const notificacionesAdmin = JSON.parse(localStorage.getItem('notificacionesAdmin') || '[]');
+                notificacionesAdmin.push(notificacionAdmin);
+                localStorage.setItem('notificacionesAdmin', JSON.stringify(notificacionesAdmin));
+                
+                // Actualizar la vista
+                displayTareas();
+                updateStats();
+                populateTareaSelect();
+                
+                closeReporteModal();
+                
+                alert('Tarea reportada exitosamente. Pendiente de validación por el coordinador.');
+            }
+        });
+
+        function saveTareasToLocalStorage() {
+            // Cargar todas las tareas y actualizar la del técnico
+            const todasLasTareas = JSON.parse(localStorage.getItem('tareas') || '[]');
+            const tareaActualizada = misTareas.find(t => t.estado === 'Completada' && t.fecha_completada);
+            
+            if (tareaActualizada) {
+                const index = todasLasTareas.findIndex(t => t.id === tareaActualizada.id);
+                if (index !== -1) {
+                    todasLasTareas[index] = tareaActualizada;
+                    localStorage.setItem('tareas', JSON.stringify(todasLasTareas));
+                }
+            }
+        }
+
+        function refreshTareas() {
+            loadTareas();
+        }
+
+        // Verificar notificaciones no leídas
+        function checkNotificaciones() {
+            try {
+                const notificaciones = JSON.parse(localStorage.getItem('notificaciones') || '[]');
+                const notificacionesNoLeidas = notificaciones.filter(notif => 
+                    notif.tecnico_id === tecnicoId && !notif.leida
+                );
+                
+                // Actualizar badge del header
+                const badgeHeader = document.getElementById('notificacionesBadgeHeader');
+                if (badgeHeader) {
+                    if (notificacionesNoLeidas.length > 0) {
+                        badgeHeader.textContent = notificacionesNoLeidas.length;
+                        badgeHeader.style.display = 'flex';
+                    } else {
+                        badgeHeader.style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Error verificando notificaciones:', error);
+            }
+        }
+
+        // Funciones de perfil
+        function loadPerfilData() {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const perfilData = JSON.parse(localStorage.getItem('perfilData') || '{}');
+            
+            document.getElementById('perfilUsuario').value = userData.usuario || '';
+            document.getElementById('perfilRol').value = userData.rol === 'coordinador' ? 'Coordinador/Administrador' : 'Técnico';
+            document.getElementById('perfilNombre').value = perfilData.nombre || '';
+            document.getElementById('perfilEmail').value = perfilData.email || '';
+            document.getElementById('perfilTelefono').value = perfilData.telefono || '';
+        }
+
+        function showPerfilModal() {
+            loadPerfilData();
+            document.getElementById('perfilModal').classList.add('show');
+        }
+
+        function closePerfilModal() {
+            document.getElementById('perfilModal').classList.remove('show');
+        }
+
+        // Manejar envío del formulario de perfil
+        document.getElementById('perfilForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const perfilData = {
+                nombre: document.getElementById('perfilNombre').value,
+                email: document.getElementById('perfilEmail').value,
+                telefono: document.getElementById('perfilTelefono').value,
+                fechaActualizacion: new Date().toISOString()
+            };
+            
+            localStorage.setItem('perfilData', JSON.stringify(perfilData));
+            closePerfilModal();
+            alert('Perfil actualizado exitosamente');
+        });
+
+        function cerrarSesion() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                localStorage.removeItem('userData');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Función para toggle del menú de usuario
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            const userLogo = document.querySelector('.user-logo');
+            const dropdown = document.getElementById('userDropdown');
+            
+            if (!userLogo.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Cargar inicial del usuario
+        function loadUserInitial() {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const initial = userData.tecnico_nombre ? userData.tecnico_nombre.charAt(0).toUpperCase() : 'T';
+            document.getElementById('userInitial').textContent = initial;
+        }
+
+        // Cerrar modales al hacer clic fuera
+        document.getElementById('reporteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeReporteModal();
+            }
+        });
+
+        document.getElementById('perfilModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePerfilModal();
+            }
+        });
+
+        // Verificar notificaciones en tiempo real (cada 5 segundos)
+        setInterval(() => {
+            checkNotificaciones();
+        }, 5000);
+
+        // Funciones del modal de notificaciones
+        function showNotificationsModal() {
+            loadNotifications();
+            document.getElementById('notificationsModal').classList.add('show');
+            toggleUserMenu(); // Cerrar el menú desplegable
+        }
+
+        function closeNotificationsModal() {
+            document.getElementById('notificationsModal').classList.remove('show');
+        }
+
+        function loadNotifications() {
+            try {
+                const notificaciones = JSON.parse(localStorage.getItem('notificaciones') || '[]');
+                const notificacionesTecnico = notificaciones.filter(notif => 
+                    notif.tecnico_id === tecnicoId
+                );
+                const notificationsList = document.getElementById('notificationsList');
+                
+                if (notificacionesTecnico.length === 0) {
+                    notificationsList.innerHTML = `
+                        <div style="text-align: center; padding: 40px 20px; color: #666;">
+                            <i class="fas fa-bell-slash" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                            <p>No hay notificaciones</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Ordenar por fecha (más recientes primero)
+                notificacionesTecnico.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+                notificationsList.innerHTML = notificacionesTecnico.map(notif => `
+                    <div class="notification-item ${!notif.leida ? 'unread' : ''}">
+                        <div class="notification-icon ${notif.tipo}">
+                            <i class="fas fa-${getNotificationIcon(notif.tipo)}"></i>
+                        </div>
+                        <div class="notification-content">
+                            <h4 class="notification-title">${notif.titulo}</h4>
+                            <p class="notification-message">${notif.mensaje}</p>
+                            <p class="notification-time">${new Date(notif.fecha).toLocaleString()}</p>
+                            ${!notif.leida ? `
+                                <div class="notification-actions">
+                                    <button class="btn btn-small btn-primary" onclick="markAsRead(${notif.id})">
+                                        Marcar como leída
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error cargando notificaciones:', error);
+            }
+        }
+
+        function getNotificationIcon(tipo) {
+            switch(tipo) {
+                case 'nueva': return 'plus-circle';
+                case 'aceptada': return 'check-circle';
+                case 'completada': return 'check-double';
+                default: return 'bell';
+            }
+        }
+
+        function markAsRead(notifId) {
+            try {
+                const notificaciones = JSON.parse(localStorage.getItem('notificaciones') || '[]');
+                const notif = notificaciones.find(n => n.id === notifId);
+                if (notif) {
+                    notif.leida = true;
+                    localStorage.setItem('notificaciones', JSON.stringify(notificaciones));
+                    loadNotifications();
+                    checkNotificaciones();
+                }
+            } catch (error) {
+                console.error('Error marcando notificación como leída:', error);
+            }
+        }
+
+        // Funciones del modal de tareas
+        function showTareasModal() {
+            loadTareasModal();
+            document.getElementById('tareasModal').classList.add('show');
+        }
+
+        function closeTareasModal() {
+            document.getElementById('tareasModal').classList.remove('show');
+        }
+
+        function loadTareasModal() {
+            const container = document.getElementById('tareasModalList');
+            
+            if (misTareas.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #666;">
+                        <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                        <p>No tienes tareas asignadas</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = misTareas.map(tarea => `
+                <div class="list-item">
+                    <div class="list-item-header">
+                        <div>
+                            <div class="list-item-title">${tarea.descripcion}</div>
+                            <div class="list-item-subtitle">
+                                <i class="fas fa-user"></i> ${tarea.cliente_nombre}<br>
+                                <i class="fas fa-map-marker-alt"></i> ${tarea.direccion}<br>
+                                <i class="fas fa-calendar"></i> Vence: ${new Date(tarea.fecha_vencimiento).toLocaleDateString()}
+                            </div>
+                        </div>
+                        <span class="status-badge status-${tarea.estado.toLowerCase().replace(' ', '-')}">
+                            ${tarea.estado}
+                        </span>
+                    </div>
+                    
+                    ${tarea.estado === 'En Progreso' ? `
+                        <div style="margin-top: 12px;">
+                            <button class="btn btn-small btn-success" onclick="marcarCompletada(${tarea.id}); closeTareasModal();">
+                                <i class="fas fa-check"></i>
+                                Marcar Completada
+                            </button>
+                        </div>
+                    ` : ''}
+                    
+                    ${tarea.observaciones ? `
+                        <div style="margin-top: 12px; padding: 12px; background: #f5f5f5; border-radius: 6px;">
+                            <strong>Observaciones:</strong><br>
+                            ${tarea.observaciones}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Cerrar modal de notificaciones al hacer clic fuera
+        document.getElementById('notificationsModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeNotificationsModal();
+            }
+        });
+
+        // Cerrar modal de tareas al hacer clic fuera
+        document.getElementById('tareasModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeTareasModal();
+            }
+        });
+    </script>
+</body>
+</html>

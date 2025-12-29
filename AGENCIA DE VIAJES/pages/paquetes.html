@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paquetes de Viaje - ViajesMundo</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-globe-americas"></i>
+                <span>ViajesMundo</span>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="../index.html">Inicio</a></li>
+                    <li><a href="paquetes.html"  class="active">Paquetes</a></li>
+                    <li><a href="agenda.html">Agenda</a></li>
+                    <li><a href="carrito.html">Carrito</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                    <li><a href="login.html" class="login-link">Iniciar Sesión</a></li>
+                </ul>
+            </nav>
+            <div class="profile-menu-container">
+                <div class="profile-avatar" id="profileAvatar">
+                    <img src="../assets/img/default-avatar.svg" alt="Avatar del usuario">
+                </div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="dropdown-header">
+                        <img src="../assets/img/default-avatar.svg" alt="Avatar del usuario">
+                        <div class="dropdown-user-info">
+                            <h4>Usuario</h4>
+                            <p>usuario@viajesmundo.com</p>
+                        </div>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="editarPerfil.html" class="dropdown-item">
+                            <i class="fas fa-edit"></i>
+                            <span>Editar perfil</span>
+                        </a>
+                        <a href="login.html" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Cerrar sesión</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Paquetes de Viaje</h1>
+                <p>Descubre nuestros destinos más populares y encuentra tu próxima aventura</p>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filters-section">
+                <div class="filters-row">
+                    <div class="filter-group">
+                        <label for="destinationFilter">Destino</label>
+                        <select id="destinationFilter">
+                            <option value="">Todos los destinos</option>
+                            <option value="europa">Europa</option>
+                            <option value="asia">Asia</option>
+                            <option value="america">América</option>
+                            <option value="africa">África</option>
+                            <option value="oceania">Oceanía</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="durationFilter">Duración</label>
+                        <select id="durationFilter">
+                            <option value="">Cualquier duración</option>
+                            <option value="1-3">1-3 días</option>
+                            <option value="4-7">4-7 días</option>
+                            <option value="8-14">8-14 días</option>
+                            <option value="15+">15+ días</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="priceFilter">Precio</label>
+                        <select id="priceFilter">
+                            <option value="">Cualquier precio</option>
+                            <option value="0-500">Hasta €500</option>
+                            <option value="500-1000">€500 - €1,000</option>
+                            <option value="1000-2000">€1,000 - €2,000</option>
+                            <option value="2000+">Más de €2,000</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="ratingFilter">Puntuación</label>
+                        <select id="ratingFilter">
+                            <option value="">Cualquier puntuación</option>
+                            <option value="4.0+">4.0+ estrellas</option>
+                            <option value="4.5+">4.5+ estrellas</option>
+                            <option value="4.8+">4.8+ estrellas</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filters-actions">
+                    <button class="btn btn-outline" id="clearFilters">Limpiar Filtros</button>
+                    <button class="btn btn-primary" id="applyFilters">Aplicar Filtros</button>
+                </div>
+            </div>
+
+            <!-- Resultados -->
+            <div class="results-section">
+                <div class="results-header">
+                    <h2>Resultados (<span id="resultsCount">0</span> paquetes)</h2>
+                    <div class="sort-options">
+                        <label for="sortBy">Ordenar por:</label>
+                        <select id="sortBy">
+                            <option value="popularity">Popularidad</option>
+                            <option value="price-low">Precio: Menor a Mayor</option>
+                            <option value="price-high">Precio: Mayor a Menor</option>
+                            <option value="rating">Mejor Puntuación</option>
+                            <option value="duration">Duración</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="packages-grid" id="packagesGrid">
+                    <!-- Los paquetes se cargan dinámicamente -->
+                </div>
+
+                <!-- Paginación -->
+                <div class="pagination" id="pagination">
+                    <!-- La paginación se genera dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ViajesMundo</h3>
+                    <p>Tu agencia de confianza para explorar el mundo</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Enlaces Rápidos</h4>
+                    <ul>
+                        <li><a href="../index.html">Inicio</a></li>
+                        <li><a href="paquetes.html">Paquetes</a></li>
+                        <li><a href="agenda.html">Agenda</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <p><i class="fas fa-phone"></i> +34 900 123 456</p>
+                    <p><i class="fas fa-envelope"></i> info@viajesmundo.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Quito, Ecuador</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 ViajesMundo. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../assets/js/packageManager.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/paquetes.js"></script>
+    <script src="../assets/js/profileMenu.js"></script>
+</body>
+</html>
+

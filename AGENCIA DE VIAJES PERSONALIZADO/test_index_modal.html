@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba Modal desde Index - Home User</title>
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="assets/styles.css">
+    <link rel="stylesheet" href="assets/additional-styles.css">
+    <link rel="stylesheet" href="assets/admin-navigation.css">
+</head>
+<body>
+    <!-- Contenedor principal -->
+    <main id="main">
+        <!-- Simular contenido del home_user.html -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="header-title">Viajes Ecuador</h1>
+                <p class="header-subtitle">Descubre las maravillas de nuestro país</p>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Productos de ejemplo -->
+            <section class="recommended-section">
+                <div class="section-header">
+                    <h2>Productos Recomendados</h2>
+                    <p>Descubre las mejores opciones para tu viaje</p>
+                </div>
+                
+                <div class="products-grid">
+                    <div class="product-card hoteles">
+                        <div class="product-image">
+                            <img src="https://via.placeholder.com/300x200/4F46E5/FFFFFF?text=Hotel+Quito" alt="Hotel Quito">
+                            <div class="product-category-badge">Hotel</div>
+                        </div>
+                        
+                        <div class="product-content">
+                            <h3 class="product-title">Hotel Quito Premium</h3>
+                            <p class="product-creator">Hotel Quito</p>
+                            <p class="product-description">Hotel de lujo en el centro histórico de Quito con vistas espectaculares.</p>
+                            
+                            <div class="product-meta">
+                                <span class="product-location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Quito
+                                </span>
+                                
+                                <span class="product-rating">
+                                    <i class="fas fa-star"></i>
+                                    4.8 estrellas
+                                </span>
+                                
+                                <span class="product-price">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    $200
+                                </span>
+                            </div>
+                            
+                            <div class="product-actions">
+                                <button class="btn btn-favorite btn-small">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                                <button class="btn btn-primary btn-small" onclick="app.addToPackage(1)">
+                                    <i class="fas fa-plus"></i> Agregar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card restaurantes">
+                        <div class="product-image">
+                            <img src="https://via.placeholder.com/300x200/DC2626/FFFFFF?text=Restaurante" alt="Restaurante">
+                            <div class="product-category-badge">Restaurante</div>
+                        </div>
+                        
+                        <div class="product-content">
+                            <h3 class="product-title">Restaurante La Casona</h3>
+                            <p class="product-creator">La Casona</p>
+                            <p class="product-description">Restaurante tradicional con la mejor cocina ecuatoriana.</p>
+                            
+                            <div class="product-meta">
+                                <span class="product-location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Guayaquil
+                                </span>
+                                
+                                <span class="product-rating">
+                                    <i class="fas fa-star"></i>
+                                    4.6 estrellas
+                                </span>
+                                
+                                <span class="product-price">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    $45
+                                </span>
+                            </div>
+                            
+                            <div class="product-actions">
+                                <button class="btn btn-favorite btn-small">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                                <button class="btn btn-primary btn-small" onclick="app.addToPackage(3)">
+                                    <i class="fas fa-plus"></i> Agregar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <nav class="bottom-nav user-nav">
+            <div class="nav-item active" data-page="home">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+            </div>
+            <div class="nav-item" data-page="search">
+                <i class="fas fa-search"></i>
+                <span>Buscar</span>
+            </div>
+            <div class="nav-item" data-page="packages">
+                <i class="fas fa-suitcase"></i>
+                <span>Paquetes</span>
+            </div>
+            <div class="nav-item" data-page="profile">
+                <i class="fas fa-user"></i>
+                <span>Perfil</span>
+            </div>
+        </nav>
+    </main>
+
+    <!-- Scripts -->
+    <script src="data/products.js"></script>
+    <script src="assets/app.js"></script>
+    
+    <script>
+        // Simular la inicialización de la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM cargado, inicializando aplicación de prueba...');
+            
+            // Crear instancia de la aplicación
+            window.app = new TravelApp();
+            
+            // Simular usuario logueado
+            window.app.currentUser = { id: 1, tipo: 'user' };
+            
+            console.log('Aplicación inicializada:', window.app);
+            console.log('Usuario actual:', window.app.currentUser);
+            
+            // Verificar que las funciones del modal estén disponibles
+            console.log('addToPackage disponible:', typeof window.app.addToPackage);
+            console.log('showAddToPackageModal disponible:', typeof window.app.showAddToPackageModal);
+            console.log('createAddToPackageModal disponible:', typeof window.app.createAddToPackageModal);
+        });
+    </script>
+</body>
+</html>

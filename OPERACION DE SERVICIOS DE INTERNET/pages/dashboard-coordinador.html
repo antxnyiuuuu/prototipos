@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Coordinador - Telecomunicaciones</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-info">
+                    <h1><i class="fas fa-tachometer-alt"></i> Dashboard Coordinador</h1>
+                    <p>Gestión integral del sistema</p>
+                </div>
+                <div class="user-logo">
+                    <div class="user-logo-btn" onclick="toggleUserMenu()">
+                        <div class="user-initial" id="userInitial">A</div>
+                    </div>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="#" class="user-dropdown-item" onclick="showPerfilModal()">
+                            <i class="fas fa-user"></i>
+                            Mi Perfil
+                        </a>
+                        <a href="#" class="user-dropdown-item" onclick="showNotificationsModal()">
+                            <i class="fas fa-bell"></i>
+                            Notificaciones
+                            <span id="notificacionesBadge" class="notification-badge" style="display: none;">!</span>
+                        </a>
+                        <a href="#" class="user-dropdown-item danger" onclick="cerrarSesion()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Cerrar Sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas rápidas -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalClientes">-</div>
+                <div class="stat-label">Clientes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="tareasPendientes">-</div>
+                <div class="stat-label">Tareas Pendientes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="hilosActivos">-</div>
+                <div class="stat-label">Hilos Activos</div>
+            </div>
+        </div>
+
+        <!-- Accesos rápidos -->
+        <div class="cards-grid">
+            <div class="card" onclick="navigateTo('clientes.html')">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-users"></i> Clientes
+                    </h3>
+                    <i class="fas fa-chevron-right" style="color: #2196F3;"></i>
+                </div>
+                <p class="card-subtitle">Gestionar base de datos de clientes</p>
+            </div>
+
+            <div class="card" onclick="navigateTo('tecnicos.html')">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-tools"></i> Técnicos
+                    </h3>
+                    <i class="fas fa-chevron-right" style="color: #2196F3;"></i>
+                </div>
+                <p class="card-subtitle">Gestionar equipo técnico</p>
+            </div>
+
+            <div class="card" onclick="navigateTo('tareas.html')">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-tasks"></i> Tareas
+                    </h3>
+                    <i class="fas fa-chevron-right" style="color: #2196F3;"></i>
+                </div>
+                <p class="card-subtitle">Asignar y supervisar tareas</p>
+            </div>
+
+            <div class="card" onclick="navigateTo('nucleo.html')">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-network-wired"></i> Núcleo
+                    </h3>
+                    <i class="fas fa-chevron-right" style="color: #2196F3;"></i>
+                </div>
+                <p class="card-subtitle">Administrar 24 hilos de red</p>
+            </div>
+        </div>
+
+        <!-- Tareas recientes -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-clock"></i> Tareas Recientes
+                </h3>
+                <button class="btn btn-small btn-primary" onclick="navigateTo('tareas.html')">
+                    Ver Todas
+                </button>
+            </div>
+            <div id="tareasRecientes">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estado del núcleo -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-chart-pie"></i> Estado del Núcleo
+                </h3>
+                <button class="btn btn-small btn-primary" onclick="navigateTo('nucleo.html')">
+                    Ver Detalles
+                </button>
+            </div>
+            <div id="estadoNucleo">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de perfil -->
+    <div id="perfilModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Mi Perfil</h3>
+                <button class="modal-close" onclick="closePerfilModal()">&times;</button>
+            </div>
+            
+            <form id="perfilForm">
+                <div class="form-group">
+                    <label for="perfilUsuario" class="form-label">Usuario</label>
+                    <input 
+                        type="text" 
+                        id="perfilUsuario" 
+                        class="form-input" 
+                        readonly
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="perfilRol" class="form-label">Rol</label>
+                    <input 
+                        type="text" 
+                        id="perfilRol" 
+                        class="form-input" 
+                        readonly
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="perfilNombre" class="form-label">Nombre Completo</label>
+                    <input 
+                        type="text" 
+                        id="perfilNombre" 
+                        class="form-input" 
+                        placeholder="Ingresa tu nombre completo"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="perfilEmail" class="form-label">Email</label>
+                    <input 
+                        type="email" 
+                        id="perfilEmail" 
+                        class="form-input" 
+                        placeholder="tu@email.com"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="perfilTelefono" class="form-label">Teléfono</label>
+                    <input 
+                        type="tel" 
+                        id="perfilTelefono" 
+                        class="form-input" 
+                        placeholder="300-123-4567"
+                    >
+                </div>
+
+                <div style="display: flex; gap: 12px;">
+                    <button type="button" class="btn btn-secondary" onclick="closePerfilModal()" style="flex: 1;">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        <i class="fas fa-save"></i>
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Notificaciones -->
+    <div id="notificationsModal" class="notifications-modal">
+        <div class="notifications-modal-content">
+            <div class="notifications-modal-header">
+                <h3><i class="fas fa-bell"></i> Notificaciones</h3>
+                <button class="notifications-modal-close" onclick="closeNotificationsModal()">&times;</button>
+            </div>
+            <div class="notifications-modal-body" id="notificationsList">
+                <!-- Las notificaciones se cargarán aquí -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Tareas Asignadas -->
+    <div id="tareasAsignadasModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-tasks"></i> Tareas Asignadas
+                </h3>
+                <button class="modal-close" onclick="closeTareasAsignadasModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="tareasAsignadasModalList">
+                <!-- Las tareas se cargarán aquí -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegación inferior -->
+    <div class="bottom-nav">
+        <a href="dashboard-coordinador.html" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showTareasAsignadasModal()">
+            <i class="fas fa-tasks"></i>
+            <span>Tareas Asignadas</span>
+        </a>
+    </div>
+
+    <script>
+        // Datos por defecto
+        const defaultData = {
+            clientes: [
+                {
+                    "id": 1,
+                    "nombre": "María González",
+                    "direccion": "Calle 123 #45-67, Barrio Centro",
+                    "telefono": "300-123-4567",
+                    "servicios": ["Internet", "TV"],
+                    "estado": "Activo"
+                },
+                {
+                    "id": 2,
+                    "nombre": "Carlos Rodríguez",
+                    "direccion": "Carrera 8 #12-34, Barrio Norte",
+                    "telefono": "310-987-6543",
+                    "servicios": ["Internet"],
+                    "estado": "Activo"
+                },
+                {
+                    "id": 3,
+                    "nombre": "Ana Martínez",
+                    "direccion": "Calle 45 #78-90, Barrio Sur",
+                    "telefono": "315-456-7890",
+                    "servicios": ["Internet", "TV", "Teléfono"],
+                    "estado": "Pendiente"
+                },
+                {
+                    "id": 4,
+                    "nombre": "Luis Pérez",
+                    "direccion": "Carrera 15 #23-45, Barrio Este",
+                    "telefono": "320-789-1234",
+                    "servicios": ["Internet"],
+                    "estado": "Activo"
+                },
+                {
+                    "id": 5,
+                    "nombre": "Sofia Herrera",
+                    "direccion": "Calle 90 #12-34, Barrio Oeste",
+                    "telefono": "305-234-5678",
+                    "servicios": ["TV"],
+                    "estado": "Activo"
+                }
+            ],
+            tareas: [
+                {
+                    "id": 1,
+                    "descripcion": "Instalación de internet en casa de María González",
+                    "cliente_id": 1,
+                    "cliente_nombre": "María González",
+                    "direccion": "Calle 123 #45-67, Barrio Centro",
+                    "tecnico_id": 1,
+                    "tecnico_nombre": "Juan Pérez",
+                    "estado": "En Progreso",
+                    "fecha_creacion": "2024-01-15",
+                    "fecha_vencimiento": "2024-01-20",
+                    "observaciones": "",
+                    "fotos": []
+                },
+                {
+                    "id": 2,
+                    "descripcion": "Mantenimiento de TV en oficina de Carlos Rodríguez",
+                    "cliente_id": 2,
+                    "cliente_nombre": "Carlos Rodríguez",
+                    "direccion": "Carrera 8 #12-34, Barrio Norte",
+                    "tecnico_id": 2,
+                    "tecnico_nombre": "Pedro García",
+                    "estado": "Pendiente",
+                    "fecha_creacion": "2024-01-16",
+                    "fecha_vencimiento": "2024-01-22",
+                    "observaciones": "",
+                    "fotos": []
+                },
+                {
+                    "id": 3,
+                    "descripcion": "Instalación completa en casa de Ana Martínez",
+                    "cliente_id": 3,
+                    "cliente_nombre": "Ana Martínez",
+                    "direccion": "Calle 45 #78-90, Barrio Sur",
+                    "tecnico_id": 1,
+                    "tecnico_nombre": "Juan Pérez",
+                    "estado": "Completada",
+                    "fecha_creacion": "2024-01-10",
+                    "fecha_vencimiento": "2024-01-15",
+                    "observaciones": "Instalación exitosa, cliente satisfecho",
+                    "fotos": ["foto1.jpg", "foto2.jpg"]
+                }
+            ],
+            nucleo: [
+                {
+                    "id": 1,
+                    "color": "#FF6B6B",
+                    "coordenada_x": 23,
+                    "coordenada_y": 45,
+                    "cliente_id": 1,
+                    "cliente_nombre": "María González",
+                    "zona": "Barrio Centro",
+                    "estado": "Activo"
+                },
+                {
+                    "id": 2,
+                    "color": "#4ECDC4",
+                    "coordenada_x": 15,
+                    "coordenada_y": 32,
+                    "cliente_id": 2,
+                    "cliente_nombre": "Carlos Rodríguez",
+                    "zona": "Barrio Norte",
+                    "estado": "Activo"
+                },
+                {
+                    "id": 3,
+                    "color": "#45B7D1",
+                    "coordenada_x": 67,
+                    "coordenada_y": 89,
+                    "cliente_id": 3,
+                    "cliente_nombre": "Ana Martínez",
+                    "zona": "Barrio Sur",
+                    "estado": "Activo"
+                },
+                {
+                    "id": 4,
+                    "color": "#96CEB4",
+                    "coordenada_x": 34,
+                    "coordenada_y": 56,
+                    "cliente_id": 4,
+                    "cliente_nombre": "Luis Pérez",
+                    "zona": "Barrio Este",
+                    "estado": "Activo"
+                },
+                {
+                    "id": 5,
+                    "color": "#FFEAA7",
+                    "coordenada_x": 78,
+                    "coordenada_y": 12,
+                    "cliente_id": 5,
+                    "cliente_nombre": "Sofia Herrera",
+                    "zona": "Barrio Oeste",
+                    "estado": "Activo"
+                }
+            ]
+        };
+
+        // Verificar sesión
+        window.addEventListener('load', function() {
+            const userData = localStorage.getItem('userData');
+            if (!userData || JSON.parse(userData).rol !== 'coordinador') {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            loadDashboardData();
+            loadPerfilData();
+            checkNotificaciones();
+            loadUserInitial();
+        });
+
+        // Cargar datos del dashboard
+        function loadDashboardData() {
+            try {
+                // Intentar cargar desde localStorage primero
+                let clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
+                let tareas = JSON.parse(localStorage.getItem('tareas') || '[]');
+                let nucleo = JSON.parse(localStorage.getItem('nucleo') || '[]');
+
+                // Si no hay datos en localStorage, usar datos por defecto
+                if (clientes.length === 0) {
+                    clientes = defaultData.clientes;
+                    localStorage.setItem('clientes', JSON.stringify(clientes));
+                }
+                if (tareas.length === 0) {
+                    tareas = defaultData.tareas;
+                    localStorage.setItem('tareas', JSON.stringify(tareas));
+                }
+                if (nucleo.length === 0) {
+                    nucleo = defaultData.nucleo;
+                    localStorage.setItem('nucleo', JSON.stringify(nucleo));
+                }
+
+                // Actualizar estadísticas
+                document.getElementById('totalClientes').textContent = clientes.length;
+                document.getElementById('tareasPendientes').textContent = tareas.filter(t => t.estado === 'Pendiente').length;
+                document.getElementById('hilosActivos').textContent = nucleo.filter(h => h.estado === 'Activo').length;
+
+                // Mostrar tareas recientes
+                displayTareasRecientes(tareas.slice(0, 3));
+                
+                // Mostrar estado del núcleo
+                displayEstadoNucleo(nucleo);
+
+            } catch (error) {
+                console.error('Error cargando datos:', error);
+            }
+        }
+
+        function displayTareasRecientes(tareas) {
+            const container = document.getElementById('tareasRecientes');
+            
+            if (tareas.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">No hay tareas recientes</p>';
+                return;
+            }
+
+            container.innerHTML = tareas.map(tarea => `
+                <div class="list-item">
+                    <div class="list-item-header">
+                        <div>
+                            <div class="list-item-title">${tarea.descripcion}</div>
+                            <div class="list-item-subtitle">${tarea.cliente_nombre} - ${tarea.tecnico_nombre}</div>
+                        </div>
+                        <span class="status-badge status-${tarea.estado.toLowerCase().replace(' ', '-')}">
+                            ${tarea.estado}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function displayEstadoNucleo(nucleo) {
+            const container = document.getElementById('estadoNucleo');
+            
+            const activos = nucleo.filter(h => h.estado === 'Activo').length;
+            const disponibles = nucleo.filter(h => h.estado === 'Disponible').length;
+            const total = nucleo.length;
+
+            container.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; text-align: center;">
+                    <div>
+                        <div style="font-size: 24px; font-weight: bold; color: #4CAF50;">${activos}</div>
+                        <div style="font-size: 12px; color: #666;">Activos</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 24px; font-weight: bold; color: #2196F3;">${disponibles}</div>
+                        <div style="font-size: 12px; color: #666;">Disponibles</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 24px; font-weight: bold; color: #666;">${total}</div>
+                        <div style="font-size: 12px; color: #666;">Total</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        // Verificar notificaciones no leídas
+        function checkNotificaciones() {
+            try {
+                const notificaciones = JSON.parse(localStorage.getItem('notificacionesAdmin') || '[]');
+                const notificacionesNoLeidas = notificaciones.filter(notif => !notif.leida);
+                
+                const badge = document.getElementById('notificacionesBadge');
+                if (badge) {
+                    if (notificacionesNoLeidas.length > 0) {
+                        badge.textContent = notificacionesNoLeidas.length;
+                        badge.style.display = 'flex';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Error verificando notificaciones:', error);
+            }
+        }
+
+        // Funciones de perfil
+        function loadPerfilData() {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const perfilData = JSON.parse(localStorage.getItem('perfilData') || '{}');
+            
+            document.getElementById('perfilUsuario').value = userData.usuario || '';
+            document.getElementById('perfilRol').value = userData.rol === 'coordinador' ? 'Coordinador/Administrador' : 'Técnico';
+            document.getElementById('perfilNombre').value = perfilData.nombre || '';
+            document.getElementById('perfilEmail').value = perfilData.email || '';
+            document.getElementById('perfilTelefono').value = perfilData.telefono || '';
+        }
+
+        function showPerfilModal() {
+            loadPerfilData();
+            document.getElementById('perfilModal').classList.add('show');
+        }
+
+        function closePerfilModal() {
+            document.getElementById('perfilModal').classList.remove('show');
+        }
+
+        // Manejar envío del formulario de perfil
+        document.getElementById('perfilForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const perfilData = {
+                nombre: document.getElementById('perfilNombre').value,
+                email: document.getElementById('perfilEmail').value,
+                telefono: document.getElementById('perfilTelefono').value,
+                fechaActualizacion: new Date().toISOString()
+            };
+            
+            localStorage.setItem('perfilData', JSON.stringify(perfilData));
+            closePerfilModal();
+            alert('Perfil actualizado exitosamente');
+        });
+
+        // Función para cerrar sesión
+        function cerrarSesion() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                localStorage.removeItem('userData');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Función para toggle del menú de usuario
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            const userLogo = document.querySelector('.user-logo');
+            const dropdown = document.getElementById('userDropdown');
+            
+            if (!userLogo.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Cargar inicial del usuario
+        function loadUserInitial() {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const initial = userData.usuario ? userData.usuario.charAt(0).toUpperCase() : 'A';
+            document.getElementById('userInitial').textContent = initial;
+        }
+
+        // Funciones del modal de notificaciones
+        function showNotificationsModal() {
+            loadNotifications();
+            document.getElementById('notificationsModal').classList.add('show');
+            toggleUserMenu(); // Cerrar el menú desplegable
+        }
+
+        function closeNotificationsModal() {
+            document.getElementById('notificationsModal').classList.remove('show');
+        }
+
+        function loadNotifications() {
+            try {
+                const notificaciones = JSON.parse(localStorage.getItem('notificacionesAdmin') || '[]');
+                const notificationsList = document.getElementById('notificationsList');
+                
+                if (notificaciones.length === 0) {
+                    notificationsList.innerHTML = `
+                        <div style="text-align: center; padding: 40px 20px; color: #666;">
+                            <i class="fas fa-bell-slash" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                            <p>No hay notificaciones</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Ordenar por fecha (más recientes primero)
+                notificaciones.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+                notificationsList.innerHTML = notificaciones.map(notif => `
+                    <div class="notification-item ${!notif.leida ? 'unread' : ''}">
+                        <div class="notification-icon ${notif.tipo}">
+                            <i class="fas fa-${getNotificationIcon(notif.tipo)}"></i>
+                        </div>
+                        <div class="notification-content">
+                            <h4 class="notification-title">${notif.titulo}</h4>
+                            <p class="notification-message">${notif.mensaje}</p>
+                            <p class="notification-time">${new Date(notif.fecha).toLocaleString()}</p>
+                            ${!notif.leida ? `
+                                <div class="notification-actions">
+                                    <button class="btn btn-small btn-primary" onclick="markAsRead(${notif.id})">
+                                        Marcar como leída
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error cargando notificaciones:', error);
+            }
+        }
+
+        function getNotificationIcon(tipo) {
+            switch(tipo) {
+                case 'nueva': return 'plus-circle';
+                case 'aceptada': return 'check-circle';
+                case 'completada': return 'check-double';
+                default: return 'bell';
+            }
+        }
+
+        function markAsRead(notifId) {
+            try {
+                const notificaciones = JSON.parse(localStorage.getItem('notificacionesAdmin') || '[]');
+                const notif = notificaciones.find(n => n.id === notifId);
+                if (notif) {
+                    notif.leida = true;
+                    localStorage.setItem('notificacionesAdmin', JSON.stringify(notificaciones));
+                    loadNotifications();
+                    checkNotificaciones();
+                }
+            } catch (error) {
+                console.error('Error marcando notificación como leída:', error);
+            }
+        }
+
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('perfilModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePerfilModal();
+            }
+        });
+
+        // Verificar notificaciones en tiempo real (cada 5 segundos)
+        setInterval(() => {
+            checkNotificaciones();
+        }, 5000);
+
+        // Funciones del modal de tareas asignadas
+        function showTareasAsignadasModal() {
+            loadTareasAsignadasModal();
+            document.getElementById('tareasAsignadasModal').classList.add('show');
+        }
+
+        function closeTareasAsignadasModal() {
+            document.getElementById('tareasAsignadasModal').classList.remove('show');
+        }
+
+        function loadTareasAsignadasModal() {
+            try {
+                const tareas = JSON.parse(localStorage.getItem('tareas') || '[]');
+                const container = document.getElementById('tareasAsignadasModalList');
+                
+                if (tareas.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: #666;">
+                            <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                            <p>No hay tareas asignadas</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Ordenar por fecha de vencimiento
+                const tareasOrdenadas = tareas.sort((a, b) => new Date(a.fecha_vencimiento) - new Date(b.fecha_vencimiento));
+
+                container.innerHTML = tareasOrdenadas.map(tarea => `
+                    <div class="list-item">
+                        <div class="list-item-header">
+                            <div>
+                                <div class="list-item-title">${tarea.descripcion}</div>
+                                <div class="list-item-subtitle">
+                                    <i class="fas fa-user"></i> ${tarea.cliente_nombre}<br>
+                                    <i class="fas fa-tools"></i> ${tarea.tecnico_nombre}<br>
+                                    <i class="fas fa-map-marker-alt"></i> ${tarea.direccion}<br>
+                                    <i class="fas fa-calendar"></i> Vence: ${new Date(tarea.fecha_vencimiento).toLocaleDateString()}
+                                </div>
+                            </div>
+                            <span class="status-badge status-${tarea.estado.toLowerCase().replace(' ', '-')}">
+                                ${tarea.estado}
+                            </span>
+                        </div>
+                        
+                        ${tarea.observaciones ? `
+                            <div style="margin-top: 12px; padding: 12px; background: #f5f5f5; border-radius: 6px;">
+                                <strong>Observaciones:</strong><br>
+                                ${tarea.observaciones}
+                            </div>
+                        ` : ''}
+                        
+                        ${tarea.fotos && tarea.fotos.length > 0 ? `
+                            <div style="margin-top: 12px; padding: 12px; background: #e3f2fd; border-radius: 6px;">
+                                <strong>Fotografías:</strong><br>
+                                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                                    ${tarea.fotos.map(foto => `
+                                        <span style="padding: 4px 8px; background: #2196F3; color: white; border-radius: 4px; font-size: 12px;">
+                                            <i class="fas fa-camera"></i> ${foto}
+                                        </span>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error cargando tareas asignadas:', error);
+            }
+        }
+
+        // Cerrar modal de tareas asignadas al hacer clic fuera
+        document.getElementById('tareasAsignadasModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeTareasAsignadasModal();
+            }
+        });
+    </script>
+</body>
+</html>

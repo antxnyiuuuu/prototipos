@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Telecomunicaciones</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-wifi"></i> Telecomunicaciones</h1>
+            <p>Sistema de Gestión de Redes</p>
+        </div>
+
+        <div class="card" style="margin-top: 20px; padding: 16px;">
+            <div class="card-header" style="padding: 12px 0;">
+                <h2 class="card-title" style="font-size: 18px; margin: 0;">Iniciar Sesión</h2>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="usuario" class="form-label">
+                        <i class="fas fa-user"></i> Usuario
+                    </label>
+                    <input 
+                        type="text" 
+                        id="usuario" 
+                        class="form-input" 
+                        placeholder="Ingresa tu usuario"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="rol" class="form-label">
+                        <i class="fas fa-user-tag"></i> Rol
+                    </label>
+                    <select id="rol" class="form-select" required onchange="toggleTecnicoSelect()">
+                        <option value="">Selecciona tu rol</option>
+                        <option value="coordinador">Coordinador/Administrador</option>
+                        <option value="tecnico">Técnico</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="tecnicoSelectGroup" style="display: none;">
+                    <label for="tecnicoSelect" class="form-label">
+                        <i class="fas fa-tools"></i> Seleccionar Técnico
+                    </label>
+                    <select id="tecnicoSelect" class="form-select">
+                        <option value="">Selecciona tu perfil técnico</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i class="fas fa-lock"></i> Contraseña
+                    </label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        class="form-input" 
+                        placeholder="Ingresa tu contraseña"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Iniciar Sesión
+                </button>
+            </form>
+
+            <div style="margin-top: 16px; text-align: center;">
+                <p style="color: #666; font-size: 12px;">
+                    <i class="fas fa-info-circle"></i>
+                    Usa cualquier usuario y contraseña para la demo
+                </p>
+            </div>
+        </div>
+
+        <!-- Información de roles -->
+        <div class="card" style="margin-top: 16px; padding: 16px;">
+            <div class="card-header" style="padding: 8px 0;">
+                <h3 class="card-title" style="font-size: 16px; margin: 0;">Información de Roles</h3>
+            </div>
+            
+            <div style="display: grid; gap: 12px;">
+                <div style="padding: 12px; background: #E3F2FD; border-radius: 6px; border-left: 3px solid #2196F3;">
+                    <h4 style="color: #1976D2; margin-bottom: 6px; font-size: 14px;">
+                        <i class="fas fa-user-shield"></i> Coordinador/Administrador
+                    </h4>
+                    <p style="font-size: 12px; color: #424242; margin: 0;">
+                        • Gestionar clientes y técnicos<br>
+                        • Asignar y supervisar tareas<br>
+                        • Administrar núcleo de 24 hilos<br>
+                        • Validar tareas completadas
+                    </p>
+                </div>
+
+                <div style="padding: 12px; background: #E8F5E8; border-radius: 6px; border-left: 3px solid #4CAF50;">
+                    <h4 style="color: #2E7D32; margin-bottom: 6px; font-size: 14px;">
+                        <i class="fas fa-tools"></i> Técnico
+                    </h4>
+                    <p style="font-size: 12px; color: #424242; margin-bottom: 6px;">
+                        Selecciona tu perfil técnico específico:
+                    </p>
+                    <p style="font-size: 11px; color: #666; margin: 0;">
+                        • <strong>Juan Pérez</strong> - Instalaciones de Red (Norte y Centro)<br>
+                        • <strong>Pedro García</strong> - Mantenimiento y Reparaciones (Sur y Este)<br>
+                        • <strong>Miguel López</strong> - Configuración y Soporte (Oeste y Centro)
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de técnicos
+        const tecnicos = [
+            {
+                "id": 1,
+                "nombre": "Juan Pérez",
+                "especialidad": "Instalaciones de Red",
+                "zona": "Norte y Centro",
+                "experiencia": "5 años"
+            },
+            {
+                "id": 2,
+                "nombre": "Pedro García",
+                "especialidad": "Mantenimiento y Reparaciones",
+                "zona": "Sur y Este",
+                "experiencia": "7 años"
+            },
+            {
+                "id": 3,
+                "nombre": "Miguel López",
+                "especialidad": "Configuración y Soporte",
+                "zona": "Oeste y Centro",
+                "experiencia": "4 años"
+            }
+        ];
+
+        // Cargar técnicos al cargar la página
+        window.addEventListener('load', function() {
+            const userData = localStorage.getItem('userData');
+            if (userData) {
+                const user = JSON.parse(userData);
+                // Redirigir automáticamente si ya hay sesión
+                if (user.rol === 'coordinador') {
+                    window.location.href = 'dashboard-coordinador.html';
+                } else if (user.rol === 'tecnico') {
+                    window.location.href = 'dashboard-tecnico.html';
+                }
+            }
+            
+            loadTecnicos();
+        });
+
+        function loadTecnicos() {
+            const tecnicoSelect = document.getElementById('tecnicoSelect');
+            tecnicoSelect.innerHTML = '<option value="">Selecciona tu perfil técnico</option>' +
+                tecnicos.map(tecnico => 
+                    `<option value="${tecnico.id}">${tecnico.nombre} - ${tecnico.especialidad} (${tecnico.zona})</option>`
+                ).join('');
+        }
+
+        function toggleTecnicoSelect() {
+            const rol = document.getElementById('rol').value;
+            const tecnicoSelectGroup = document.getElementById('tecnicoSelectGroup');
+            
+            if (rol === 'tecnico') {
+                tecnicoSelectGroup.style.display = 'block';
+                document.getElementById('tecnicoSelect').required = true;
+            } else {
+                tecnicoSelectGroup.style.display = 'none';
+                document.getElementById('tecnicoSelect').required = false;
+                document.getElementById('tecnicoSelect').value = '';
+            }
+        }
+
+        // Función para manejar el login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const usuario = document.getElementById('usuario').value;
+            const rol = document.getElementById('rol').value;
+            const tecnicoId = document.getElementById('tecnicoSelect').value;
+            const password = document.getElementById('password').value;
+            
+            if (!usuario || !rol || !password) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+            
+            if (rol === 'tecnico' && !tecnicoId) {
+                alert('Por favor selecciona tu perfil técnico');
+                return;
+            }
+            
+            // Simular autenticación
+            const userData = {
+                usuario: usuario,
+                rol: rol,
+                tecnico_id: rol === 'tecnico' ? parseInt(tecnicoId) : null,
+                tecnico_nombre: rol === 'tecnico' ? tecnicos.find(t => t.id === parseInt(tecnicoId)).nombre : null,
+                loginTime: new Date().toISOString()
+            };
+            
+            // Guardar en localStorage
+            localStorage.setItem('userData', JSON.stringify(userData));
+            
+            // Redirigir según el rol
+            if (rol === 'coordinador') {
+                window.location.href = 'dashboard-coordinador.html';
+            } else if (rol === 'tecnico') {
+                window.location.href = 'dashboard-tecnico.html';
+            }
+        });
+    </script>
+</body>
+</html>

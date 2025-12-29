@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motorgsa - Perfil</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1 class="panel-title"><i class="fas fa-tractor"></i> Motorgsa - Mi Perfil</h1>
+            <p>Gestiona tu información personal</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Información del usuario -->
+            <div class="form-container">
+                <h3 style="color: #2E7D32; margin-bottom: 1rem; font-size: 1.1rem;">
+                    <i class="fas fa-user-circle"></i> Información Personal
+                </h3>
+                
+                <div style="text-align: center; margin-bottom: 1.5rem;">
+                    <div style="position: relative; display: inline-block;">
+                        <img id="profileImage" src="https://via.placeholder.com/100x100/2a2a2a/2E7D32?text=Usuario" 
+                             style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid #2E7D32; object-fit: cover;">
+                        <label for="imageInput" style="position: absolute; bottom: 0; right: 0; background: #2E7D32; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem;">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                        <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="updateProfileImage(this)">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="profileName">Nombre Completo</label>
+                    <input type="text" id="profileName" placeholder="Tu nombre completo">
+                </div>
+
+                <div class="form-group">
+                    <label for="profileEmail">Email</label>
+                    <input type="email" id="profileEmail" placeholder="Tu email">
+                </div>
+
+                <div class="form-group">
+                    <label for="profilePhone">Teléfono</label>
+                    <input type="tel" id="profilePhone" placeholder="Tu teléfono">
+                </div>
+
+                <div class="form-group">
+                    <label>Rol de Usuario</label>
+                    <input type="text" id="profileRole" readonly style="background-color: #333; color: #888;">
+                </div>
+
+                <button class="btn" onclick="updateProfile()">
+                    <i class="fas fa-save"></i> Guardar Cambios
+                </button>
+            </div>
+
+            <!-- Historial de compras -->
+            <div class="form-container">
+                <h3 style="color: #2E7D32; margin-bottom: 1rem; font-size: 1.1rem;">
+                    <i class="fas fa-shopping-bag"></i> Mis Compras
+                </h3>
+                
+                <div id="userPurchases" style="max-height: 300px; overflow-y: auto;">
+                    <!-- Las compras se cargarán dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Botón de cerrar sesión -->
+            <div class="form-container" style="text-align: center;">
+                <button class="btn" style="background-color: #2E7D32;" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </button>
+            </div>
+        </div>
+
+        <!-- Barra de navegación -->
+        <div class="nav-bar">
+            <button class="nav-item" onclick="navigateTo('home')">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+            </button>
+            <button class="nav-item" onclick="navigateTo('cart')">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Carrito <span id="cartCount">0</span></span>
+            </button>
+            <button class="nav-item" onclick="navigateTo('about')">
+                <i class="fas fa-info-circle"></i>
+                <span>Empresa</span>
+            </button>
+            <button class="nav-item active" onclick="navigateTo('profile')">
+                <i class="fas fa-user"></i>
+                <span>Perfil</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="../data/users.js"></script>
+    <script src="../data/products.js"></script>
+    <script>
+        let currentUser = null;
+
+        window.onload = function() {
+            checkAuth();
+            loadUserProfile();
+            loadUserPurchases();
+            updateCartCount();
+        };
+
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn !== 'true') {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+        }
+
+        function loadUserProfile() {
+            // Cargar datos del perfil desde localStorage
+            const profileData = JSON.parse(localStorage.getItem('userProfile_' + currentUser.id) || '{}');
+            
+            document.getElementById('profileName').value = profileData.name || currentUser.name || '';
+            document.getElementById('profileEmail').value = profileData.email || currentUser.email || '';
+            document.getElementById('profilePhone').value = profileData.phone || currentUser.phone || '';
+            document.getElementById('profileRole').value = currentUser.role || '';
+            
+            // Cargar imagen de perfil
+            if (profileData.profileImage) {
+                document.getElementById('profileImage').src = profileData.profileImage;
+            }
+        }
+
+        function updateProfileImage(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profileImage').src = e.target.result;
+                    // Guardar imagen en localStorage
+                    const profileData = JSON.parse(localStorage.getItem('userProfile_' + currentUser.id) || '{}');
+                    profileData.profileImage = e.target.result;
+                    localStorage.setItem('userProfile_' + currentUser.id, JSON.stringify(profileData));
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function updateProfile() {
+            const name = document.getElementById('profileName').value;
+            const email = document.getElementById('profileEmail').value;
+            const phone = document.getElementById('profilePhone').value;
+
+            if (!name || !email) {
+                showMessage('Nombre y email son obligatorios', 'error');
+                return;
+            }
+
+            // Guardar datos del perfil
+            const profileData = {
+                name: name,
+                email: email,
+                phone: phone,
+                profileImage: document.getElementById('profileImage').src
+            };
+
+            localStorage.setItem('userProfile_' + currentUser.id, JSON.stringify(profileData));
+
+            // Actualizar datos del usuario actual
+            currentUser.name = name;
+            currentUser.email = email;
+            currentUser.phone = phone;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+            showMessage('Perfil actualizado correctamente', 'success');
+        }
+
+        function loadUserPurchases() {
+            const purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
+            const userPurchases = purchases.filter(purchase => purchase.userId === currentUser.id);
+            const container = document.getElementById('userPurchases');
+
+            if (userPurchases.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #888; padding: 1rem; font-size: 0.9rem;">No tienes compras registradas</p>';
+                return;
+            }
+
+            container.innerHTML = userPurchases.map(purchase => {
+                const date = new Date(purchase.date).toLocaleDateString('es-ES');
+                const statusColor = purchase.status === 'Completada' ? '#28a745' : '#ffc107';
+                
+                return `
+                    <div class="purchase-item fade-in" style="margin-bottom: 0.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <h4 style="font-size: 0.9rem; margin-bottom: 0.3rem;">Compra #${purchase.id}</h4>
+                                <p style="color: #888; margin: 0.2rem 0; font-size: 0.8rem;">${purchase.items.length} productos</p>
+                                <p style="color: #E50914; font-weight: bold; margin: 0.2rem 0; font-size: 0.9rem;">$${purchase.total.toFixed(2)}</p>
+                                <span style="background: ${statusColor}; color: white; padding: 0.1rem 0.3rem; border-radius: 6px; font-size: 0.7rem;">
+                                    ${purchase.status}
+                                </span>
+                            </div>
+                            <div style="text-align: right;">
+                                <p style="color: #888; font-size: 0.7rem;">${date}</p>
+                                <p style="color: #888; font-size: 0.7rem;">${purchase.paymentType}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const count = cart.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById('cartCount').textContent = count;
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.position = 'fixed';
+            messageDiv.style.top = '10px';
+            messageDiv.style.left = '50%';
+            messageDiv.style.transform = 'translateX(-50%)';
+            messageDiv.style.zIndex = '1000';
+            messageDiv.textContent = message;
+            
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                document.body.removeChild(messageDiv);
+            }, 2000);
+        }
+
+        function navigateTo(page) {
+            if (page === 'home') {
+                window.location.href = 'home.html';
+            } else if (page === 'cart') {
+                window.location.href = 'cart.html';
+            } else if (page === 'profile') {
+                window.location.href = 'profile.html';
+            } else if (page === 'about') {
+                window.location.href = 'about.html';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('cart');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,412 @@
+/* Estilos mejorados para el resumen del paquete (paso 2) */
+
+/* Contenedor principal del resumen */
+.package-summary {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+  padding: 1.5rem !important;
+  border-radius: 16px !important;
+  margin: 1.5rem 0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #e2e8f0 !important;
+  position: relative !important;
+  margin-left: 1.5rem !important; /* Mover más a la derecha */
+  margin-right: 0.5rem !important;
+  width: calc(100% - 2rem) !important; /* Aumentar tamaño 10px */
+  max-width: calc(100% - 2rem) !important;
+}
+
+/* Título del resumen */
+.package-summary h4 {
+  color: var(--primary-blue, #1e3a8a) !important;
+  margin: 0 0 1.5rem 0 !important;
+  font-size: 1.3rem !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  padding-bottom: 0.75rem !important;
+  border-bottom: 2px solid #e2e8f0 !important;
+}
+
+/* Contador de productos */
+.product-counter {
+  font-size: 0.9rem !important;
+  font-weight: normal !important;
+  color: #64748b !important;
+  background: var(--primary-blue, #1e3a8a) !important;
+  color: white !important;
+  padding: 0.25rem 0.75rem !important;
+  border-radius: 12px !important;
+  margin-left: 0.5rem !important;
+  display: inline-block !important;
+}
+
+/* Lista de productos */
+.package-products-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.75rem !important;
+  margin-bottom: 1.5rem !important;
+  max-height: 300px !important;
+  overflow-y: auto !important;
+  padding-right: 0.5rem !important;
+}
+
+/* Items de productos - LAYOUT EN COLUMNA */
+.package-product-item {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.5rem !important;
+  padding: 1rem !important;
+  background: white !important;
+  border-radius: 12px !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.2s ease !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
+.package-product-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Nombre del producto */
+.package-product-item .product-name {
+  font-weight: 600 !important;
+  color: var(--primary-blue, #1e3a8a) !important;
+  font-size: 1rem !important;
+  margin: 0 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+  line-height: 1.4 !important;
+}
+
+/* Detalles del producto (categoría y precio) */
+.package-product-item .product-details {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-end !important; /* Cambiar a flex-end para mover precio abajo */
+  flex-wrap: wrap !important;
+  gap: 0.5rem !important;
+  margin-top: 0.75rem !important; /* Agregar espacio arriba para separar del nombre */
+}
+
+.package-product-item .product-category {
+  background: var(--primary-blue, #1e3a8a) !important;
+  color: white !important;
+  padding: 0.25rem 0.75rem !important;
+  border-radius: 12px !important;
+  font-size: 0.8rem !important;
+  font-weight: 500 !important;
+  text-transform: capitalize !important;
+}
+
+.package-product-item .product-price {
+  color: #059669 !important;
+  font-weight: 700 !important;
+  font-size: 1.1rem !important;
+  margin: 0 !important;
+  text-align: right !important; /* Alinear precio a la derecha */
+  min-width: 80px !important; /* Asegurar espacio mínimo para el precio */
+}
+
+/* Item de transporte - ESPECIAL */
+.package-transporte-item {
+  background: linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%) !important;
+  border: 2px solid #0288d1 !important;
+  position: relative !important;
+}
+
+.package-transporte-item::before {
+  content: "🚌" !important;
+  position: absolute !important;
+  top: 0.5rem !important;
+  right: 0.5rem !important;
+  font-size: 1.2rem !important;
+}
+
+.package-transporte-item .product-name {
+  color: #0277bd !important;
+  font-weight: 700 !important;
+}
+
+.package-transporte-item .product-category {
+  background: #0288d1 !important;
+  color: white !important;
+}
+
+.package-transporte-item .product-price {
+  color: #01579b !important;
+  font-weight: 800 !important;
+}
+
+/* Total del paquete */
+.package-total {
+  background: linear-gradient(135deg, var(--primary-blue, #1e3a8a), var(--secondary-blue, #3b82f6)) !important;
+  color: white !important;
+  padding: 1rem 1.5rem !important;
+  border-radius: 12px !important;
+  text-align: center !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  margin-top: 1rem !important;
+}
+
+.package-total strong {
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .package-summary {
+    margin-left: 1.5rem !important; /* Mover más a la derecha en móviles */
+    margin-right: 0.5rem !important;
+    padding: 1rem !important;
+    width: calc(100% - 2rem) !important; /* Ajustar ancho para móviles */
+  }
+  
+  .package-summary h4 {
+    font-size: 1.1rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .package-product-item {
+    padding: 0.75rem !important;
+  }
+  
+  .package-product-item .product-name {
+    font-size: 0.9rem !important;
+  }
+  
+  .package-product-item .product-details {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.25rem !important;
+  }
+  
+  .package-product-item .product-category {
+    font-size: 0.75rem !important;
+    padding: 0.2rem 0.6rem !important;
+  }
+  
+  .package-product-item .product-price {
+    font-size: 1rem !important;
+  }
+  
+  .package-total {
+    padding: 0.75rem 1rem !important;
+  }
+  
+  .package-total strong {
+    font-size: 0.9rem !important;
+  }
+}
+
+/* Fixes para pantallas extra pequeñas */
+@media (max-width: 360px) {
+  .package-summary {
+    margin-left: 0.75rem !important; /* Mantener margen a la derecha */
+    margin-right: 0.25rem !important;
+    padding: 0.75rem !important;
+    width: calc(100% - 1rem) !important; /* Ajustar ancho para pantallas pequeñas */
+  }
+  
+  .package-product-item {
+    padding: 0.5rem !important;
+  }
+  
+  .package-product-item .product-name {
+    font-size: 0.85rem !important;
+  }
+  
+  .package-product-item .product-category {
+    font-size: 0.7rem !important;
+    padding: 0.15rem 0.5rem !important;
+  }
+  
+  .package-product-item .product-price {
+    font-size: 0.9rem !important;
+  }
+  
+  .package-total strong {
+    font-size: 0.85rem !important;
+  }
+}
+
+/* Scrollbar personalizada para la lista de productos */
+.package-products-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.package-products-list::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.package-products-list::-webkit-scrollbar-thumb {
+  background: var(--primary-blue, #1e3a8a);
+  border-radius: 3px;
+}
+
+.package-products-list::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-blue, #3b82f6);
+}
+
+/* Animaciones suaves */
+.package-summary {
+  animation: fadeInUp 0.6s ease-out !important;
+}
+
+.package-product-item {
+  animation: fadeInUp 0.8s ease-out !important;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estados de carga */
+.loading-state {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 2rem !important;
+  color: #64748b !important;
+}
+
+.loading-state i {
+  margin-right: 0.5rem !important;
+  animation: spin 1s linear infinite !important;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Mejoras para el contenedor del paso 2 */
+.step-content-inner {
+  padding-left: 2rem !important; /* Mover todo más a la derecha */
+  padding-right: 0.5rem !important;
+}
+
+/* Responsive para el contenedor del paso 2 */
+@media (max-width: 768px) {
+  .step-content-inner {
+    padding-left: 1.5rem !important; /* Ajustar para móviles */
+    padding-right: 0.5rem !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .step-content-inner {
+    padding-left: 1.25rem !important; /* Ajustar para pantallas pequeñas */
+    padding-right: 0.25rem !important;
+  }
+}
+
+/* Ajustes para el grid de productos en el paso 2 */
+.products-list {
+  margin-left: 0.5rem !important; /* Mover productos un poco a la derecha */
+}
+
+/* Mejoras para los tabs de categorías */
+.category-tabs {
+  margin-left: 1.5rem !important; /* Mover tabs más a la derecha */
+  margin-right: 0.5rem !important;
+}
+
+/* Responsive para tabs de categorías */
+@media (max-width: 768px) {
+  .category-tabs {
+    margin-left: 1.25rem !important; /* Ajustar para móviles */
+    margin-right: 0.5rem !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .category-tabs {
+    margin-left: 1rem !important; /* Ajustar para pantallas pequeñas */
+    margin-right: 0.25rem !important;
+  }
+}
+
+/* Botones más pequeños para crear paquete y categorías */
+.new-package-section .btn {
+  padding: 0.5rem 1rem !important; /* Reducir padding */
+  font-size: 0.875rem !important; /* Reducir tamaño de fuente */
+  min-width: auto !important; /* Permitir que se ajusten al contenido */
+}
+
+.step-actions .btn {
+  padding: 0.5rem 1rem !important; /* Reducir padding */
+  font-size: 0.875rem !important; /* Reducir tamaño de fuente */
+  min-width: auto !important; /* Permitir que se ajusten al contenido */
+}
+
+.category-tab {
+  padding: 0.5rem 0.75rem !important; /* Reducir padding */
+  font-size: 0.8rem !important; /* Reducir tamaño de fuente */
+  min-width: auto !important; /* Permitir que se ajusten al contenido */
+}
+
+/* Botones de categorías más compactos */
+.category-tabs {
+  gap: 0.25rem !important; /* Reducir espacio entre botones */
+  margin-bottom: 1.5rem !important; /* Reducir margen inferior */
+}
+
+/* Responsive para botones más pequeños */
+@media (max-width: 768px) {
+  .new-package-section .btn {
+    padding: 0.4rem 0.8rem !important;
+    font-size: 0.8rem !important;
+  }
+  
+  .step-actions .btn {
+    padding: 0.4rem 0.8rem !important;
+    font-size: 0.8rem !important;
+  }
+  
+  .category-tab {
+    padding: 0.4rem 0.6rem !important;
+    font-size: 0.75rem !important;
+  }
+  
+  .category-tabs {
+    gap: 0.2rem !important;
+    margin-bottom: 1rem !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .new-package-section .btn {
+    padding: 0.35rem 0.7rem !important;
+    font-size: 0.75rem !important;
+  }
+  
+  .step-actions .btn {
+    padding: 0.35rem 0.7rem !important;
+    font-size: 0.75rem !important;
+  }
+  
+  .category-tab {
+    padding: 0.35rem 0.5rem !important;
+    font-size: 0.7rem !important;
+  }
+  
+  .category-tabs {
+    gap: 0.15rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+}

@@ -1,0 +1,444 @@
+/* Estilos específicos para el panel de administración */
+
+/* Estadísticas del admin */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.stat-card.admin {
+    border-left: 4px solid #667eea;
+}
+
+.stat-card.admin:hover {
+    border-left-color: #764ba2;
+}
+
+/* Verificaciones */
+.verificaciones-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.verificacion-item {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-left: 4px solid #ffc107;
+}
+
+.verificacion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.verificacion-titulo {
+    font-size: 1.1rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.verificacion-tipo {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: #fff3cd;
+    color: #856404;
+}
+
+.verificacion-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.verificacion-detail {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.verificacion-detail strong {
+    color: #333;
+}
+
+.verificacion-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.verificacion-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.verificacion-btn.aprobar {
+    background: #28a745;
+    color: white;
+}
+
+.verificacion-btn.aprobar:hover {
+    background: #218838;
+    transform: translateY(-2px);
+}
+
+.verificacion-btn.rechazar {
+    background: #dc3545;
+    color: white;
+}
+
+.verificacion-btn.rechazar:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+.verificacion-btn.detalles {
+    background: #17a2b8;
+    color: white;
+}
+
+.verificacion-btn.detalles:hover {
+    background: #138496;
+    transform: translateY(-2px);
+}
+
+/* Usuarios */
+.usuarios-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.usuario-item {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-left: 4px solid #667eea;
+}
+
+.usuario-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.usuario-info {
+    display: flex;
+    align-items: center;
+}
+
+.usuario-avatar {
+    font-size: 1.5rem;
+    margin-right: 10px;
+}
+
+.usuario-nombre {
+    font-size: 1.1rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.usuario-rol {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: #e9ecef;
+    color: #495057;
+}
+
+.usuario-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.usuario-detail {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.usuario-detail strong {
+    color: #333;
+}
+
+.usuario-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.usuario-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.usuario-btn.activar {
+    background: #28a745;
+    color: white;
+}
+
+.usuario-btn.desactivar {
+    background: #dc3545;
+    color: white;
+}
+
+.usuario-btn.editar {
+    background: #17a2b8;
+    color: white;
+}
+
+.usuario-btn.eliminar {
+    background: #6c757d;
+    color: white;
+}
+
+/* Reportes */
+.reportes-content {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.reporte-section {
+    margin-bottom: 25px;
+}
+
+.reporte-section h4 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 15px;
+    font-weight: 600;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 8px;
+}
+
+.reporte-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.reporte-item {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.reporte-item:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+}
+
+.reporte-valor {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 5px;
+}
+
+.reporte-etiqueta {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Configuración */
+.configuracion-content {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.config-section {
+    margin-bottom: 25px;
+}
+
+.config-section h4 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 15px;
+    font-weight: 600;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 8px;
+}
+
+.config-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.config-label {
+    font-weight: 600;
+    color: #333;
+}
+
+.config-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.config-toggle {
+    position: relative;
+    width: 50px;
+    height: 25px;
+    background: #ccc;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.config-toggle.active {
+    background: #28a745;
+}
+
+.config-toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 21px;
+    height: 21px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.config-toggle.active::after {
+    transform: translateX(25px);
+}
+
+.config-input {
+    padding: 8px 12px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    width: 120px;
+}
+
+.config-input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.config-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #667eea;
+    color: white;
+}
+
+.config-btn:hover {
+    background: #764ba2;
+    transform: translateY(-2px);
+}
+
+/* Estados de verificación */
+.estado-pendiente {
+    color: #856404;
+    background: #fff3cd;
+}
+
+.estado-aprobado {
+    color: #155724;
+    background: #d4edda;
+}
+
+.estado-rechazado {
+    color: #721c24;
+    background: #f8d7da;
+}
+
+.estado-activo {
+    color: #155724;
+    background: #d4edda;
+}
+
+.estado-inactivo {
+    color: #721c24;
+    background: #f8d7da;
+}
+
+/* Responsive */
+@media (max-width: 360px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .verificacion-details,
+    .usuario-details,
+    .reporte-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .verificacion-actions,
+    .usuario-actions {
+        flex-direction: column;
+    }
+    
+    .config-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .config-control {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+/* Animaciones */
+.verificacion-item,
+.usuario-item,
+.reporte-item {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.verificacion-item:nth-child(1) { animation-delay: 0.1s; }
+.verificacion-item:nth-child(2) { animation-delay: 0.2s; }
+.verificacion-item:nth-child(3) { animation-delay: 0.3s; }
+
+.usuario-item:nth-child(1) { animation-delay: 0.1s; }
+.usuario-item:nth-child(2) { animation-delay: 0.2s; }
+.usuario-item:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

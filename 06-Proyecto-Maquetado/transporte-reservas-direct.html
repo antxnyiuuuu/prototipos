@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Reservas - TravelApp Transporte</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .transport-welcome {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Main Content */
+        .main {
+            padding: 2rem 0;
+        }
+
+        .page-title {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .page-title h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-title p {
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Reservations Grid */
+        .reservations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .reservation-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .reservation-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .reservation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .reservation-id {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .reservation-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status.confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .reservation-route {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+            border-radius: 15px;
+        }
+
+        .route-from, .route-to {
+            flex: 1;
+            text-align: center;
+        }
+
+        .route-city {
+            font-weight: bold;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .route-time {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .route-arrow {
+            font-size: 1.2rem;
+            color: #667eea;
+        }
+
+        .reservation-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            text-align: center;
+            padding: 0.5rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.2rem;
+        }
+
+        .detail-value {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .reservation-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            transition: color 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 10px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .nav-text {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        /* Botón Flotante de Edición */
+        .floating-edit-btn {
+            position: fixed;
+            bottom: 100px;
+            left: 20px;
+            z-index: 999;
+            background: linear-gradient(45deg, #20b2aa, #4169e1, #8a2be2);
+            border-radius: 30px;
+            padding: 0.6rem 1.2rem;
+            box-shadow: 0 6px 20px rgba(32, 178, 170, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .floating-edit-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(32, 178, 170, 0.6);
+        }
+
+        .floating-btn-content {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .floating-icon {
+            font-size: 1.2rem;
+        }
+
+        .floating-text {
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        /* Modal de Edición de Perfil */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .profile-modal {
+            background: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .close {
+            font-size: 2rem;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .close:hover {
+            opacity: 0.7;
+        }
+
+        .profile-edit-content {
+            padding: 2rem;
+        }
+
+        /* Cover Photo Section */
+        .cover-photo-section {
+            margin-bottom: 2rem;
+        }
+
+        .cover-photo-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: -50px;
+        }
+
+        .cover-photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cover-photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .cover-photo-container:hover .cover-photo-overlay {
+            opacity: 1;
+        }
+
+        .upload-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-btn:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        /* Profile Photo Section */
+        .profile-photo-section {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .profile-photo-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .profile-photo-container img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-photo-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Transport Info Section */
+        .transport-info-section {
+            margin-bottom: 2rem;
+        }
+
+        .transport-info-section h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        /* Media Gallery Section */
+        .media-gallery-section {
+            margin-bottom: 2rem;
+        }
+
+        .media-gallery-section h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .media-upload-area {
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-zone {
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9ff;
+        }
+
+        .upload-zone:hover {
+            border-color: #5a6fd8;
+            background: #f0f2ff;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-zone p {
+            margin: 0.5rem 0;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .upload-zone small {
+            color: #999;
+        }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .media-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .media-item img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .delete-media {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Modal Actions */
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        /* Ajustar contenido para el navbar inferior */
+        .main {
+            padding-bottom: 80px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .reservations-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-title h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">🚌 TravelApp Transporte</div>
+                <div class="transport-welcome">Gestiona las reservas de transporte</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Page Title -->
+            <section class="page-title">
+                <h1>📅 Gestión de Reservas</h1>
+                <p>Administra todas las reservas de tu empresa de transporte</p>
+            </section>
+
+            <!-- Stats Grid -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-number">24</div>
+                    <div class="stat-label">Reservas Hoy</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-number">18</div>
+                    <div class="stat-label">Confirmadas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Pendientes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">❌</div>
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Canceladas</div>
+                </div>
+            </section>
+
+            <!-- Reservations Grid -->
+            <section class="reservations-grid" id="reservationsGrid">
+                <!-- Las reservas se cargarán dinámicamente -->
+            </section>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-content">
+            <a href="dashboard-transporte-direct.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">Inicio</span>
+            </a>
+            <a href="transporte-vehiculos-direct.html" class="nav-item">
+                <span class="nav-icon">🚗</span>
+                <span class="nav-text">Vehículos</span>
+            </a>
+            <a href="transporte-rutas-direct.html" class="nav-item">
+                <span class="nav-icon">🗺️</span>
+                <span class="nav-text">Rutas</span>
+            </a>
+            <a href="transporte-reservas-direct.html" class="nav-item active">
+                <span class="nav-icon">📅</span>
+                <span class="nav-text">Reservas</span>
+            </a>
+            <a href="transporte-precios-direct.html" class="nav-item">
+                <span class="nav-icon">💰</span>
+                <span class="nav-text">Precios</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Botón Flotante de Edición -->
+    <div class="floating-edit-btn" onclick="openEditProfile()">
+        <div class="floating-btn-content">
+            <span class="floating-icon">✏️</span>
+            <span class="floating-text">Editar</span>
+        </div>
+    </div>
+
+    <!-- Modal de Edición de Perfil -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content profile-modal">
+            <div class="modal-header">
+                <h2>📸 Editar Perfil de Transporte</h2>
+                <span class="close" onclick="closeEditProfile()">&times;</span>
+            </div>
+            
+            <div class="profile-edit-content">
+                <!-- Cover Photo Section -->
+                <div class="cover-photo-section">
+                    <div class="cover-photo-container">
+                        <img id="coverPhoto" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjNjY3ZWVhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7wn5GoIENvdmVyIFBob3RvPC90ZXh0Pjwvc3ZnPg==" alt="Cover Photo">
+                        <div class="cover-photo-overlay">
+                            <button class="upload-btn" onclick="uploadCoverPhoto()">
+                                📷 Cambiar Foto de Portada
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Photo Section -->
+                <div class="profile-photo-section">
+                    <div class="profile-photo-container">
+                        <img id="profilePhoto" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI3NSIgY3k9Ijc1IiByPSI3NSIgZmlsbD0iIzY2N2VlYSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+RsTwvdGV4dD48L3N2Zz4=" alt="Profile Photo">
+                        <button class="profile-photo-btn" onclick="uploadProfilePhoto()">
+                            ✏️
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Transport Info Section -->
+                <div class="transport-info-section">
+                    <h3>🚌 Información de Transporte</h3>
+                    <div class="form-group">
+                        <label>Nombre de la Empresa:</label>
+                        <input type="text" id="transportName" value="Transporte Ecuador" placeholder="Nombre de la empresa">
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción:</label>
+                        <textarea id="transportDescription" placeholder="Describe tu empresa de transporte...">Empresa de transporte confiable y segura, ofreciendo servicios de calidad en todo Ecuador con una flota moderna y conductores profesionales.</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Ubicación:</label>
+                        <input type="text" id="transportLocation" value="Quito, Ecuador" placeholder="Ubicación">
+                    </div>
+                    <div class="form-group">
+                        <label>Especialidad:</label>
+                        <input type="text" id="transportSpecialty" value="Transporte Interprovincial" placeholder="Especialidad en transporte">
+                    </div>
+                </div>
+
+                <!-- Media Gallery Section -->
+                <div class="media-gallery-section">
+                    <h3>📸 Galería de Fotos y Videos</h3>
+                    <div class="media-upload-area">
+                        <div class="upload-zone" onclick="uploadMedia()">
+                            <div class="upload-icon">📷</div>
+                            <p>Arrastra fotos/videos aquí o haz clic para subir</p>
+                            <small>Soporta: JPG, PNG, MP4, MOV</small>
+                        </div>
+                    </div>
+                    
+                    <div class="media-grid" id="mediaGrid">
+                        <!-- Media items will be added here -->
+                        <div class="media-item">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPvCfkaggQXV0b2bDvXM8L3RleHQ+PC9zdmc+" alt="Autobús">
+                            <button class="delete-media" onclick="deleteMedia(this)">🗑️</button>
+                        </div>
+                        <div class="media-item">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPvCfkaggVGF4aTwvdGV4dD48L3N2Zz4=" alt="Taxi">
+                            <button class="delete-media" onclick="deleteMedia(this)">🗑️</button>
+                        </div>
+                        <div class="media-item">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPvCfkaggVmFuPC90ZXh0Pjwvc3ZnPg==" alt="Van">
+                            <button class="delete-media" onclick="deleteMedia(this)">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="closeEditProfile()">Cancelar</button>
+                    <button class="btn btn-primary" onclick="saveProfile()">💾 Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Usuario -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeUserModal()">&times;</span>
+            <h3>Mi Cuenta</h3>
+            <div id="userInfo"></div>
+            <div style="margin-top: 2rem;">
+                <button class="btn" onclick="goToProfile()">Mi Perfil</button>
+                <button class="btn btn-secondary" onclick="logout()" style="margin-left: 1rem;">Cerrar Sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de reservas
+        const reservas = [
+            {
+                id: "RES-001",
+                cliente: "María González",
+                ruta: "Quito - Guayaquil",
+                desde: "Quito",
+                hasta: "Guayaquil",
+                fecha: "2024-01-15",
+                hora: "06:00",
+                pasajeros: 2,
+                precio: "$50",
+                estado: "confirmed",
+                vehiculo: "Autobús #001"
+            },
+            {
+                id: "RES-002",
+                cliente: "Carlos Mendoza",
+                ruta: "Quito - Cuenca",
+                desde: "Quito",
+                hasta: "Cuenca",
+                fecha: "2024-01-16",
+                hora: "08:00",
+                pasajeros: 1,
+                precio: "$30",
+                estado: "pending",
+                vehiculo: "Autobús #002"
+            },
+            {
+                id: "RES-003",
+                cliente: "Ana Torres",
+                ruta: "Guayaquil - Manta",
+                desde: "Guayaquil",
+                hasta: "Manta",
+                fecha: "2024-01-17",
+                hora: "07:00",
+                pasajeros: 3,
+                precio: "$45",
+                estado: "confirmed",
+                vehiculo: "Van #003"
+            },
+            {
+                id: "RES-004",
+                cliente: "Pedro López",
+                ruta: "Quito Centro - Aeropuerto",
+                desde: "Centro Quito",
+                hasta: "Aeropuerto",
+                fecha: "2024-01-18",
+                hora: "05:00",
+                pasajeros: 1,
+                precio: "$8",
+                estado: "cancelled",
+                vehiculo: "Taxi #004"
+            },
+            {
+                id: "RES-005",
+                cliente: "Luis Ramírez",
+                ruta: "Baños - Puyo",
+                desde: "Baños",
+                hasta: "Puyo",
+                fecha: "2024-01-19",
+                hora: "09:00",
+                pasajeros: 4,
+                precio: "$48",
+                estado: "confirmed",
+                vehiculo: "Van #005"
+            },
+            {
+                id: "RES-006",
+                cliente: "Roberto Silva",
+                ruta: "Cuenca - Loja",
+                desde: "Cuenca",
+                hasta: "Loja",
+                fecha: "2024-01-20",
+                hora: "10:00",
+                pasajeros: 2,
+                precio: "$36",
+                estado: "pending",
+                vehiculo: "Autobús #006"
+            }
+        ];
+
+        // Funciones de utilidad
+        function showAlert(message, type = 'success') {
+            const alert = document.createElement('div');
+            alert.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 2rem;
+                border-radius: 10px;
+                color: white;
+                font-weight: bold;
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#17a2b8'};
+            `;
+            alert.textContent = message;
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+        }
+
+        function getStatusName(status) {
+            const statuses = {
+                'confirmed': 'Confirmada',
+                'pending': 'Pendiente',
+                'cancelled': 'Cancelada'
+            };
+            return statuses[status] || status;
+        }
+
+        function displayReservations() {
+            const grid = document.getElementById('reservationsGrid');
+            grid.innerHTML = '';
+            
+            reservas.forEach(reservation => {
+                const card = document.createElement('div');
+                card.className = 'reservation-card';
+                card.innerHTML = `
+                    <div class="reservation-header">
+                        <div class="reservation-id">${reservation.id}</div>
+                        <div class="reservation-status ${reservation.estado}">${getStatusName(reservation.estado)}</div>
+                    </div>
+                    <div class="reservation-route">
+                        <div class="route-from">
+                            <div class="route-city">${reservation.desde}</div>
+                            <div class="route-time">${reservation.hora}</div>
+                        </div>
+                        <div class="route-arrow">➡️</div>
+                        <div class="route-to">
+                            <div class="route-city">${reservation.hasta}</div>
+                            <div class="route-time">${reservation.fecha}</div>
+                        </div>
+                    </div>
+                    <div class="reservation-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Cliente</div>
+                            <div class="detail-value">${reservation.cliente}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Pasajeros</div>
+                            <div class="detail-value">${reservation.pasajeros}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Precio</div>
+                            <div class="detail-value">${reservation.precio}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Vehículo</div>
+                            <div class="detail-value">${reservation.vehiculo}</div>
+                        </div>
+                    </div>
+                    <div class="reservation-actions">
+                        ${reservation.estado === 'pending' ? 
+                            `<button class="btn btn-success" onclick="confirmReservation('${reservation.id}')">✅ Confirmar</button>` : 
+                            `<button class="btn btn-primary" onclick="viewReservation('${reservation.id}')">👁️ Ver</button>`
+                        }
+                        <button class="btn btn-secondary" onclick="editReservation('${reservation.id}')">✏️ Editar</button>
+                        <button class="btn btn-danger" onclick="cancelReservation('${reservation.id}')">❌ Cancelar</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function confirmReservation(reservationId) {
+            const reservation = reservas.find(r => r.id === reservationId);
+            if (reservation) {
+                reservation.estado = 'confirmed';
+                displayReservations();
+                showAlert(`Reserva ${reservationId} confirmada`, 'success');
+            }
+        }
+
+        function viewReservation(reservationId) {
+            const reservation = reservas.find(r => r.id === reservationId);
+            if (reservation) {
+                showAlert(`Viendo detalles de reserva ${reservationId}...`, 'success');
+            }
+        }
+
+        function editReservation(reservationId) {
+            const reservation = reservas.find(r => r.id === reservationId);
+            if (reservation) {
+                showAlert(`Editando reserva ${reservationId}...`, 'success');
+            }
+        }
+
+        function cancelReservation(reservationId) {
+            const reservation = reservas.find(r => r.id === reservationId);
+            if (reservation && confirm(`¿Estás seguro de que quieres cancelar la reserva ${reservationId}?`)) {
+                reservation.estado = 'cancelled';
+                displayReservations();
+                showAlert(`Reserva ${reservationId} cancelada`, 'success');
+            }
+        }
+
+        // Funciones del Modal de Edición de Perfil
+        function openEditProfile() {
+            document.getElementById('editProfileModal').style.display = 'block';
+        }
+
+        function closeEditProfile() {
+            document.getElementById('editProfileModal').style.display = 'none';
+        }
+
+        function uploadCoverPhoto() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('coverPhoto').src = e.target.result;
+                        showAlert('Foto de portada actualizada', 'success');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        function uploadProfilePhoto() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('profilePhoto').src = e.target.result;
+                        showAlert('Foto de perfil actualizada', 'success');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        function uploadMedia() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*,video/*';
+            input.multiple = true;
+            input.onchange = function(e) {
+                const files = Array.from(e.target.files);
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        addMediaItem(e.target.result, file.type.startsWith('video/'));
+                    };
+                    reader.readAsDataURL(file);
+                });
+                showAlert(`${files.length} archivo(s) subido(s)`, 'success');
+            };
+            input.click();
+        }
+
+        function addMediaItem(src, isVideo) {
+            const mediaGrid = document.getElementById('mediaGrid');
+            const mediaItem = document.createElement('div');
+            mediaItem.className = 'media-item';
+            
+            if (isVideo) {
+                mediaItem.innerHTML = `
+                    <video controls style="width: 100%; height: 120px; object-fit: cover;">
+                        <source src="${src}" type="video/mp4">
+                    </video>
+                    <button class="delete-media" onclick="deleteMedia(this)">🗑️</button>
+                `;
+            } else {
+                mediaItem.innerHTML = `
+                    <img src="${src}" alt="Media">
+                    <button class="delete-media" onclick="deleteMedia(this)">🗑️</button>
+                `;
+            }
+            
+            mediaGrid.appendChild(mediaItem);
+        }
+
+        function deleteMedia(button) {
+            if (confirm('¿Estás seguro de que quieres eliminar este archivo?')) {
+                button.parentElement.remove();
+                showAlert('Archivo eliminado', 'info');
+            }
+        }
+
+        function saveProfile() {
+            const transportName = document.getElementById('transportName').value;
+            const transportDescription = document.getElementById('transportDescription').value;
+            const transportLocation = document.getElementById('transportLocation').value;
+            const transportSpecialty = document.getElementById('transportSpecialty').value;
+            
+            if (!transportName || !transportDescription || !transportLocation || !transportSpecialty) {
+                showAlert('Por favor completa todos los campos', 'error');
+                return;
+            }
+            
+            // Simular guardado
+            showAlert('Perfil de transporte actualizado exitosamente', 'success');
+            closeEditProfile();
+        }
+
+        // Funciones del modal de usuario
+        function showUserMenu() {
+            const modal = document.getElementById('userModal');
+            const userInfo = document.getElementById('userInfo');
+            
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                userInfo.innerHTML = `
+                    <p><strong>Nombre:</strong> ${user.name}</p>
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>Rol:</strong> ${getRoleDisplayName(user.role)}</p>
+                `;
+            } else {
+                userInfo.innerHTML = `
+                    <p><strong>Nombre:</strong> Transporte Ecuador</p>
+                    <p><strong>Email:</strong> transporte@ecuador.com</p>
+                    <p><strong>Rol:</strong> Empresa de Transporte</p>
+                `;
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').style.display = 'none';
+        }
+
+        function getRoleDisplayName(role) {
+            const roleNames = {
+                'usuario': 'Usuario',
+                'admin': 'Administrador',
+                'hotel': 'Hotel',
+                'restaurante': 'Restaurante',
+                'actividades': 'Actividades',
+                'transporte': 'Empresa de Transporte'
+            };
+            return roleNames[role] || role;
+        }
+
+        function goToProfile() {
+            showAlert('Funcionalidad de perfil en desarrollo', 'success');
+            closeUserModal();
+        }
+
+        function logout() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                // Limpiar datos de sesión
+                localStorage.removeItem('current_user');
+                localStorage.removeItem('userSession');
+                
+                showAlert('Sesión cerrada correctamente', 'success');
+                setTimeout(() => {
+                    window.location.href = 'login-direct.html';
+                }, 1000);
+            }
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const editProfileModal = document.getElementById('editProfileModal');
+            const userModal = document.getElementById('userModal');
+            
+            if (event.target === editProfileModal) {
+                closeEditProfile();
+            }
+            if (event.target === userModal) {
+                closeUserModal();
+            }
+        }
+
+        // Inicializar página
+        window.addEventListener('load', function() {
+            // Cargar reservas iniciales
+            displayReservations();
+        });
+    </script>
+</body>
+</html>

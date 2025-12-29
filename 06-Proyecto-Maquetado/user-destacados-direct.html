@@ -1,0 +1,1983 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio - TravelApp</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .user-welcome {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .user-avatar {
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .user-avatar:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Main Content */
+        .main {
+            padding: 2rem 0;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Tarjeta especial para crear paquete */
+        .create-package-card {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #20c997 100%);
+            color: white;
+            border: 3px solid #fff;
+            box-shadow: 0 15px 40px rgba(40, 167, 69, 0.3);
+            transform: scale(1.02);
+        }
+
+        .create-package-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(40, 167, 69, 0.4);
+        }
+
+        .create-package-card .card-icon {
+            font-size: 3.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        .create-package-card .card-title {
+            color: white;
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        .create-package-card .card-description {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .btn-create-package {
+            background: linear-gradient(45deg, #fff 0%, #f8f9fa 100%);
+            color: #28a745;
+            border: 2px solid #fff;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-create-package:hover {
+            background: linear-gradient(45deg, #f8f9fa 0%, #e9ecef 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .card-description {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        /* Destacados */
+        .destacados-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .destacados-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .destacado-card {
+            background: #f8f9ff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 2px solid #e1e5e9;
+            transition: all 0.3s;
+        }
+
+        .destacado-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .destacado-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .destacado-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .destacado-description {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Modal de crear paquete con z-index más alto */
+        #createPackageModal {
+            z-index: 10000;
+        }
+
+        /* Modales de detalles con z-index más alto que el modal principal */
+        #hotelDetailsModal,
+        #restaurantMenuModal,
+        #activityDetailsModal {
+            z-index: 10001;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        /* Alertas */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-success {
+            background: #28a745;
+        }
+
+        .alert-error {
+            background: #dc3545;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #e1e5e9;
+            padding: 0.5rem 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            transition: color 0.3s;
+            padding: 0.5rem;
+            border-radius: 10px;
+            min-width: 60px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-text {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        /* Ajustar contenido para el navbar inferior */
+        .main {
+            padding-bottom: 80px;
+        }
+
+        /* Botón Flotante de Crear Paquete */
+        .floating-create-btn {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            z-index: 999;
+            background: linear-gradient(45deg, #1e3c72, #2a5298, #20c997);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .floating-create-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(30, 60, 114, 0.6);
+        }
+
+        /* Modal de Crear Paquete */
+        .create-package-modal {
+            background: white;
+            margin: 0;
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10000;
+        }
+
+        .create-package-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #20c997 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .create-package-title {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(40, 167, 69, 0.1);
+            border-radius: 15px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .step.active {
+            background: #28a745;
+            color: white;
+        }
+
+        .step.completed {
+            background: #6c757d;
+            color: white;
+        }
+
+        .step.pending {
+            background: #e9ecef;
+            color: #6c757d;
+        }
+
+        .step-content {
+            padding: 2rem;
+        }
+
+        .step-title {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .step-description {
+            color: #666;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .option-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .option-card:hover {
+            border-color: #28a745;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.2);
+        }
+
+        .option-card.selected {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        .option-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .option-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .option-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .option-price {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .price-counter {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .price-total {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .price-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .price-amount {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            min-width: 100px;
+        }
+
+        .step-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .btn-skip {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-skip:hover {
+            background: #5a6268;
+        }
+
+        .btn-continue {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-continue:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-continue:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Modal de Detalles de Hotel */
+        .hotel-details-modal {
+            background: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .hotel-details-content {
+            padding: 2rem;
+        }
+
+        .hotel-details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .hotel-details-title {
+            font-size: 1.8rem;
+            color: #333;
+            margin: 0;
+        }
+
+        .hotel-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #28a745;
+        }
+
+        /* Modal de Menú de Restaurante */
+        .restaurant-menu-modal {
+            background: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .restaurant-menu-content {
+            padding: 2rem;
+        }
+
+        .restaurant-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .restaurant-menu-title {
+            font-size: 1.8rem;
+            color: #333;
+            margin: 0;
+        }
+
+        .menu-category {
+            margin-bottom: 2rem;
+        }
+
+        .menu-category h3 {
+            color: #28a745;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(40, 167, 69, 0.05);
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-item-name {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .menu-item-price {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        /* Modal de Detalles de Actividad */
+        .activity-details-modal {
+            background: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .activity-details-content {
+            padding: 2rem;
+        }
+
+        .activity-details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .activity-details-title {
+            font-size: 1.8rem;
+            color: #333;
+            margin: 0;
+        }
+
+        .activity-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .time-slot {
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .time-slot:hover {
+            border-color: #28a745;
+        }
+
+        .time-slot.selected {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .destacados-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="user-info">
+                    <h1 class="logo">TravelApp</h1>
+                    <p class="user-welcome" id="userWelcome">¡Hola Usuario!</p>
+                </div>
+                <div class="user-avatar" id="userAvatar" onclick="showUserMenu()">👤</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <div class="dashboard-card create-package-card">
+                    <div class="card-icon">✨</div>
+                    <h3 class="card-title">Crea tu Propio Paquete</h3>
+                    <p class="card-description">Personaliza tu viaje ideal eligiendo transporte, hotel, restaurante y actividades</p>
+                    <button class="btn btn-create-package" onclick="createCustomPackage()">🚀 Crear Mi Paquete</button>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-icon">🌍</div>
+                    <h3 class="card-title">Destinos</h3>
+                    <p class="card-description">Explora lugares increíbles y descubre nuevos destinos</p>
+                    <button class="btn" onclick="goToDestinos()">Ver Destinos</button>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-icon">🚗</div>
+                    <h3 class="card-title">Transporte</h3>
+                    <p class="card-description">Encuentra la mejor opción de transporte para tu viaje</p>
+                    <button class="btn" onclick="goToTransporte()">Ver Transporte</button>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-icon">📦</div>
+                    <h3 class="card-title">Paquetes</h3>
+                    <p class="card-description">Descubre paquetes completos con descuentos especiales</p>
+                    <button class="btn" onclick="goToPaquetes()">Ver Paquetes</button>
+                </div>
+            </div>
+
+            <!-- Destacados -->
+            <div class="destacados-section">
+                <h2 class="section-title">🔥 Destacados de la Semana</h2>
+                <div class="destacados-grid">
+                    <div class="destacado-card">
+                        <div class="destacado-icon">🏨</div>
+                        <h4 class="destacado-title">Hotel Paradise</h4>
+                        <p class="destacado-description">Disfruta de una estadía de lujo con 30% de descuento</p>
+                    </div>
+                    <div class="destacado-card">
+                        <div class="destacado-icon">🍽️</div>
+                        <h4 class="destacado-title">Restaurante Deluxe</h4>
+                        <p class="destacado-description">Saborea la mejor comida local con precios especiales</p>
+                    </div>
+                    <div class="destacado-card">
+                        <div class="destacado-icon">🎯</div>
+                        <h4 class="destacado-title">Aventuras Plus</h4>
+                        <p class="destacado-description">Vive experiencias únicas con actividades emocionantes</p>
+                    </div>
+                    <div class="destacado-card">
+                        <div class="destacado-icon">🚌</div>
+                        <h4 class="destacado-title">Transporte VIP</h4>
+                        <p class="destacado-description">Viaja con comodidad y estilo en nuestros vehículos premium</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Usuario -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeUserModal()">&times;</span>
+            <h3>Mi Cuenta</h3>
+            <div id="userInfo"></div>
+            <div style="margin-top: 2rem;">
+                <button class="btn" onclick="goToProfile()">Mi Perfil</button>
+                <button class="btn btn-secondary" onclick="logout()" style="margin-left: 1rem;">Cerrar Sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón Flotante de Crear Paquete -->
+    <div class="floating-create-btn" onclick="createCustomPackage()">
+        +
+    </div>
+
+    <!-- Modal de Crear Paquete Personalizado -->
+    <div id="createPackageModal" class="modal">
+        <div class="modal-content create-package-modal">
+            <div class="create-package-header">
+                <h2 class="create-package-title">✨ Crea tu Paquete Personalizado</h2>
+                <span class="close" onclick="closeCreatePackage()">&times;</span>
+            </div>
+            
+            <!-- Indicador de Pasos -->
+            <div class="step-indicator">
+                <div class="step active" id="step1">1. Destino</div>
+                <div class="step pending" id="step2">2. Huéspedes</div>
+                <div class="step pending" id="step3">3. Transporte</div>
+                <div class="step pending" id="step4">4. Hotel</div>
+                <div class="step pending" id="step5">5. Restaurante</div>
+                <div class="step pending" id="step6">6. Actividades</div>
+            </div>
+            
+            <!-- Contador de Precio Total -->
+            <div class="price-counter">
+                <div class="price-total">
+                    <span class="price-label">Precio Total:</span>
+                    <span class="price-amount" id="totalPrice">$0</span>
+                </div>
+            </div>
+            
+            <!-- Contenido de los Pasos -->
+            <div class="step-content">
+                <!-- Paso 1: Destino -->
+                <div id="step1Content" class="step-content-item">
+                    <h3 class="step-title">🌍 Elige tu Destino</h3>
+                    <p class="step-description">Selecciona el destino de Ecuador que quieres visitar</p>
+                    
+                    <div class="options-grid">
+                        <div class="option-card" onclick="selectDestination('galapagos')">
+                            <div class="option-icon">🐢</div>
+                            <div class="option-title">Galápagos</div>
+                            <div class="option-description">Islas encantadas con vida silvestre única</div>
+                        </div>
+                        <div class="option-card" onclick="selectDestination('quito')">
+                            <div class="option-icon">🏛️</div>
+                            <div class="option-title">Quito</div>
+                            <div class="option-description">Capital histórica y cultural</div>
+                        </div>
+                        <div class="option-card" onclick="selectDestination('cuenca')">
+                            <div class="option-icon">🏘️</div>
+                            <div class="option-title">Cuenca</div>
+                            <div class="option-description">Ciudad colonial patrimonio de la humanidad</div>
+                        </div>
+                        <div class="option-card" onclick="selectDestination('banos')">
+                            <div class="option-icon">🌋</div>
+                            <div class="option-title">Baños de Agua Santa</div>
+                            <div class="option-description">Aventura y aguas termales</div>
+                        </div>
+                        <div class="option-card" onclick="selectDestination('montanita')">
+                            <div class="option-icon">🏄</div>
+                            <div class="option-title">Montañita</div>
+                            <div class="option-description">Playa, surf y vida nocturna</div>
+                        </div>
+                        <div class="option-card" onclick="selectDestination('otavalo')">
+                            <div class="option-icon">🧵</div>
+                            <div class="option-title">Otavalo</div>
+                            <div class="option-description">Mercado artesanal y cultura indígena</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button class="btn-skip" onclick="skipStep(1)">Omitir</button>
+                        <button class="btn-continue" id="continueStep1" onclick="nextStep(1)" disabled>Continuar</button>
+                    </div>
+                </div>
+                
+                <!-- Paso 2: Huéspedes -->
+                <div id="step2Content" class="step-content-item" style="display: none;">
+                    <h3 class="step-title">👥 Configura tus Huéspedes</h3>
+                    <p class="step-description">Selecciona cuántas personas y mascotas viajarán</p>
+                    
+                    <div class="people-config">
+                        <div class="people-row">
+                            <span class="people-label">Adultos</span>
+                            <div class="people-controls">
+                                <button type="button" class="people-btn" onclick="changePackagePeople('adults', -1)">-</button>
+                                <span class="people-count" id="packageAdultsCount">1</span>
+                                <button type="button" class="people-btn" onclick="changePackagePeople('adults', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="people-row">
+                            <span class="people-label">Niños (2-12 años)</span>
+                            <div class="people-controls">
+                                <button type="button" class="people-btn" onclick="changePackagePeople('children', -1)">-</button>
+                                <span class="people-count" id="packageChildrenCount">0</span>
+                                <button type="button" class="people-btn" onclick="changePackagePeople('children', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="people-row">
+                            <span class="people-label">Bebés (0-2 años)</span>
+                            <div class="people-controls">
+                                <button type="button" class="people-btn" onclick="changePackagePeople('babies', -1)">-</button>
+                                <span class="people-count" id="packageBabiesCount">0</span>
+                                <button type="button" class="people-btn" onclick="changePackagePeople('babies', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="people-row">
+                            <span class="people-label">Mascotas</span>
+                            <div class="people-controls">
+                                <button type="button" class="people-btn" onclick="changePackagePeople('pets', -1)">-</button>
+                                <span class="people-count" id="packagePetsCount">0</span>
+                                <button type="button" class="people-btn" onclick="changePackagePeople('pets', 1)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button class="btn-skip" onclick="skipStep(2)">Omitir</button>
+                        <button class="btn-continue" id="continueStep2" onclick="nextStep(2)" disabled>Continuar</button>
+                    </div>
+                </div>
+                
+                <!-- Paso 3: Transporte -->
+                <div id="step3Content" class="step-content-item" style="display: none;">
+                    <h3 class="step-title">🚌 Elige tu Transporte</h3>
+                    <p class="step-description">Selecciona cómo quieres viajar o si tienes tu propio vehículo</p>
+                    
+                    <div class="options-grid">
+                        <div class="option-card" onclick="selectTransport('autobus')">
+                            <div class="option-icon">🚌</div>
+                            <div class="option-title">Autobús</div>
+                            <div class="option-description">Viaja cómodamente en autobús interprovincial</div>
+                        </div>
+                        <div class="option-card" onclick="selectTransport('taxi')">
+                            <div class="option-icon">🚕</div>
+                            <div class="option-title">Taxi</div>
+                            <div class="option-description">Servicio de taxi privado</div>
+                        </div>
+                        <div class="option-card" onclick="selectTransport('van')">
+                            <div class="option-icon">🚐</div>
+                            <div class="option-title">Van</div>
+                            <div class="option-description">Van turística para grupos</div>
+                        </div>
+                        <div class="option-card" onclick="selectTransport('propio')">
+                            <div class="option-icon">🚗</div>
+                            <div class="option-title">Tengo mi Propio Vehículo</div>
+                            <div class="option-description">Usaré mi propio transporte</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button class="btn-skip" onclick="skipStep(3)">Omitir</button>
+                        <button class="btn-continue" id="continueStep3" onclick="nextStep(3)" disabled>Continuar</button>
+                    </div>
+                </div>
+                
+                <!-- Paso 4: Hotel -->
+                <div id="step4Content" class="step-content-item" style="display: none;">
+                    <h3 class="step-title">🏨 Elige tu Hotel</h3>
+                    <p class="step-description">Selecciona el hotel perfecto para tu estadía</p>
+                    
+                    <div class="options-grid">
+                        <div class="option-card" onclick="selectHotel('hotel1')">
+                            <div class="option-icon">🏨</div>
+                            <div class="option-title">Hotel Paradise</div>
+                            <div class="option-description">Hotel de lujo con todas las comodidades</div>
+                            <div class="option-price">$150/noche</div>
+                        </div>
+                        <div class="option-card" onclick="selectHotel('hotel2')">
+                            <div class="option-icon">🏨</div>
+                            <div class="option-title">Hotel Central</div>
+                            <div class="option-description">Hotel céntrico y económico</div>
+                            <div class="option-price">$80/noche</div>
+                        </div>
+                        <div class="option-card" onclick="selectHotel('hotel3')">
+                            <div class="option-icon">🏨</div>
+                            <div class="option-title">Hotel Boutique</div>
+                            <div class="option-description">Hotel pequeño y acogedor</div>
+                            <div class="option-price">$95/noche</div>
+                        </div>
+                        <div class="option-card" onclick="selectHotel('ninguno')">
+                            <div class="option-icon">🏠</div>
+                            <div class="option-title">No necesito Hotel</div>
+                            <div class="option-description">Tengo mi propio alojamiento</div>
+                            <div class="option-price">$0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button class="btn-skip" onclick="skipStep(4)">Omitir</button>
+                        <button class="btn-continue" id="continueStep4" onclick="nextStep(4)" disabled>Continuar</button>
+                    </div>
+                </div>
+                
+                <!-- Paso 5: Restaurante -->
+                <div id="step5Content" class="step-content-item" style="display: none;">
+                    <h3 class="step-title">🍽️ Elige tu Restaurante</h3>
+                    <p class="step-description">Selecciona dónde quieres disfrutar de la mejor comida</p>
+                    
+                    <div class="options-grid">
+                        <div class="option-card" onclick="selectRestaurant('rest1')">
+                            <div class="option-icon">🍽️</div>
+                            <div class="option-title">Restaurante Deluxe</div>
+                            <div class="option-description">Cocina gourmet y ambiente elegante</div>
+                            <div class="option-price">$25/persona</div>
+                        </div>
+                        <div class="option-card" onclick="selectRestaurant('rest2')">
+                            <div class="option-icon">🍽️</div>
+                            <div class="option-title">Restaurante Local</div>
+                            <div class="option-description">Auténtica comida ecuatoriana</div>
+                            <div class="option-price">$15/persona</div>
+                        </div>
+                        <div class="option-card" onclick="selectRestaurant('rest3')">
+                            <div class="option-icon">🍽️</div>
+                            <div class="option-title">Restaurante Familiar</div>
+                            <div class="option-description">Ambiente familiar y precios accesibles</div>
+                            <div class="option-price">$12/persona</div>
+                        </div>
+                        <div class="option-card" onclick="selectRestaurant('ninguno')">
+                            <div class="option-icon">🍳</div>
+                            <div class="option-title">No necesito Restaurante</div>
+                            <div class="option-description">Me encargaré de mis propias comidas</div>
+                            <div class="option-price">$0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button class="btn-skip" onclick="skipStep(5)">Omitir</button>
+                        <button class="btn-continue" id="continueStep5" onclick="nextStep(5)" disabled>Continuar</button>
+                    </div>
+                </div>
+                
+                <!-- Paso 6: Actividades -->
+                <div id="step6Content" class="step-content-item" style="display: none;">
+                    <h3 class="step-title">🎯 Elige tus Actividades</h3>
+                    <p class="step-description">Selecciona las actividades que quieres disfrutar</p>
+                    
+                    <div class="options-grid">
+                        <div class="option-card" onclick="selectActivity('act1')">
+                            <div class="option-icon">🎯</div>
+                            <div class="option-title">Aventuras Plus</div>
+                            <div class="option-description">Actividades de aventura y deportes extremos</div>
+                            <div class="option-price">$120/persona</div>
+                        </div>
+                        <div class="option-card" onclick="selectActivity('act2')">
+                            <div class="option-icon">🎯</div>
+                            <div class="option-title">Tours Culturales</div>
+                            <div class="option-description">Conoce la cultura y historia local</div>
+                            <div class="option-price">$35/persona</div>
+                        </div>
+                        <div class="option-card" onclick="selectActivity('act3')">
+                            <div class="option-icon">🎯</div>
+                            <div class="option-title">Naturaleza</div>
+                            <div class="option-description">Explora la naturaleza y vida silvestre</div>
+                            <div class="option-price">$80/persona</div>
+                        </div>
+                        <div class="option-card" onclick="selectActivity('ninguno')">
+                            <div class="option-icon">🏠</div>
+                            <div class="option-title">No necesito Actividades</div>
+                            <div class="option-description">Planificaré mis propias actividades</div>
+                            <div class="option-price">$0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button class="btn-skip" onclick="skipStep(6)">Omitir</button>
+                        <button class="btn-continue" id="continueStep6" onclick="finishPackage()" disabled>Finalizar Paquete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Detalles de Hotel -->
+    <div id="hotelDetailsModal" class="modal">
+        <div class="modal-content hotel-details-modal">
+            <div class="hotel-details-content">
+                <div class="hotel-details-header">
+                    <h2 class="hotel-details-title" id="hotelDetailsTitle">Detalles del Hotel</h2>
+                    <span class="close" onclick="closeHotelDetails()">&times;</span>
+                </div>
+                
+                <div class="hotel-image" id="hotelDetailsImage">🏨</div>
+                
+                <form id="hotelDetailsForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Número de Personas:</label>
+                            <select id="hotelGuests" required>
+                                <option value="">Seleccionar</option>
+                                <option value="1">1 Persona</option>
+                                <option value="2">2 Personas</option>
+                                <option value="3">3 Personas</option>
+                                <option value="4">4 Personas</option>
+                                <option value="5+">5+ Personas</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Número de Noches:</label>
+                            <select id="hotelNights" required>
+                                <option value="">Seleccionar</option>
+                                <option value="1">1 Noche</option>
+                                <option value="2">2 Noches</option>
+                                <option value="3">3 Noches</option>
+                                <option value="4">4 Noches</option>
+                                <option value="5+">5+ Noches</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Fecha de Llegada:</label>
+                            <input type="date" id="hotelCheckIn" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de Salida:</label>
+                            <input type="date" id="hotelCheckOut" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Tipo de Habitación:</label>
+                        <select id="hotelRoomType" required>
+                            <option value="">Seleccionar</option>
+                            <option value="single">Habitación Individual</option>
+                            <option value="double">Habitación Doble</option>
+                            <option value="suite">Suite</option>
+                            <option value="family">Habitación Familiar</option>
+                        </select>
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button type="button" class="btn-skip" onclick="closeHotelDetails()">Cancelar</button>
+                        <button type="submit" class="btn-continue">Confirmar Hotel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Menú de Restaurante -->
+    <div id="restaurantMenuModal" class="modal">
+        <div class="modal-content restaurant-menu-modal">
+            <div class="restaurant-menu-content">
+                <div class="restaurant-menu-header">
+                    <h2 class="restaurant-menu-title" id="restaurantMenuTitle">Menú del Restaurante</h2>
+                    <span class="close" onclick="closeRestaurantMenu()">&times;</span>
+                </div>
+                
+                <div class="menu-category">
+                    <h3>🍽️ Platos Principales</h3>
+                    <div class="menu-item">
+                        <span class="menu-item-name">Ceviche de Camarón</span>
+                        <span class="menu-item-price">$12</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-item-name">Encebollado</span>
+                        <span class="menu-item-price">$8</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-item-name">Seco de Pollo</span>
+                        <span class="menu-item-price">$10</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-item-name">Arroz con Menestra</span>
+                        <span class="menu-item-price">$9</span>
+                    </div>
+                </div>
+                
+                <div class="menu-category">
+                    <h3>🥤 Bebidas</h3>
+                    <div class="menu-item">
+                        <span class="menu-item-name">Jugo de Naranja</span>
+                        <span class="menu-item-price">$3</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-item-name">Cerveza Nacional</span>
+                        <span class="menu-item-price">$2</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-item-name">Agua</span>
+                        <span class="menu-item-price">$1</span>
+                    </div>
+                </div>
+                
+                <div class="menu-category">
+                    <h3>🍰 Postres</h3>
+                    <div class="menu-item">
+                        <span class="menu-item-name">Helado de Vainilla</span>
+                        <span class="menu-item-price">$4</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-item-name">Tres Leches</span>
+                        <span class="menu-item-price">$5</span>
+                    </div>
+                </div>
+                
+                <div class="step-actions">
+                    <button class="btn-skip" onclick="closeRestaurantMenu()">Cerrar Menú</button>
+                    <button class="btn-continue" onclick="confirmRestaurant()">Confirmar Restaurante</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Detalles de Actividad -->
+    <div id="activityDetailsModal" class="modal">
+        <div class="modal-content activity-details-modal">
+            <div class="activity-details-content">
+                <div class="activity-details-header">
+                    <h2 class="activity-details-title" id="activityDetailsTitle">Detalles de la Actividad</h2>
+                    <span class="close" onclick="closeActivityDetails()">&times;</span>
+                </div>
+                
+                <div class="activity-image" id="activityDetailsImage">🎯</div>
+                
+                <form id="activityDetailsForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Número de Personas:</label>
+                            <select id="activityGuests" required>
+                                <option value="">Seleccionar</option>
+                                <option value="1">1 Persona</option>
+                                <option value="2">2 Personas</option>
+                                <option value="3">3 Personas</option>
+                                <option value="4">4 Personas</option>
+                                <option value="5+">5+ Personas</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de la Actividad:</label>
+                            <input type="date" id="activityDate" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Horario Preferido:</label>
+                        <div class="time-slots">
+                            <div class="time-slot" onclick="selectTimeSlot(this)">08:00</div>
+                            <div class="time-slot" onclick="selectTimeSlot(this)">10:00</div>
+                            <div class="time-slot" onclick="selectTimeSlot(this)">12:00</div>
+                            <div class="time-slot" onclick="selectTimeSlot(this)">14:00</div>
+                            <div class="time-slot" onclick="selectTimeSlot(this)">16:00</div>
+                            <div class="time-slot" onclick="selectTimeSlot(this)">18:00</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Duración:</label>
+                        <select id="activityDuration" required>
+                            <option value="">Seleccionar</option>
+                            <option value="2">2 Horas</option>
+                            <option value="4">4 Horas</option>
+                            <option value="6">6 Horas</option>
+                            <option value="8">8 Horas</option>
+                            <option value="full">Día Completo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button type="button" class="btn-skip" onclick="closeActivityDetails()">Cancelar</button>
+                        <button type="submit" class="btn-continue">Confirmar Actividad</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-content">
+            <a href="#" class="nav-item active" onclick="goToHome()">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">Inicio</span>
+            </a>
+            <a href="#" class="nav-item" onclick="goToDestinos()">
+                <span class="nav-icon">🌍</span>
+                <span class="nav-text">Destinos</span>
+            </a>
+            <a href="#" class="nav-item" onclick="goToTransporte()">
+                <span class="nav-icon">🚗</span>
+                <span class="nav-text">Transporte</span>
+            </a>
+            <a href="#" class="nav-item" onclick="goToHoteles()">
+                <span class="nav-icon">🏨</span>
+                <span class="nav-text">Hoteles</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showUserMenu()">
+                <span class="nav-icon">👤</span>
+                <span class="nav-text">Perfil</span>
+            </a>
+        </div>
+    </nav>
+
+    <div id="alertContainer"></div>
+
+    <script>
+        // Funciones de utilidad
+        function showAlert(message, type = 'success') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+        }
+
+        function showUserMenu() {
+            const modal = document.getElementById('userModal');
+            const userInfo = document.getElementById('userInfo');
+            
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                userInfo.innerHTML = `
+                    <p><strong>Nombre:</strong> ${user.name}</p>
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>Rol:</strong> ${getRoleDisplayName(user.role)}</p>
+                `;
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').style.display = 'none';
+        }
+
+        function getRoleDisplayName(role) {
+            const roleNames = {
+                'usuario': 'Usuario',
+                'admin': 'Administrador',
+                'hotel': 'Hotel',
+                'restaurante': 'Restaurante',
+                'actividades': 'Actividades'
+            };
+            return roleNames[role] || role;
+        }
+
+        function goToProfile() {
+            showAlert('Funcionalidad de perfil en desarrollo', 'success');
+            closeUserModal();
+        }
+
+        function logout() {
+            localStorage.removeItem('current_user');
+            showAlert('Sesión cerrada correctamente', 'success');
+            setTimeout(() => {
+                window.location.href = 'login-direct.html';
+            }, 1000);
+        }
+
+        function goToHome() {
+            showAlert('Ya estás en la página de inicio', 'success');
+        }
+
+        function goToDestinos() {
+            window.location.href = 'user-destinos-direct.html';
+        }
+
+        function goToTransporte() {
+            window.location.href = 'user-transporte-direct.html';
+        }
+
+        function goToHoteles() {
+            window.location.href = 'user-hoteles-direct.html';
+        }
+
+        // Variables para el paquete personalizado
+        let currentStep = 1;
+        let packageData = {
+            destino: null,
+            huéspedes: {
+                adults: 1,
+                children: 0,
+                babies: 0,
+                pets: 0
+            },
+            transporte: null,
+            hotel: null,
+            restaurante: null,
+            actividad: null
+        };
+
+        // Precios de los servicios
+        const servicePrices = {
+            hotel: {
+                'hotel1': 150,
+                'hotel2': 80,
+                'hotel3': 95,
+                'ninguno': 0
+            },
+            restaurante: {
+                'rest1': 25,
+                'rest2': 15,
+                'rest3': 12,
+                'ninguno': 0
+            },
+            actividad: {
+                'act1': 120,
+                'act2': 35,
+                'act3': 80,
+                'ninguno': 0
+            }
+        };
+
+        // Función para calcular el precio total
+        function calculateTotalPrice() {
+            let total = 0;
+            const totalPeople = packageData.huéspedes.adults + packageData.huéspedes.children + packageData.huéspedes.babies;
+            
+            // Calcular precio del hotel (por noche, asumiendo 2 noches por defecto)
+            if (packageData.hotel && servicePrices.hotel[packageData.hotel] !== undefined) {
+                const hotelPricePerNight = servicePrices.hotel[packageData.hotel];
+                const nights = 2; // Por defecto 2 noches
+                total += hotelPricePerNight * nights;
+            }
+            
+            // Calcular precio del restaurante (por persona)
+            if (packageData.restaurante && servicePrices.restaurante[packageData.restaurante] !== undefined) {
+                const restaurantPricePerPerson = servicePrices.restaurante[packageData.restaurante];
+                total += restaurantPricePerPerson * totalPeople;
+            }
+            
+            // Calcular precio de actividades (por persona)
+            if (packageData.actividad && servicePrices.actividad[packageData.actividad] !== undefined) {
+                const activityPricePerPerson = servicePrices.actividad[packageData.actividad];
+                total += activityPricePerPerson * totalPeople;
+            }
+            
+            return total;
+        }
+
+        // Función para actualizar el contador de precio
+        function updatePriceCounter() {
+            const total = calculateTotalPrice();
+            const totalPriceElement = document.getElementById('totalPrice');
+            if (totalPriceElement) {
+                totalPriceElement.textContent = `$${total}`;
+            }
+        }
+
+        // Función para crear paquete personalizado
+        function createCustomPackage() {
+            document.getElementById('createPackageModal').style.display = 'block';
+            resetPackageCreation();
+            
+            // Verificar si hay datos de búsqueda guardados
+            const searchData = localStorage.getItem('packageSearchData');
+            if (searchData) {
+                try {
+                    const data = JSON.parse(searchData);
+                    
+                    // Autocompletar destino si está disponible
+                    if (data.destination) {
+                        // Buscar el destino en las opciones disponibles
+                        const destinationOptions = document.querySelectorAll('#step1Content .option-card');
+                        for (let option of destinationOptions) {
+                            const destinationName = option.querySelector('.option-title').textContent.toLowerCase();
+                            if (destinationName.includes(data.destination.toLowerCase()) || 
+                                data.destination.toLowerCase().includes(destinationName)) {
+                                option.click();
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // Limpiar los datos después de usarlos
+                    localStorage.removeItem('packageSearchData');
+                } catch (e) {
+                    console.log('Error al procesar datos de búsqueda:', e);
+                }
+            }
+        }
+
+        function closeCreatePackage() {
+            document.getElementById('createPackageModal').style.display = 'none';
+            resetPackageCreation();
+        }
+
+        function resetPackageCreation() {
+            currentStep = 1;
+            packageData = {
+                destino: null,
+                huéspedes: {
+                    adults: 1,
+                    children: 0,
+                    babies: 0,
+                    pets: 0
+                },
+                transporte: null,
+                hotel: null,
+                restaurante: null,
+                actividad: null
+            };
+            
+            // Resetear pasos
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById(`step${i}`).className = i === 1 ? 'step active' : 'step pending';
+                document.getElementById(`step${i}Content`).style.display = i === 1 ? 'block' : 'none';
+                if (document.getElementById(`continueStep${i}`)) {
+                    document.getElementById(`continueStep${i}`).disabled = true;
+                }
+            }
+            
+            // Resetear contadores de huéspedes
+            document.getElementById('packageAdultsCount').textContent = '1';
+            document.getElementById('packageChildrenCount').textContent = '0';
+            document.getElementById('packageBabiesCount').textContent = '0';
+            document.getElementById('packagePetsCount').textContent = '0';
+            
+            // Limpiar selecciones
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Resetear contador de precio
+            updatePriceCounter();
+        }
+
+        function selectDestination(destinationType) {
+            // Limpiar selección anterior
+            document.querySelectorAll('#step1Content .option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar nueva opción
+            event.target.closest('.option-card').classList.add('selected');
+            
+            packageData.destino = destinationType;
+            document.getElementById('continueStep1').disabled = false;
+        }
+
+        function changePackagePeople(type, change) {
+            const newValue = packageData.huéspedes[type] + change;
+            
+            if (type === 'adults' && newValue < 1) return; // Mínimo 1 adulto
+            if (newValue < 0) return; // No valores negativos
+            
+            packageData.huéspedes[type] = newValue;
+            document.getElementById(`package${type.charAt(0).toUpperCase() + type.slice(1)}Count`).textContent = newValue;
+            
+            // Actualizar contador de precio
+            updatePriceCounter();
+            
+            // Habilitar botón continuar si hay al menos 1 adulto
+            if (packageData.huéspedes.adults > 0) {
+                document.getElementById('continueStep2').disabled = false;
+            }
+        }
+
+        function selectTransport(transportType) {
+            // Limpiar selección anterior
+            document.querySelectorAll('#step3Content .option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar nueva opción
+            event.target.closest('.option-card').classList.add('selected');
+            
+            packageData.transporte = transportType;
+            document.getElementById('continueStep3').disabled = false;
+        }
+
+        function selectHotel(hotelType) {
+            // Limpiar selección anterior
+            document.querySelectorAll('#step4Content .option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar nueva opción
+            event.target.closest('.option-card').classList.add('selected');
+            
+            packageData.hotel = hotelType;
+            
+            // Actualizar contador de precio
+            updatePriceCounter();
+            
+            // Si selecciona un hotel específico, abrir modal de detalles
+            if (hotelType !== 'ninguno') {
+                openHotelDetails(hotelType);
+            } else {
+                document.getElementById('continueStep4').disabled = false;
+            }
+        }
+
+        function selectRestaurant(restaurantType) {
+            // Limpiar selección anterior
+            document.querySelectorAll('#step5Content .option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar nueva opción
+            event.target.closest('.option-card').classList.add('selected');
+            
+            packageData.restaurante = restaurantType;
+            
+            // Actualizar contador de precio
+            updatePriceCounter();
+            
+            // Si selecciona un restaurante específico, abrir modal de menú
+            if (restaurantType !== 'ninguno') {
+                openRestaurantMenu(restaurantType);
+            } else {
+                document.getElementById('continueStep5').disabled = false;
+            }
+        }
+
+        function selectActivity(activityType) {
+            // Limpiar selección anterior
+            document.querySelectorAll('#step6Content .option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seleccionar nueva opción
+            event.target.closest('.option-card').classList.add('selected');
+            
+            packageData.actividad = activityType;
+            
+            // Actualizar contador de precio
+            updatePriceCounter();
+            
+            // Si selecciona una actividad específica, abrir modal de detalles
+            if (activityType !== 'ninguno') {
+                openActivityDetails(activityType);
+            } else {
+                document.getElementById('continueStep6').disabled = false;
+            }
+        }
+
+        function nextStep(step) {
+            if (step < 6) {
+                // Marcar paso actual como completado
+                document.getElementById(`step${step}`).className = 'step completed';
+                document.getElementById(`step${step}Content`).style.display = 'none';
+                
+                // Activar siguiente paso
+                currentStep = step + 1;
+                document.getElementById(`step${currentStep}`).className = 'step active';
+                document.getElementById(`step${currentStep}Content`).style.display = 'block';
+            }
+        }
+
+        function skipStep(step) {
+            nextStep(step);
+        }
+
+        function finishPackage() {
+            // Mostrar resumen del paquete
+            let summary = '🎉 ¡Tu paquete personalizado está listo!\n\n';
+            summary += '📋 Resumen de tu paquete:\n';
+            summary += `🌍 Destino: ${getDestinationName(packageData.destino)}\n`;
+            
+            // Mostrar huéspedes
+            const total = packageData.huéspedes.adults + packageData.huéspedes.children + packageData.huéspedes.babies;
+            summary += `👥 Huéspedes: ${total} persona${total !== 1 ? 's' : ''}`;
+            if (packageData.huéspedes.pets > 0) {
+                summary += `, ${packageData.huéspedes.pets} mascota${packageData.huéspedes.pets !== 1 ? 's' : ''}`;
+            }
+            summary += '\n';
+            
+            summary += `🚌 Transporte: ${getTransportName(packageData.transporte)}\n`;
+            summary += `🏨 Hotel: ${getHotelName(packageData.hotel)}\n`;
+            summary += `🍽️ Restaurante: ${getRestaurantName(packageData.restaurante)}\n`;
+            summary += `🎯 Actividad: ${getActivityName(packageData.actividad)}\n\n`;
+            
+            // Mostrar precio total
+            const totalPrice = calculateTotalPrice();
+            summary += `💰 Precio Total: $${totalPrice}\n\n`;
+            summary += '¡Gracias por crear tu paquete personalizado!';
+            
+            alert(summary);
+            closeCreatePackage();
+        }
+
+        // Funciones auxiliares para nombres
+        function getDestinationName(type) {
+            const names = {
+                'galapagos': 'Galápagos',
+                'quito': 'Quito',
+                'cuenca': 'Cuenca',
+                'banos': 'Baños de Agua Santa',
+                'montanita': 'Montañita',
+                'otavalo': 'Otavalo'
+            };
+            return names[type] || 'No seleccionado';
+        }
+
+        function getTransportName(type) {
+            const names = {
+                'autobus': 'Autobús Interprovincial',
+                'taxi': 'Taxi Privado',
+                'van': 'Van Turística',
+                'propio': 'Vehículo Propio'
+            };
+            return names[type] || 'No seleccionado';
+        }
+
+        function getHotelName(type) {
+            const names = {
+                'hotel1': 'Hotel Paradise',
+                'hotel2': 'Hotel Central',
+                'hotel3': 'Hotel Boutique',
+                'ninguno': 'No necesito hotel'
+            };
+            return names[type] || 'No seleccionado';
+        }
+
+        function getRestaurantName(type) {
+            const names = {
+                'rest1': 'Restaurante Deluxe',
+                'rest2': 'Restaurante Local',
+                'rest3': 'Restaurante Familiar',
+                'ninguno': 'No necesito restaurante'
+            };
+            return names[type] || 'No seleccionado';
+        }
+
+        function getActivityName(type) {
+            const names = {
+                'act1': 'Aventuras Plus',
+                'act2': 'Tours Culturales',
+                'act3': 'Naturaleza',
+                'ninguno': 'No necesito actividades'
+            };
+            return names[type] || 'No seleccionado';
+        }
+
+        // Funciones para modales de detalles
+        function openHotelDetails(hotelType) {
+            const hotelNames = {
+                'hotel1': 'Hotel Paradise',
+                'hotel2': 'Hotel Central',
+                'hotel3': 'Hotel Boutique'
+            };
+            
+            document.getElementById('hotelDetailsTitle').textContent = hotelNames[hotelType];
+            document.getElementById('hotelDetailsImage').textContent = '🏨';
+            document.getElementById('hotelDetailsModal').style.display = 'block';
+        }
+
+        function closeHotelDetails() {
+            document.getElementById('hotelDetailsModal').style.display = 'none';
+        }
+
+        function openRestaurantMenu(restaurantType) {
+            const restaurantNames = {
+                'rest1': 'Restaurante Deluxe',
+                'rest2': 'Restaurante Local',
+                'rest3': 'Restaurante Familiar'
+            };
+            
+            document.getElementById('restaurantMenuTitle').textContent = `Menú - ${restaurantNames[restaurantType]}`;
+            document.getElementById('restaurantMenuModal').style.display = 'block';
+        }
+
+        function closeRestaurantMenu() {
+            document.getElementById('restaurantMenuModal').style.display = 'none';
+        }
+
+        function confirmRestaurant() {
+            closeRestaurantMenu();
+            document.getElementById('continueStep5').disabled = false;
+        }
+
+        function openActivityDetails(activityType) {
+            const activityNames = {
+                'act1': 'Aventuras Plus',
+                'act2': 'Tours Culturales',
+                'act3': 'Naturaleza'
+            };
+            
+            document.getElementById('activityDetailsTitle').textContent = activityNames[activityType];
+            document.getElementById('activityDetailsImage').textContent = '🎯';
+            document.getElementById('activityDetailsModal').style.display = 'block';
+        }
+
+        function closeActivityDetails() {
+            document.getElementById('activityDetailsModal').style.display = 'none';
+        }
+
+        function selectTimeSlot(element) {
+            // Limpiar selección anterior
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+            
+            // Seleccionar nuevo horario
+            element.classList.add('selected');
+        }
+
+        // Event listeners para formularios
+        document.getElementById('hotelDetailsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            closeHotelDetails();
+            document.getElementById('continueStep4').disabled = false;
+        });
+
+        document.getElementById('activityDetailsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            closeActivityDetails();
+            document.getElementById('continueStep6').disabled = false;
+        });
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const userModal = document.getElementById('userModal');
+            const createPackageModal = document.getElementById('createPackageModal');
+            const hotelDetailsModal = document.getElementById('hotelDetailsModal');
+            const restaurantMenuModal = document.getElementById('restaurantMenuModal');
+            const activityDetailsModal = document.getElementById('activityDetailsModal');
+            
+            if (event.target == userModal) {
+                userModal.style.display = 'none';
+            }
+            if (event.target == createPackageModal) {
+                closeCreatePackage();
+            }
+            if (event.target == hotelDetailsModal) {
+                closeHotelDetails();
+            }
+            if (event.target == restaurantMenuModal) {
+                closeRestaurantMenu();
+            }
+            if (event.target == activityDetailsModal) {
+                closeActivityDetails();
+            }
+        }
+
+        // Inicializar página
+        window.addEventListener('load', function() {
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                document.getElementById('userWelcome').textContent = `¡Hola ${user.name}!`;
+                document.getElementById('userAvatar').textContent = user.avatar || '👤';
+                
+                // Verificar si debe abrir el modal de crear paquete automáticamente
+                const searchData = localStorage.getItem('packageSearchData');
+                if (searchData) {
+                    // Abrir el modal automáticamente
+                    setTimeout(() => {
+                        createCustomPackage();
+                    }, 500);
+                }
+            } else {
+                showAlert('No hay usuario logueado. Redirigiendo al login...', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login-direct.html';
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>

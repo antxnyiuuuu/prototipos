@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paquete Premium - Ecuador Travel</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.ico">
+</head>
+<body>
+    <div class="container">
+
+        <!-- Contenido principal -->
+        <main class="main-content">
+            <!-- Información del paquete -->
+            <div class="card package-card premium">
+                <div class="package-badge premium">Premium</div>
+                <div class="card-header">
+                    <h2 class="card-title">Paquete Premium</h2>
+                    <div class="card-price">$280</div>
+                </div>
+                <p class="card-description">
+                    Experiencia completa con alojamiento de lujo. Incluye más actividades 
+                    y destinos para una experiencia inolvidable.
+                </p>
+                <ul class="features-list">
+                    <li>4 noches de alojamiento</li>
+                    <li>Desayunos y almuerzos incluidos</li>
+                    <li>4 actividades premium</li>
+                    <li>Transporte privado</li>
+                </ul>
+            </div>
+
+            <!-- Selector de número de personas -->
+            <div class="card">
+                <h3 class="card-title">Número de Personas</h3>
+                <div class="person-counter">
+                    <button class="counter-btn" onclick="decreasePersons()" id="decrease-btn">-</button>
+                    <span class="counter-value" id="person-count">2</span>
+                    <button class="counter-btn" onclick="increasePersons()" id="increase-btn">+</button>
+                </div>
+                <p class="card-description">
+                    Selecciona el número de personas para tu viaje (mínimo 1, máximo 8)
+                </p>
+            </div>
+
+            <!-- Hotel incluido -->
+            <div class="card">
+                <h3 class="card-title">Hotel Incluido</h3>
+                <div class="option-card selected">
+                    <div class="option-title">Hotel Plaza Grande</div>
+                    <div class="option-price">4 estrellas</div>
+                    <div class="option-description">
+                        Ubicado en Plaza Grande, Quito. Incluye WiFi, desayuno, spa, 
+                        restaurante y parking.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actividades disponibles -->
+            <div class="card">
+                <h3 class="card-title">Actividades Disponibles</h3>
+                <p class="card-description">Selecciona 4 actividades (incluidas en el paquete)</p>
+                <div class="options-grid" id="activities-container">
+                    <!-- Las actividades se cargarán dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Comidas incluidas -->
+            <div class="card">
+                <h3 class="card-title">Comidas Incluidas</h3>
+                <p class="card-description">Selecciona tus opciones de comida</p>
+                <div class="options-grid" id="meals-container">
+                    <!-- Las comidas se cargarán dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Tours Full Day adicionales -->
+            <div class="card">
+                <h3 class="card-title">Tours Full Day Adicionales</h3>
+                <p class="card-description">Agrega tours adicionales a tu paquete</p>
+                <div id="selected-fullday-tours" class="selection-list">
+                    <p style="text-align: center; color: var(--gray-600);">
+                        No hay tours Full Day seleccionados
+                    </p>
+                </div>
+                <a href="fullday.html" class="btn btn-secondary">Agregar Tours Full Day</a>
+            </div>
+
+            <!-- Transporte -->
+            <div class="card">
+                <h3 class="card-title">Transporte</h3>
+                <p class="card-description">Selecciona tu transporte preferido</p>
+                <div id="selected-transport" class="selection-list">
+                    <p style="text-align: center; color: var(--gray-600);">
+                        No hay transporte seleccionado
+                    </p>
+                </div>
+                <a href="transportes.html" class="btn btn-secondary">Seleccionar Transporte</a>
+            </div>
+
+            <!-- Resumen del paquete -->
+            <div class="package-summary">
+                <h3 class="summary-title">Resumen de tu Paquete</h3>
+                <div class="summary-item">
+                    <span>Paquete Base:</span>
+                    <span>$280</span>
+                </div>
+                <div class="summary-item">
+                    <span>Personas:</span>
+                    <span id="summary-persons">2</span>
+                </div>
+                <div class="summary-item">
+                    <span>Actividades seleccionadas:</span>
+                    <span id="summary-activities">0</span>
+                </div>
+                <div class="summary-item">
+                    <span>Comidas seleccionadas:</span>
+                    <span id="summary-meals">0</span>
+                </div>
+                <div class="summary-item">
+                    <span>Tours Full Day:</span>
+                    <span id="summary-fullday">$0</span>
+                </div>
+                <div class="summary-item">
+                    <span>Transporte:</span>
+                    <span id="summary-transport">$0</span>
+                </div>
+                <div class="summary-total">
+                    <span>Total:</span>
+                    <span id="total-price">$560</span>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <a href="../index.html" class="btn btn-secondary" style="flex: 1;">Volver</a>
+                <button class="btn btn-whatsapp" onclick="sendToWhatsApp()" style="flex: 1;">
+                    📱 Enviar por WhatsApp
+                </button>
+            </div>
+        </main>
+
+        <!-- Navegación superior -->
+        <nav class="top-nav">
+            <div class="nav-brand">
+                <span>Ecuador Travel</span>
+            </div>
+            <div class="nav-links">
+                <a href="../index.html" class="nav-link">Inicio</a>
+                <a href="paquetes.html" class="nav-link">Mis Paquetes</a>
+                <a href="fullday.html" class="nav-link">Full Day Tours</a>
+                <a href="transportes.html" class="nav-link">Transportes</a>
+            </div>
+            <div class="nav-user">
+                <span id="user-greeting">Paquete Premium</span>
+            </div>
+        </nav>
+    </div>
+
+    <script src="../assets/app.js"></script>
+    <script>
+        let selectedActivities = [];
+        let selectedMeals = [];
+        let personCount = 2;
+
+        // Inicializar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            loadPackageData('premium');
+            loadActivities();
+            loadMeals();
+            updateSummary();
+        });
+
+        // Funciones específicas del paquete Premium
+        function increasePersons() {
+            if (personCount < 8) {
+                personCount++;
+                document.getElementById('person-count').textContent = personCount;
+                updateSummary();
+            }
+        }
+
+        function decreasePersons() {
+            if (personCount > 1) {
+                personCount--;
+                document.getElementById('person-count').textContent = personCount;
+                updateSummary();
+            }
+        }
+
+        function loadActivities() {
+            const container = document.getElementById('activities-container');
+            const activities = getPackageActivities('premium');
+            
+            activities.forEach(activity => {
+                const activityCard = document.createElement('div');
+                activityCard.className = 'option-card';
+                activityCard.onclick = () => toggleActivity(activity.id, activityCard);
+                activityCard.innerHTML = `
+                    <div class="option-title">${activity.nombre}</div>
+                    <div class="option-price">$${activity.precio}</div>
+                    <div class="option-description">${activity.descripcion}</div>
+                `;
+                container.appendChild(activityCard);
+            });
+        }
+
+        function loadMeals() {
+            const container = document.getElementById('meals-container');
+            const meals = getPackageMeals('premium');
+            
+            meals.forEach(meal => {
+                const mealCard = document.createElement('div');
+                mealCard.className = 'option-card';
+                mealCard.onclick = () => toggleMeal(meal.id, mealCard);
+                mealCard.innerHTML = `
+                    <div class="option-title">${meal.nombre}</div>
+                    <div class="option-price">$${meal.precio}</div>
+                    <div class="option-description">${meal.descripcion}</div>
+                `;
+                container.appendChild(mealCard);
+            });
+        }
+
+        function toggleActivity(activityId, cardElement) {
+            const index = selectedActivities.indexOf(activityId);
+            if (index > -1) {
+                selectedActivities.splice(index, 1);
+                cardElement.classList.remove('selected');
+            } else if (selectedActivities.length < 4) {
+                selectedActivities.push(activityId);
+                cardElement.classList.add('selected');
+            } else {
+                alert('Solo puedes seleccionar hasta 4 actividades para el paquete Premium');
+            }
+            updateSummary();
+        }
+
+        function toggleMeal(mealId, cardElement) {
+            const index = selectedMeals.indexOf(mealId);
+            if (index > -1) {
+                selectedMeals.splice(index, 1);
+                cardElement.classList.remove('selected');
+            } else {
+                selectedMeals.push(mealId);
+                cardElement.classList.add('selected');
+            }
+            updateSummary();
+        }
+
+        function updateSummary() {
+            document.getElementById('summary-persons').textContent = personCount;
+            document.getElementById('summary-activities').textContent = selectedActivities.length;
+            document.getElementById('summary-meals').textContent = selectedMeals.length;
+            
+            // Calcular total
+            const basePrice = 280;
+            const totalPrice = basePrice * personCount;
+            document.getElementById('total-price').textContent = `$${totalPrice}`;
+            
+            // Guardar en localStorage
+            savePackageData('premium', {
+                persons: personCount,
+                activities: selectedActivities,
+                meals: selectedMeals
+            });
+        }
+
+        function sendToWhatsApp() {
+            const packageData = getPackageData('premium');
+            const message = generateWhatsAppMessage('premium', packageData);
+            const whatsappUrl = `https://wa.me/593987654321?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+    </script>
+</body>
+</html>

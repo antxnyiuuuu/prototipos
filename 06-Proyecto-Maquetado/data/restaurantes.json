@@ -1,0 +1,172 @@
+[
+  {
+    "id": 1,
+    "nombre": "Restaurante El Cebiche",
+    "ubicacion": "Guayaquil, Ecuador",
+    "direccion": "Malecón 2000, Puerto Santa Ana",
+    "tipo": "Mariscos Ecuatorianos",
+    "especialidades": [
+      "Ceviche de Camarón",
+      "Encebollado",
+      "Arroz con Menestra",
+      "Corvina a la Plancha"
+    ],
+    "precio_rango": "$$",
+    "capacidad": 80,
+    "horarios": {
+      "desayuno": "07:00 - 11:00",
+      "almuerzo": "12:00 - 16:00",
+      "cena": "18:00 - 23:00"
+    },
+    "servicios": [
+      "Vista al Río Guayas",
+      "Bar de Cócteles",
+      "Música en Vivo",
+      "WiFi Gratis",
+      "Estacionamiento"
+    ],
+    "descripcion": "Restaurante especializado en mariscos ecuatorianos con vista al río Guayas, auténtica cocina costeña.",
+    "imagen": "🍽️",
+    "activo": true,
+    "verificado": true,
+    "calificacion": 4.8,
+    "telefono": "+593 4 256 7890",
+    "email": "reservas@elcebiche.com",
+    "fecha_registro": "2024-01-15"
+  },
+  {
+    "id": 2,
+    "nombre": "Café Galápagos",
+    "ubicacion": "Quito, Ecuador",
+    "direccion": "Av. Amazonas 1234, La Mariscal",
+    "tipo": "Cafetería",
+    "especialidades": [
+      "Café de Especialidad",
+      "Desayunos Ecuatorianos",
+      "Panadería Artesanal",
+      "Jugos Naturales"
+    ],
+    "precio_rango": "$",
+    "capacidad": 40,
+    "horarios": {
+      "desayuno": "06:30 - 12:00",
+      "almuerzo": "12:00 - 16:00",
+      "cena": "16:00 - 20:00"
+    },
+    "servicios": [
+      "WiFi Gratis",
+      "Terraza",
+      "Libros y Revistas",
+      "Ambiente Relajado"
+    ],
+    "descripcion": "Acogedor café de especialidad con ambiente bohemio, perfecto para trabajar o relajarse en Quito.",
+    "imagen": "☕",
+    "activo": true,
+    "verificado": true,
+    "calificacion": 4.6,
+    "telefono": "+593 2 256 7890",
+    "email": "hola@cafegalapagos.com",
+    "fecha_registro": "2024-01-20"
+  },
+  {
+    "id": 3,
+    "nombre": "La Cocina Cuencana",
+    "ubicacion": "Cuenca, Ecuador",
+    "direccion": "Calle Larga 8-45, Centro Histórico",
+    "tipo": "Ecuatoriana Tradicional",
+    "especialidades": [
+      "Cuy Asado",
+      "Locro de Papa",
+      "Chicha de Jora",
+      "Helado de Paila"
+    ],
+    "precio_rango": "$$",
+    "capacidad": 60,
+    "horarios": {
+      "desayuno": "08:00 - 12:00",
+      "almuerzo": "12:00 - 17:00",
+      "cena": "17:00 - 22:00"
+    },
+    "servicios": [
+      "Patio Colonial",
+      "Cocina Abierta",
+      "Tours Gastronómicos",
+      "Venta de Productos Locales"
+    ],
+    "descripcion": "Auténtica cocina cuencana en un hermoso patio colonial, con recetas tradicionales de la sierra ecuatoriana.",
+    "imagen": "🌶️",
+    "activo": true,
+    "verificado": true,
+    "calificacion": 4.9,
+    "telefono": "+593 7 256 7890",
+    "email": "info@lacocinacuencana.com",
+    "fecha_registro": "2024-02-01"
+  },
+  {
+    "id": 4,
+    "nombre": "Sushi Quito",
+    "ubicacion": "Quito, Ecuador",
+    "direccion": "Av. 12 de Octubre 1820, La Mariscal",
+    "tipo": "Japonesa",
+    "especialidades": [
+      "Sushi Omakase",
+      "Sashimi Premium",
+      "Ramen Artesanal",
+      "Sake de Importación"
+    ],
+    "precio_rango": "$$$",
+    "capacidad": 30,
+    "horarios": {
+      "almuerzo": "12:00 - 15:00",
+      "cena": "18:00 - 23:00"
+    },
+    "servicios": [
+      "Barra de Sushi",
+      "Chef Japonés",
+      "Reservaciones Requeridas",
+      "Ambiente Intimo"
+    ],
+    "descripcion": "Auténtica experiencia de sushi con chef japonés, ingredientes frescos importados diariamente.",
+    "imagen": "🍣",
+    "activo": true,
+    "verificado": false,
+    "calificacion": 4.7,
+    "telefono": "+593 2 256 7890",
+    "email": "reservas@sushiquito.com",
+    "fecha_registro": "2024-02-05"
+  },
+  {
+    "id": 5,
+    "nombre": "Parrilla Andina",
+    "ubicacion": "Ambato, Ecuador",
+    "direccion": "Av. Cevallos 1801, Centro",
+    "tipo": "Parrilla Ecuatoriana",
+    "especialidades": [
+      "Carne a la Parrilla",
+      "Churrasco Ecuatoriano",
+      "Vinos Nacionales",
+      "Empanadas de Viento"
+    ],
+    "precio_rango": "$$",
+    "capacidad": 100,
+    "horarios": {
+      "almuerzo": "12:00 - 16:00",
+      "cena": "18:00 - 24:00"
+    },
+    "servicios": [
+      "Parrilla a la Vista",
+      "Bar de Vinos",
+      "Terraza",
+      "Música en Vivo",
+      "Estacionamiento"
+    ],
+    "descripcion": "Auténtica parrilla ecuatoriana con carnes premium y ambiente familiar, perfecta para celebraciones.",
+    "imagen": "🥩",
+    "activo": true,
+    "verificado": true,
+    "calificacion": 4.5,
+    "telefono": "+593 3 256 7890",
+    "email": "info@parrillaandina.com",
+    "fecha_registro": "2024-01-30"
+  }
+]

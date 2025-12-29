@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "tecnico_id": 1,
+    "tarea_id": 1,
+    "tipo": "nueva",
+    "titulo": "Nueva Tarea Asignada",
+    "mensaje": "Se te ha asignado una nueva tarea: Instalación de internet en casa de María González",
+    "fecha": "2024-01-20T10:30:00.000Z",
+    "leida": false
+  },
+  {
+    "id": 2,
+    "tecnico_id": 1,
+    "tarea_id": 3,
+    "tipo": "validada",
+    "titulo": "Tarea Validada",
+    "mensaje": "Tu tarea ha sido validada por el coordinador: Instalación completa en casa de Ana Martínez",
+    "fecha": "2024-01-19T15:45:00.000Z",
+    "leida": true
+  },
+  {
+    "id": 3,
+    "admin_id": 1,
+    "tecnico_id": 1,
+    "tarea_id": 1,
+    "tipo": "aceptada",
+    "titulo": "Tarea Aceptada",
+    "mensaje": "El técnico ha aceptado la tarea: Instalación de internet en casa de María González",
+    "fecha": "2024-01-20T11:00:00.000Z",
+    "leida": false
+  },
+  {
+    "id": 4,
+    "admin_id": 1,
+    "tecnico_id": 1,
+    "tarea_id": 3,
+    "tipo": "completada",
+    "titulo": "Tarea Completada",
+    "mensaje": "El técnico ha completado la tarea: Instalación completa en casa de Ana Martínez",
+    "fecha": "2024-01-19T16:30:00.000Z",
+    "leida": true
+  }
+]

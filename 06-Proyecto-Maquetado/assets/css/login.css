@@ -1,0 +1,359 @@
+/* Estilos específicos para la página de login */
+
+/* Login Section */
+.login-section {
+    margin-bottom: 30px;
+}
+
+.login-section .card {
+    text-align: center;
+}
+
+.login-section h2 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.login-subtitle {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Formulario de Login */
+.login-form {
+    margin-bottom: 30px;
+}
+
+.login-form .form-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.login-form .form-label {
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.login-form .form-input,
+.login-form .form-select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.login-form .form-input:focus,
+.login-form .form-select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Divider */
+.login-divider {
+    position: relative;
+    text-align: center;
+    margin: 30px 0;
+}
+
+.login-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #e9ecef;
+}
+
+.login-divider span {
+    background: white;
+    padding: 0 20px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Quick Login */
+.quick-login {
+    margin-top: 30px;
+}
+
+.quick-login h3 {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.quick-login-subtitle {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 25px;
+    line-height: 1.4;
+}
+
+.quick-login-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.quick-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: #333;
+}
+
+.quick-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border-color: #667eea;
+}
+
+.quick-btn.usuario:hover {
+    border-color: #28a745;
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(40, 167, 69, 0.05) 100%);
+}
+
+.quick-btn.admin:hover {
+    border-color: #dc3545;
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(220, 53, 69, 0.05) 100%);
+}
+
+.quick-btn.hotel:hover {
+    border-color: #ffc107;
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.05) 100%);
+}
+
+.quick-btn.restaurante:hover {
+    border-color: #fd7e14;
+    background: linear-gradient(135deg, rgba(253, 126, 20, 0.1) 0%, rgba(253, 126, 20, 0.05) 100%);
+}
+
+.quick-btn.actividades:hover {
+    border-color: #6f42c1;
+    background: linear-gradient(135deg, rgba(111, 66, 193, 0.1) 0%, rgba(111, 66, 193, 0.05) 100%);
+}
+
+.quick-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+.quick-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Info Section */
+.info-section {
+    margin-bottom: 30px;
+}
+
+.info-section h3 {
+    font-size: 1.4rem;
+    color: #333;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.info-section p {
+    color: #666;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.register-options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+/* Modal de Registro */
+.register-form .form-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.register-form .form-label {
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.register-form .form-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.register-form .form-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 360px) {
+    .quick-login-buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    .quick-btn {
+        padding: 15px 10px;
+    }
+    
+    .quick-icon {
+        font-size: 1.5rem;
+    }
+    
+    .quick-text {
+        font-size: 0.8rem;
+    }
+}
+
+/* Animaciones */
+.quick-btn {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.quick-btn:nth-child(1) { animation-delay: 0.1s; }
+.quick-btn:nth-child(2) { animation-delay: 0.2s; }
+.quick-btn:nth-child(3) { animation-delay: 0.3s; }
+.quick-btn:nth-child(4) { animation-delay: 0.4s; }
+.quick-btn:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Sección de cambio de usuario */
+.change-user-section {
+    background: var(--color-primary-light);
+    border: 2px solid var(--color-primary);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.current-user-info {
+    margin-bottom: 1rem;
+}
+
+.current-user-info p {
+    margin: 0.5rem 0;
+    color: var(--color-text);
+}
+
+.change-user-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.change-user-actions .btn {
+    min-width: 120px;
+}
+
+@media (max-width: 480px) {
+    .change-user-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .change-user-actions .btn {
+        width: 100%;
+        max-width: 200px;
+    }
+}
+
+/* Estados de carga */
+.btn.loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Efectos de hover mejorados */
+.quick-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 15px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.quick-btn.usuario::before {
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(40, 167, 69, 0.05) 100%);
+}
+
+.quick-btn.admin::before {
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(220, 53, 69, 0.05) 100%);
+}
+
+.quick-btn.hotel::before {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.05) 100%);
+}
+
+.quick-btn.restaurante::before {
+    background: linear-gradient(135deg, rgba(253, 126, 20, 0.1) 0%, rgba(253, 126, 20, 0.05) 100%);
+}
+
+.quick-btn.actividades::before {
+    background: linear-gradient(135deg, rgba(111, 66, 193, 0.1) 0%, rgba(111, 66, 193, 0.05) 100%);
+}
+
+.quick-btn:hover::before {
+    opacity: 1;
+}
+
+.quick-btn {
+    position: relative;
+    z-index: 1;
+}

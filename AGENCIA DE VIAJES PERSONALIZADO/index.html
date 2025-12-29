@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Viajes Ecuador - App de Viajes</title>
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="assets/styles.css">
+    <link rel="stylesheet" href="assets/additional-styles.css">
+    <link rel="stylesheet" href="assets/admin-navigation.css">
+    <link rel="stylesheet" href="assets/layout-consistency.css">
+    <link rel="stylesheet" href="assets/package-confirmation-improved.css">
+    <link rel="stylesheet" href="assets/package-summary-improved.css">
+    
+    <!-- Meta tags para PWA -->
+    <meta name="description" content="Aplicación de viajes para Ecuador - Descubre hoteles, restaurantes y crea paquetes personalizados">
+    <meta name="theme-color" content="#1e3a8a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+</head>
+<body>
+    <!-- Contenedor principal -->
+    <main id="main">
+        <!-- El contenido se cargará dinámicamente con JavaScript -->
+    </main>
+
+    <!-- Scripts -->
+    <script src="data/products.js"></script>
+    <script src="assets/app.js"></script>
+    
+    
+    <!-- PWA Service Worker (comentado para prototipo estático) -->
+    <!--
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+    -->
+
+    <script>
+      // Inicializar la aplicación
+      document.addEventListener('DOMContentLoaded', function() {
+        // La aplicación se inicializa automáticamente desde app.js
+      });
+    </script>
+</body>
+</html>

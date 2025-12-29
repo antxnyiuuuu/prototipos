@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Tareas - Telecomunicaciones</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-info">
+                    <h1><i class="fas fa-tasks"></i> Gestión de Tareas</h1>
+                    <p>Asigna y supervisa tareas del equipo</p>
+                </div>
+                <div class="user-logo">
+                    <div class="user-logo-btn" onclick="toggleUserMenu()">
+                        <div class="user-initial" id="userInitial">A</div>
+                    </div>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="#" class="user-dropdown-item" onclick="showPerfilModal()">
+                            <i class="fas fa-user"></i>
+                            Mi Perfil
+                        </a>
+                        <a href="#" class="user-dropdown-item danger" onclick="cerrarSesion()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Cerrar Sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros y búsqueda -->
+        <div class="card">
+            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                <div style="flex: 1;">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="form-input" 
+                        placeholder="Buscar tarea..."
+                        onkeyup="filterTareas()"
+                    >
+                </div>
+                <button class="btn btn-primary" onclick="showAddTareaModal()">
+                    <i class="fas fa-plus"></i>
+                    Nueva Tarea
+                </button>
+            </div>
+            
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="btn btn-small btn-secondary" onclick="filterByStatus('all')" id="filterAll">
+                    Todas
+                </button>
+                <button class="btn btn-small btn-secondary" onclick="filterByStatus('Pendiente')" id="filterPendiente">
+                    Pendientes
+                </button>
+                <button class="btn btn-small btn-secondary" onclick="filterByStatus('En Progreso')" id="filterEnProgreso">
+                    En Progreso
+                </button>
+                <button class="btn btn-small btn-secondary" onclick="filterByStatus('Completada')" id="filterCompletada">
+                    Completadas
+                </button>
+            </div>
+        </div>
+
+        <!-- Lista de tareas -->
+        <div id="tareasContainer">
+            <div class="loading">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para agregar/editar tarea -->
+    <div id="tareaModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Nueva Tarea</h3>
+                <button class="modal-close" onclick="closeTareaModal()">&times;</button>
+            </div>
+            
+            <form id="tareaForm">
+                <input type="hidden" id="tareaId" value="">
+                
+                <div class="form-group">
+                    <label for="descripcion" class="form-label">Descripción de la Tarea</label>
+                    <textarea 
+                        id="descripcion" 
+                        class="form-textarea" 
+                        placeholder="Describe detalladamente la tarea a realizar..."
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="clienteSelect" class="form-label">Cliente</label>
+                    <select id="clienteSelect" class="form-select" required>
+                        <option value="">Selecciona un cliente</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="tecnicoSelect" class="form-label">Técnico Asignado</label>
+                    <select id="tecnicoSelect" class="form-select" required>
+                        <option value="">Selecciona un técnico</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="fechaVencimiento" class="form-label">Fecha de Vencimiento</label>
+                    <input 
+                        type="date" 
+                        id="fechaVencimiento" 
+                        class="form-input" 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="estado" class="form-label">Estado</label>
+                    <select id="estado" class="form-select" required>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En Progreso">En Progreso</option>
+                        <option value="Completada">Completada</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; gap: 12px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeTareaModal()" style="flex: 1;">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        <i class="fas fa-save"></i>
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para validar tarea completada -->
+    <div id="validarModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Validar Tarea Completada</h3>
+                <button class="modal-close" onclick="closeValidarModal()">&times;</button>
+            </div>
+            
+            <div id="validarContent">
+                <!-- Contenido dinámico -->
+            </div>
+            
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <button class="btn btn-danger" onclick="rechazarTarea()" style="flex: 1;">
+                    <i class="fas fa-times"></i>
+                    Rechazar
+                </button>
+                <button class="btn btn-success" onclick="aprobarTarea()" style="flex: 1;">
+                    <i class="fas fa-check"></i>
+                    Aprobar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Perfil -->
+    <div id="perfilModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Mi Perfil</h3>
+                <button class="modal-close" onclick="closePerfilModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div id="perfilInfo">
+                    <!-- Información del perfil se carga aquí -->
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closePerfilModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegación inferior -->
+    <div class="bottom-nav">
+        <a href="dashboard-coordinador.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="clientes.html" class="nav-item">
+            <i class="fas fa-users"></i>
+            <span>Clientes</span>
+        </a>
+        <a href="tareas.html" class="nav-item active">
+            <i class="fas fa-tasks"></i>
+            <span>Tareas</span>
+        </a>
+        <a href="tecnicos.html" class="nav-item">
+            <i class="fas fa-tools"></i>
+            <span>Técnicos</span>
+        </a>
+        <a href="nucleo.html" class="nav-item">
+            <i class="fas fa-network-wired"></i>
+            <span>Núcleo</span>
+        </a>
+    </div>
+
+    <script>
+        let tareas = [];
+        let clientes = [];
+        let tecnicos = [];
+        let tareasFiltradas = [];
+        let currentFilter = 'all';
+        let currentTareaValidar = null;
+
+        // Verificar sesión
+        window.addEventListener('load', function() {
+            const userData = localStorage.getItem('userData');
+            if (!userData || JSON.parse(userData).rol !== 'coordinador') {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            loadData();
+            loadUserInitial();
+        });
+
+        // Cargar todos los datos
+        async function loadData() {
+            try {
+                const [tareasResponse, clientesResponse, tecnicosResponse] = await Promise.all([
+                    fetch('../data/tareas.json'),
+                    fetch('../data/clientes.json'),
+                    fetch('../data/tecnicos.json')
+                ]);
+                
+                tareas = await tareasResponse.json();
+                clientes = await clientesResponse.json();
+                tecnicos = await tecnicosResponse.json();
+                
+                tareasFiltradas = [...tareas];
+                displayTareas();
+                populateSelects();
+            } catch (error) {
+                console.error('Error cargando datos:', error);
+                loadFromLocalStorage();
+            }
+        }
+
+        function loadFromLocalStorage() {
+            tareas = JSON.parse(localStorage.getItem('tareas') || '[]');
+            clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
+            tecnicos = JSON.parse(localStorage.getItem('tecnicos') || '[]');
+            
+            tareasFiltradas = [...tareas];
+            displayTareas();
+            populateSelects();
+        }
+
+        function populateSelects() {
+            // Poblar select de clientes
+            const clienteSelect = document.getElementById('clienteSelect');
+            clienteSelect.innerHTML = '<option value="">Selecciona un cliente</option>' +
+                clientes.map(cliente => 
+                    `<option value="${cliente.id}">${cliente.nombre} - ${cliente.direccion}</option>`
+                ).join('');
+            
+            // Poblar select de técnicos
+            const tecnicoSelect = document.getElementById('tecnicoSelect');
+            tecnicoSelect.innerHTML = '<option value="">Selecciona un técnico</option>' +
+                tecnicos.map(tecnico => 
+                    `<option value="${tecnico.id}">${tecnico.nombre} - ${tecnico.especialidad} (${tecnico.zona}) - ${tecnico.estado}</option>`
+                ).join('');
+        }
+
+        function displayTareas() {
+            const container = document.getElementById('tareasContainer');
+            
+            if (tareasFiltradas.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #666;">
+                        <i class="fas fa-tasks" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                        <p>No se encontraron tareas</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = tareasFiltradas.map(tarea => `
+                <div class="list-item">
+                    <div class="list-item-header">
+                        <div>
+                            <div class="list-item-title">${tarea.descripcion}</div>
+                            <div class="list-item-subtitle">
+                                <i class="fas fa-user"></i> ${tarea.cliente_nombre}<br>
+                                <i class="fas fa-tools"></i> ${tarea.tecnico_nombre}<br>
+                                <i class="fas fa-calendar"></i> Vence: ${new Date(tarea.fecha_vencimiento).toLocaleDateString()}
+                            </div>
+                        </div>
+                        <span class="status-badge status-${tarea.estado.toLowerCase().replace(' ', '-')}">
+                            ${tarea.estado}
+                        </span>
+                    </div>
+                    
+                    ${tarea.observaciones ? `
+                        <div style="margin-top: 12px; padding: 12px; background: #f5f5f5; border-radius: 6px;">
+                            <strong>Observaciones del técnico:</strong><br>
+                            ${tarea.observaciones}
+                        </div>
+                    ` : ''}
+                    
+                    ${tarea.fotos && tarea.fotos.length > 0 ? `
+                        <div style="margin-top: 12px;">
+                            <strong>Fotografías:</strong><br>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;">
+                                ${tarea.fotos.map(foto => `
+                                    <div style="width: 60px; height: 60px; background: #f0f0f0; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #666;">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button class="btn btn-small btn-primary" onclick="editTarea(${tarea.id})">
+                            <i class="fas fa-edit"></i>
+                            Editar
+                        </button>
+                        
+                        ${tarea.estado === 'Completada' && !tarea.validada ? `
+                            <button class="btn btn-small btn-success" onclick="validarTarea(${tarea.id})">
+                                <i class="fas fa-check-circle"></i>
+                                Validar
+                            </button>
+                        ` : ''}
+                        
+                        <button class="btn btn-small btn-danger" onclick="deleteTarea(${tarea.id})">
+                            <i class="fas fa-trash"></i>
+                            Eliminar
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterTareas() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            tareasFiltradas = tareas.filter(tarea => {
+                const matchesSearch = tarea.descripcion.toLowerCase().includes(searchTerm) ||
+                                    tarea.cliente_nombre.toLowerCase().includes(searchTerm) ||
+                                    tarea.tecnico_nombre.toLowerCase().includes(searchTerm);
+                
+                const matchesStatus = currentFilter === 'all' || tarea.estado === currentFilter;
+                
+                return matchesSearch && matchesStatus;
+            });
+            
+            displayTareas();
+        }
+
+        function filterByStatus(status) {
+            currentFilter = status;
+            
+            // Actualizar botones de filtro
+            document.querySelectorAll('[id^="filter"]').forEach(btn => {
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+            });
+            
+            document.getElementById(`filter${status === 'all' ? 'All' : status.replace(' ', '')}`).classList.remove('btn-secondary');
+            document.getElementById(`filter${status === 'all' ? 'All' : status.replace(' ', '')}`).classList.add('btn-primary');
+            
+            filterTareas();
+        }
+
+        function showAddTareaModal() {
+            document.getElementById('modalTitle').textContent = 'Nueva Tarea';
+            document.getElementById('tareaForm').reset();
+            document.getElementById('tareaId').value = '';
+            document.getElementById('fechaVencimiento').value = new Date().toISOString().split('T')[0];
+            document.getElementById('tareaModal').classList.add('show');
+        }
+
+        function editTarea(id) {
+            const tarea = tareas.find(t => t.id === id);
+            if (!tarea) return;
+            
+            document.getElementById('modalTitle').textContent = 'Editar Tarea';
+            document.getElementById('tareaId').value = tarea.id;
+            document.getElementById('descripcion').value = tarea.descripcion;
+            document.getElementById('clienteSelect').value = tarea.cliente_id;
+            document.getElementById('tecnicoSelect').value = tarea.tecnico_id;
+            document.getElementById('fechaVencimiento').value = tarea.fecha_vencimiento;
+            document.getElementById('estado').value = tarea.estado;
+            
+            document.getElementById('tareaModal').classList.add('show');
+        }
+
+        function deleteTarea(id) {
+            if (confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
+                tareas = tareas.filter(t => t.id !== id);
+                saveTareasToLocalStorage();
+                loadFromLocalStorage();
+                filterTareas();
+            }
+        }
+
+        function validarTarea(id) {
+            const tarea = tareas.find(t => t.id === id);
+            if (!tarea) return;
+            
+            currentTareaValidar = tarea;
+            
+            const content = document.getElementById('validarContent');
+            content.innerHTML = `
+                <div style="margin-bottom: 16px;">
+                    <h4>${tarea.descripcion}</h4>
+                    <p><strong>Cliente:</strong> ${tarea.cliente_nombre}</p>
+                    <p><strong>Técnico:</strong> ${tarea.tecnico_nombre}</p>
+                    <p><strong>Fecha de vencimiento:</strong> ${new Date(tarea.fecha_vencimiento).toLocaleDateString()}</p>
+                </div>
+                
+                <div style="background: #f5f5f5; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
+                    <strong>Observaciones del técnico:</strong><br>
+                    ${tarea.observaciones || 'Sin observaciones'}
+                </div>
+                
+                ${tarea.fotos && tarea.fotos.length > 0 ? `
+                    <div style="margin-bottom: 16px;">
+                        <strong>Fotografías adjuntas:</strong><br>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;">
+                            ${tarea.fotos.map(foto => `
+                                <div style="width: 80px; height: 80px; background: #e0e0e0; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #666;">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+            `;
+            
+            document.getElementById('validarModal').classList.add('show');
+        }
+
+        function aprobarTarea() {
+            if (currentTareaValidar) {
+                currentTareaValidar.validada = true;
+                currentTareaValidar.fecha_validacion = new Date().toISOString();
+                saveTareasToLocalStorage();
+                loadFromLocalStorage();
+                filterTareas();
+                closeValidarModal();
+                alert('Tarea aprobada exitosamente');
+            }
+        }
+
+        function rechazarTarea() {
+            if (currentTareaValidar) {
+                currentTareaValidar.estado = 'En Progreso';
+                currentTareaValidar.observaciones = '';
+                currentTareaValidar.fotos = [];
+                saveTareasToLocalStorage();
+                loadFromLocalStorage();
+                filterTareas();
+                closeValidarModal();
+                alert('Tarea rechazada. El técnico debe corregir los problemas.');
+            }
+        }
+
+        function closeTareaModal() {
+            document.getElementById('tareaModal').classList.remove('show');
+        }
+
+        function closeValidarModal() {
+            document.getElementById('validarModal').classList.remove('show');
+            currentTareaValidar = null;
+        }
+
+        // Manejar envío del formulario
+        document.getElementById('tareaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('tareaId').value;
+            const descripcion = document.getElementById('descripcion').value;
+            const clienteId = parseInt(document.getElementById('clienteSelect').value);
+            const tecnicoId = parseInt(document.getElementById('tecnicoSelect').value);
+            const fechaVencimiento = document.getElementById('fechaVencimiento').value;
+            const estado = document.getElementById('estado').value;
+            
+            const cliente = clientes.find(c => c.id === clienteId);
+            const tecnico = tecnicos.find(t => t.id === tecnicoId);
+            
+            const tareaData = {
+                id: id ? parseInt(id) : Date.now(),
+                descripcion,
+                cliente_id: clienteId,
+                cliente_nombre: cliente.nombre,
+                direccion: cliente.direccion,
+                tecnico_id: tecnicoId,
+                tecnico_nombre: tecnico.nombre,
+                estado,
+                fecha_creacion: id ? tareas.find(t => t.id === parseInt(id)).fecha_creacion : new Date().toISOString(),
+                fecha_vencimiento: fechaVencimiento,
+                observaciones: id ? tareas.find(t => t.id === parseInt(id)).observaciones : '',
+                fotos: id ? tareas.find(t => t.id === parseInt(id)).fotos : []
+            };
+            
+            if (id) {
+                // Editar tarea existente
+                const index = tareas.findIndex(t => t.id === parseInt(id));
+                if (index !== -1) {
+                    tareas[index] = tareaData;
+                }
+            } else {
+                // Agregar nueva tarea
+                tareas.push(tareaData);
+                
+                // Crear notificación para el técnico
+                const notificacionTecnico = {
+                    id: Date.now(),
+                    tecnico_id: tecnicoId,
+                    tarea_id: tareaData.id,
+                    tipo: 'nueva',
+                    titulo: 'Nueva Tarea Asignada',
+                    mensaje: `Se te ha asignado una nueva tarea: ${descripcion}`,
+                    fecha: new Date().toISOString(),
+                    leida: false
+                };
+                
+                const notificacionesTecnico = JSON.parse(localStorage.getItem('notificaciones') || '[]');
+                notificacionesTecnico.push(notificacionTecnico);
+                localStorage.setItem('notificaciones', JSON.stringify(notificacionesTecnico));
+            }
+            
+            saveTareasToLocalStorage();
+            loadFromLocalStorage();
+            filterTareas();
+            closeTareaModal();
+        });
+
+        function saveTareasToLocalStorage() {
+            localStorage.setItem('tareas', JSON.stringify(tareas));
+        }
+
+        // Cerrar modales al hacer clic fuera
+        document.getElementById('tareaModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeTareaModal();
+            }
+        });
+
+        document.getElementById('validarModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeValidarModal();
+            }
+        });
+
+        // Funciones de perfil y sesión
+        function showPerfilModal() {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const perfilInfo = document.getElementById('perfilInfo');
+            
+            perfilInfo.innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="width: 80px; height: 80px; background: #007bff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: white; font-size: 32px;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3>${userData.usuario || 'Usuario'}</h3>
+                    <p style="color: #666; margin: 8px 0;">${userData.rol === 'coordinador' ? 'Coordinador' : 'Técnico'}</p>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                    <h4 style="margin: 0 0 12px 0; color: #333;">Información de Sesión</h4>
+                    <p style="margin: 4px 0;"><strong>Usuario:</strong> ${userData.usuario || 'N/A'}</p>
+                    <p style="margin: 4px 0;"><strong>Rol:</strong> ${userData.rol === 'coordinador' ? 'Coordinador' : 'Técnico'}</p>
+                    <p style="margin: 4px 0;"><strong>Inicio de sesión:</strong> ${userData.loginTime ? new Date(userData.loginTime).toLocaleString() : 'N/A'}</p>
+                </div>
+            `;
+            
+            document.getElementById('perfilModal').classList.add('show');
+        }
+
+        function closePerfilModal() {
+            document.getElementById('perfilModal').classList.remove('show');
+        }
+
+        function cerrarSesion() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                localStorage.removeItem('userData');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Función para toggle del menú de usuario
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            const userLogo = document.querySelector('.user-logo');
+            const dropdown = document.getElementById('userDropdown');
+            
+            if (!userLogo.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Cargar inicial del usuario
+        function loadUserInitial() {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const initial = userData.usuario ? userData.usuario.charAt(0).toUpperCase() : 'A';
+            document.getElementById('userInitial').textContent = initial;
+        }
+    </script>
+</body>
+</html>

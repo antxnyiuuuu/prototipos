@@ -1,0 +1,57 @@
+[
+  {
+    "id": 1,
+    "admin_id": 1,
+    "tecnico_id": 1,
+    "tarea_id": 1,
+    "tipo": "aceptada",
+    "titulo": "Tarea Aceptada",
+    "mensaje": "Juan Pérez ha aceptado la tarea: Instalación de fibra óptica en casa de María González",
+    "fecha": "2024-01-20T10:45:00.000Z",
+    "leida": false
+  },
+  {
+    "id": 2,
+    "admin_id": 1,
+    "tecnico_id": 1,
+    "tarea_id": 5,
+    "tipo": "completada",
+    "titulo": "Tarea Completada",
+    "mensaje": "Juan Pérez ha completado la tarea: Instalación de repetidor WiFi en Sofia Herrera",
+    "fecha": "2024-01-19T16:30:00.000Z",
+    "leida": true
+  },
+  {
+    "id": 3,
+    "admin_id": 1,
+    "tecnico_id": 2,
+    "tarea_id": 8,
+    "tipo": "completada",
+    "titulo": "Tarea Completada",
+    "mensaje": "Pedro García ha completado la tarea: Diagnóstico de problemas de conectividad",
+    "fecha": "2024-01-18T14:20:00.000Z",
+    "leida": true
+  },
+  {
+    "id": 4,
+    "admin_id": 1,
+    "tecnico_id": 3,
+    "tarea_id": 3,
+    "tipo": "completada",
+    "titulo": "Tarea Completada",
+    "mensaje": "Miguel López ha completado la tarea: Configuración de red WiFi en casa de Ana Martínez",
+    "fecha": "2024-01-17T12:15:00.000Z",
+    "leida": true
+  },
+  {
+    "id": 5,
+    "admin_id": 1,
+    "tecnico_id": 3,
+    "tarea_id": 6,
+    "tipo": "completada",
+    "titulo": "Tarea Completada",
+    "mensaje": "Miguel López ha completado la tarea: Actualización de firmware en router de oficina",
+    "fecha": "2024-01-18T09:30:00.000Z",
+    "leida": true
+  }
+]

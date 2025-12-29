@@ -1,0 +1,74 @@
+{
+  "transportes": [
+    {
+      "id": 1,
+      "nombre": "Bus Quito - Guayaquil",
+      "descripcion": "Servicio directo entre las principales ciudades del Ecuador",
+      "empresa": "Transportes Ecuador",
+      "horario": "08:00 - 12:00",
+      "precio": 25,
+      "imagen": "https://images.unsplash.com/photo-1544620347-c4fd4a3d7117?w=300&h=200&fit=crop",
+      "disponible": true
+    },
+    {
+      "id": 2,
+      "nombre": "Bus Guayaquil - Cuenca",
+      "descripcion": "Conexión directa a la ciudad patrimonio de la humanidad",
+      "empresa": "Transportes Andes",
+      "horario": "14:00 - 18:00",
+      "precio": 18,
+      "imagen": "https://images.unsplash.com/photo-1544620347-c4fd4a3d7117?w=300&h=200&fit=crop",
+      "disponible": true
+    },
+    {
+      "id": 3,
+      "nombre": "Bus Quito - Baños",
+      "descripcion": "Ruta hacia la puerta del oriente ecuatoriano",
+      "empresa": "Transportes Sierra",
+      "horario": "09:00 - 11:30",
+      "precio": 12,
+      "imagen": "https://images.unsplash.com/photo-1544620347-c4fd4a3d7117?w=300&h=200&fit=crop",
+      "disponible": true
+    },
+    {
+      "id": 4,
+      "nombre": "Bus Cuenca - Guayaquil",
+      "descripcion": "Retorno desde la ciudad patrimonio",
+      "empresa": "Transportes Andes",
+      "horario": "16:00 - 20:00",
+      "precio": 18,
+      "imagen": "https://images.unsplash.com/photo-1544620347-c4fd4a3d7117?w=300&h=200&fit=crop",
+      "disponible": true
+    },
+    {
+      "id": 5,
+      "nombre": "Bus Quito - Otavalo",
+      "descripcion": "Ruta hacia el mercado artesanal más famoso",
+      "empresa": "Transportes Sierra",
+      "horario": "07:30 - 09:00",
+      "precio": 8,
+      "imagen": "https://images.unsplash.com/photo-1544620347-c4fd4a3d7117?w=300&h=200&fit=crop",
+      "disponible": true
+    },
+    {
+      "id": 6,
+      "nombre": "Bus Quito - Baños (Express)",
+      "descripcion": "Servicio expreso hacia Baños con menor tiempo de viaje",
+      "empresa": "Transportes Express",
+      "horario": "06:30 - 09:00",
+      "precio": 13,
+      "imagen": "https://images.unsplash.com/photo-1544620347-c4fd4a3d7117?w=300&h=200&fit=crop",
+      "disponible": true
+    },
+    {
+      "id": 7,
+      "nombre": "Bus Quito - Mindo",
+      "descripcion": "Ruta hacia el bosque nublado de Mindo",
+      "empresa": "Transportes Noroccidente",
+      "horario": "08:00 - 10:00",
+      "precio": 9,
+      "imagen": "https://images.unsplash.com/photo-1544620347-c4fd4a3d7117?w=300&h=200&fit=crop",
+      "disponible": true
+    }
+  ]
+}

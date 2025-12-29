@@ -1,0 +1,27 @@
+{
+  "paquetes": [
+    {
+      "id": 1,
+      "nombre": "Mi Aventura en Ecuador",
+      "descripcion": "Paquete personalizado con los mejores lugares",
+      "usuario_id": 1,
+      "productos": [
+        {
+          "id": 4,
+          "nombre": "Hotel Quito",
+          "categoria": "hoteles",
+          "precio": 120,
+          "imagen": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=300&h=200&fit=crop"
+        }
+      ],
+      "transporte": {
+        "id": 1,
+        "nombre": "Bus Quito - Guayaquil",
+        "horario": "08:00 - 12:00",
+        "precio": 25
+      },
+      "fecha_creacion": "2024-01-15",
+      "precio_total": 145
+    }
+  ]
+}

@@ -1,0 +1,405 @@
+/* Estilos mejorados para la confirmación del paquete */
+
+/* Contenedor principal del resumen final */
+.package-final-summary {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+  padding: 1.5rem !important;
+  border-radius: 16px !important;
+  margin-bottom: 2rem !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+/* Título principal */
+.package-final-summary h3 {
+  color: var(--primary-blue, #1e3a8a) !important;
+  margin: 0 0 1.5rem 0 !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Grid mejorado - siempre en columna para mejor legibilidad */
+.package-summary-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1.5rem !important;
+  margin-top: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* Columna de detalles del paquete */
+.package-details-column {
+  background: white !important;
+  padding: 1.5rem !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #e2e8f0 !important;
+  width: 100% !important;
+  order: 1 !important;
+}
+
+.package-details-column h4 {
+  margin: 0 0 1.5rem 0 !important;
+  color: var(--primary-blue, #1e3a8a) !important;
+  font-size: 1.3rem !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  padding-bottom: 0.75rem !important;
+  border-bottom: 2px solid #e2e8f0 !important;
+}
+
+/* Detalles del paquete en formato de lista */
+.package-details {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1rem !important;
+}
+
+.package-details p {
+  margin: 0 !important;
+  padding: 0.75rem 1rem !important;
+  background: #f8fafc !important;
+  border-radius: 8px !important;
+  border-left: 4px solid var(--primary-blue, #1e3a8a) !important;
+  color: #374151 !important;
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
+.package-details p strong {
+  color: var(--primary-blue, #1e3a8a) !important;
+  font-weight: 600 !important;
+  display: inline-block !important;
+  min-width: 120px !important;
+  margin-right: 0.5rem !important;
+}
+
+/* Columna de productos */
+.package-products-column {
+  background: white !important;
+  padding: 1.5rem !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #e2e8f0 !important;
+  width: 100% !important;
+  order: 2 !important;
+}
+
+.package-products-column h5 {
+  margin: 0 0 1.5rem 0 !important;
+  color: var(--primary-blue, #1e3a8a) !important;
+  font-size: 1.3rem !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  padding-bottom: 0.75rem !important;
+  border-bottom: 2px solid #e2e8f0 !important;
+}
+
+/* Lista de productos finales */
+#finalProductsList {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.75rem !important;
+  max-height: 300px !important;
+  overflow-y: auto !important;
+  padding-right: 0.5rem !important;
+}
+
+/* Items de productos en la lista final */
+.final-product-item {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.5rem !important;
+  padding: 1rem !important;
+  background: #f8fafc !important;
+  border-radius: 8px !important;
+  border: 1px solid #e2e8f0 !important;
+  transition: all 0.2s ease !important;
+}
+
+.final-product-item:hover {
+  background: #f1f5f9 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.final-product-item .product-name {
+  font-weight: 600 !important;
+  color: var(--primary-blue, #1e3a8a) !important;
+  font-size: 1rem !important;
+  margin: 0 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
+.final-product-item .product-details {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 0.5rem !important;
+}
+
+.final-product-item .product-category {
+  background: var(--primary-blue, #1e3a8a) !important;
+  color: white !important;
+  padding: 0.25rem 0.75rem !important;
+  border-radius: 12px !important;
+  font-size: 0.8rem !important;
+  font-weight: 500 !important;
+  text-transform: capitalize !important;
+}
+
+.final-product-item .product-price {
+  color: #059669 !important;
+  font-weight: 700 !important;
+  font-size: 1.1rem !important;
+  margin: 0 !important;
+}
+
+/* Resumen de transporte si existe */
+.transport-summary {
+  background: #e0f2fe !important;
+  border: 1px solid #0288d1 !important;
+  border-radius: 8px !important;
+  padding: 1rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.transport-summary h6 {
+  color: #0288d1 !important;
+  margin: 0 0 0.5rem 0 !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+}
+
+.transport-summary p {
+  margin: 0 !important;
+  color: #0277bd !important;
+  font-size: 0.9rem !important;
+}
+
+/* Total del paquete destacado */
+.package-total-summary {
+  background: linear-gradient(135deg, var(--primary-blue, #1e3a8a), var(--secondary-blue, #3b82f6)) !important;
+  color: white !important;
+  padding: 1.5rem !important;
+  border-radius: 12px !important;
+  text-align: center !important;
+  margin-top: 1.5rem !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  order: 3 !important;
+}
+
+.package-total-summary h4 {
+  margin: 0 0 0.5rem 0 !important;
+  font-size: 1.2rem !important;
+  font-weight: 600 !important;
+  opacity: 0.9 !important;
+}
+
+.package-total-summary .total-amount {
+  font-size: 2rem !important;
+  font-weight: 800 !important;
+  margin: 0 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Botones de acción mejorados */
+.step-actions {
+  display: flex !important;
+  gap: 1rem !important;
+  justify-content: center !important;
+  margin-top: 2rem !important;
+  flex-wrap: wrap !important;
+}
+
+.step-actions .btn {
+  min-width: 140px !important;
+  padding: 0.875rem 1.5rem !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  transition: all 0.3s ease !important;
+}
+
+.step-actions .btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .package-final-summary {
+    padding: 1rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+  
+  .package-final-summary h3 {
+    font-size: 1.3rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .package-summary-grid {
+    gap: 1rem !important;
+  }
+  
+  .package-details-column,
+  .package-products-column {
+    padding: 1rem !important;
+  }
+  
+  .package-details-column h4,
+  .package-products-column h5 {
+    font-size: 1.1rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .package-details p {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.9rem !important;
+  }
+  
+  .package-details p strong {
+    min-width: 100px !important;
+    font-size: 0.9rem !important;
+  }
+  
+  .final-product-item {
+    padding: 0.75rem !important;
+  }
+  
+  .final-product-item .product-name {
+    font-size: 0.9rem !important;
+  }
+  
+  .final-product-item .product-details {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.25rem !important;
+  }
+  
+  .package-total-summary {
+    padding: 1rem !important;
+    margin-top: 1rem !important;
+  }
+  
+  .package-total-summary h4 {
+    font-size: 1rem !important;
+  }
+  
+  .package-total-summary .total-amount {
+    font-size: 1.5rem !important;
+  }
+  
+  .step-actions {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    margin-top: 1.5rem !important;
+  }
+  
+  .step-actions .btn {
+    width: 100% !important;
+    min-width: auto !important;
+  }
+}
+
+/* Fixes para pantallas extra pequeñas */
+@media (max-width: 360px) {
+  .package-final-summary {
+    padding: 0.75rem !important;
+  }
+  
+  .package-details-column,
+  .package-products-column {
+    padding: 0.75rem !important;
+  }
+  
+  .package-details p {
+    padding: 0.5rem !important;
+    font-size: 0.85rem !important;
+  }
+  
+  .package-details p strong {
+    min-width: 80px !important;
+    font-size: 0.85rem !important;
+  }
+  
+  .final-product-item {
+    padding: 0.5rem !important;
+  }
+  
+  .final-product-item .product-name {
+    font-size: 0.85rem !important;
+  }
+  
+  .package-total-summary .total-amount {
+    font-size: 1.3rem !important;
+  }
+}
+
+/* Scrollbar personalizada para la lista de productos */
+#finalProductsList::-webkit-scrollbar {
+  width: 6px;
+}
+
+#finalProductsList::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+#finalProductsList::-webkit-scrollbar-thumb {
+  background: var(--primary-blue, #1e3a8a);
+  border-radius: 3px;
+}
+
+#finalProductsList::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-blue, #3b82f6);
+}
+
+/* Animaciones suaves */
+.package-final-summary {
+  animation: fadeInUp 0.6s ease-out !important;
+}
+
+.package-details-column,
+.package-products-column,
+.package-total-summary {
+  animation: fadeInUp 0.8s ease-out !important;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estados de carga */
+.loading-state {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 2rem !important;
+  color: #64748b !important;
+}
+
+.loading-state i {
+  margin-right: 0.5rem !important;
+  animation: spin 1s linear infinite !important;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

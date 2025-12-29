@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motorgsa - Administración</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        .admin-header {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 420px;
+            background: linear-gradient(135deg, #2E7D32, #1B5E20);
+            padding: 0.5rem;
+            text-align: center;
+            z-index: 1000;
+            border-radius: 0 0 10px 10px;
+        }
+        
+        /* Estilos para mejorar el scroll en modales */
+        .modal-scroll {
+            scrollbar-width: thin;
+            scrollbar-color: #2E7D32 #2a2a2a;
+        }
+        
+        .modal-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .modal-scroll::-webkit-scrollbar-track {
+            background: #2a2a2a;
+            border-radius: 3px;
+        }
+        
+        .modal-scroll::-webkit-scrollbar-thumb {
+            background: #2E7D32;
+            border-radius: 3px;
+        }
+        
+        .modal-scroll::-webkit-scrollbar-thumb:hover {
+            background: #b30710;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="admin-header">
+            <h1 class="panel-title" style="font-size: 1.2rem; margin: 0;"><i class="fas fa-tractor"></i> Panel Motorgsa</h1>
+        </div>
+
+        <div class="admin-main-content">
+                         <!-- Sección de Usuarios -->
+             <div id="usersSection" class="admin-section" style="display: none;">
+                 <h3><i class="fas fa-users"></i> Usuarios Registrados</h3>
+                 <div id="usersList" class="users-list"></div>
+             </div>
+
+                         <!-- Sección de Compras -->
+             <div id="purchasesSection" class="admin-section" style="display: none;">
+                 <h3><i class="fas fa-shopping-bag"></i> Historial de Compras</h3>
+                 <div id="purchasesList" class="purchases-list"></div>
+             </div>
+
+             <!-- Sección de Mensajes/Solicitudes -->
+             <div id="messagesSection" class="admin-section" style="display: none;">
+                 <h3><i class="fas fa-envelope"></i> Solicitudes Pendientes</h3>
+                 <div id="messagesList" class="messages-list"></div>
+                 
+                 <div id="noMessages" style="display: none; text-align: center; padding: 1rem; color: #888;">
+                     <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                     <p>No hay solicitudes pendientes</p>
+                 </div>
+             </div>
+
+                         <!-- Sección de Productos -->
+             <div id="productsSection" class="admin-section">
+                <h3><i class="fas fa-box"></i> Lista de Productos</h3>
+                
+                <!-- Botón para agregar producto -->
+                                 <div style="margin-bottom: 0.6rem; text-align: center;">
+                     <button class="btn-add-product" onclick="showSection('edit', null)" style="margin-bottom: 0.4rem;">
+                         <i class="fas fa-plus"></i>  Agregar Producto
+                     </button>
+                 </div>
+                
+                <!-- Botón para carga masiva -->
+                <div style="margin-bottom: 0.6rem; text-align: center;">
+                    <button class="btn-excel" onclick="loadProductsFromExcel()" style="margin-bottom: 0.3rem;">
+                        <i class="fas fa-file-excel"></i> Cargar productos desde Excel
+                    </button>
+                    <p style="font-size: 0.8rem; color: #888; margin: 0.2rem 0 0;">
+                        <i class="fas fa-info-circle"></i> Orden de columnas: nombre, precio, categoria, stock, imagen, descuentoDistribuidor (%).
+                    </p>
+                    <button class="btn-secondary" onclick="downloadExcelSample()" style="margin-top: 0.4rem; width: auto; padding: 0.4rem 0.8rem; margin-left: 0.4rem;">
+                        Descargar ejemplo
+                    </button>
+                </div>
+                
+                <!-- Botón para recargar productos -->
+                <div style="margin-bottom: 0.6rem; text-align: center;">
+                    <p style="font-size: 0.8rem; color: #888; margin: 0.2rem 0 0;">
+                        <i class="fas fa-info-circle"></i> Fuerza la recarga de productos desde el archivo de datos
+                    </p>
+                </div>
+                
+                <div id="adminProductsContainer" class="admin-products-grid"></div>
+                
+                <div id="noAdminProducts" style="display: none; text-align: center; padding: 1rem; color: #888;">
+                    <i class="fas fa-box-open" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                    <p>No hay productos disponibles</p>
+                </div>
+            </div>
+
+            <!-- Sección de Agregar Producto -->
+            <div id="editSection" class="admin-section modal-scroll" style="display: none; max-height: 78vh; overflow-y: auto;">
+                <h3><i class="fas fa-plus"></i> Agregar Nuevo Producto</h3>
+                
+                <div class="form-container">
+                    <div class="form-group">
+                        <label for="productName">Nombre</label>
+                        <input type="text" id="productName" placeholder="Nombre del producto">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productBrand">Marca</label>
+                        <input type="text" id="productBrand" placeholder="Marca">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productCategory">Categoría</label>
+                                                 <select id="productCategory">
+                             <option value="">Selecciona categoría</option>
+                                                     <option value="ACCESORIOS">ACCESORIOS</option>
+                        <option value="ARADORAS - MOTOCULTORES - SEMBRADORAS">ARADORAS - MOTOCULTORES - SEMBRADORAS</option>
+                        <option value="BALANZAS">BALANZAS</option>
+                        <option value="DESBROZADORAS - PODADORAS DE ALTURA - TIJERAS">DESBROZADORAS - PODADORAS DE ALTURA - TIJERAS</option>
+                        <option value="FUMIGADORAS - PULVERIZADORAS">FUMIGADORAS - PULVERIZADORAS</option>
+                        <option value="GENERADORES">GENERADORES</option>
+                        <option value="HIDROLVADORAS / ASPIRADORAS">HIDROLVADORAS / ASPIRADORAS</option>
+                        <option value="MANGUERAS - ASPERSORES - COLLARINES - ACOPLES">MANGUERAS - ASPERSORES - COLLARINES - ACOPLES</option>
+                        <option value="MOTORES - MOTOBOMBAS - BOMBAS - TURBINAS">MOTORES - MOTOBOMBAS - BOMBAS - TURBINAS</option>
+                        <option value="PRODUCTOS INALÁMBRICOS">PRODUCTOS INALÁMBRICOS</option>
+                        <option value="REPUESTOS">REPUESTOS</option>
+                        <option value="TANQUES DE COMBUSTIBLE PORTÁTIL">TANQUES DE COMBUSTIBLE PORTÁTIL</option>
+                         </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productPrice">Precio ($)</label>
+                        <input type="number" id="productPrice" placeholder="0.00" step="0.01" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productStock">Stock</label>
+                        <input type="number" id="productStock" placeholder="0" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productImage">Imagen del Producto</label>
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <button type="button" class="btn-secondary" onclick="toggleImageInput()" style="flex: 1; padding: 0.5rem;">
+                                <i class="fas fa-image"></i> Subir Imagen
+                            </button>
+                            <button type="button" class="btn-secondary" onclick="toggleUrlInput()" style="flex: 1; padding: 0.5rem;">
+                                <i class="fas fa-link"></i> Usar URL
+                            </button>
+                        </div>
+                        
+                        <!-- Input para imagen local -->
+                        <div id="imageFileInput" style="display: none;">
+                            <input type="file" id="productImageFile" accept="image/*" onchange="handleImageFileSelect(event)">
+                            <p style="font-size: 0.7rem; color: #888; margin-top: 0.3rem;">
+                                <i class="fas fa-info-circle"></i> Formatos: JPG, PNG, GIF (máx. 5MB)
+                            </p>
+                        </div>
+                        
+                        <!-- Input para URL -->
+                        <div id="imageUrlInput">
+                            <input type="url" id="productImageUrl" placeholder="URL de la imagen">
+                            <p style="font-size: 0.7rem; color: #888; margin-top: 0.3rem;">
+                                <i class="fas fa-info-circle"></i> Pega una URL de imagen válida
+                            </p>
+                        </div>
+                        
+                        <!-- Vista previa de imagen -->
+                        <div id="imagePreview" style="display: none; margin-top: 0.5rem;">
+                            <img id="previewImg" src="" alt="Vista previa" style="
+                                max-width: 100%;
+                                max-height: 150px;
+                                border-radius: 8px;
+                                border: 2px solid #2E7D32;
+                            ">
+                        </div>
+                    </div>
+
+                    <button class="btn" onclick="addNewProduct()" style=" bottom: 0; background: linear-gradient(135deg, #2E7D32, #1B5E20); margin-top: 1rem;">
+                        <i class="fas fa-plus"></i> Agregar Producto
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barra de navegación inferior para Admin -->
+        <div class="admin-bottom-nav">
+                         <button class="admin-nav-item active" onclick="showSection('products', event)">
+                 <i class="fas fa-box"></i>
+                 <span>Productos</span>
+             </button>
+             <button class="admin-nav-item" onclick="showSection('users', event)">
+                 <i class="fas fa-users"></i>
+                 <span>Clientes</span>
+             </button>
+                         <button class="admin-nav-item" onclick="showSection('purchases', event)">
+                 <i class="fas fa-shopping-bag"></i>
+                 <span>Pagos</span>
+             </button>
+             <button class="admin-nav-item" onclick="showSection('messages', event)">
+                 <i class="fas fa-envelope"></i>
+                 <span>Mensajes</span>
+             </button>
+            <button class="admin-nav-item" onclick="showSection('edit', event)">
+                <i class="fas fa-plus"></i>
+                <span>Agregar</span>
+            </button>
+            <button class="admin-profile-btn" onclick="window.location.href='admin-profile.html'" title="Perfil de Administrador">
+                <i class="fas fa-user-cog"></i>
+            </button>
+        </div>
+
+
+    </div>
+
+    <script src="../data/users.js"></script>
+    <script src="../data/products.js"></script>
+    <script>
+        let currentUser = null;
+
+                         window.onload = function() {
+            checkAuth();
+            
+            // Limpiar localStorage de productos para forzar recarga desde el archivo
+            localStorage.removeItem('products');
+            
+            // Sincronizar usuarios con localStorage al cargar
+            syncUsersWithLocalStorage();
+            
+            loadUsers();
+            loadPurchases();
+            
+            // Sincronizar productos con localStorage al cargar
+            syncProductsWithLocalStorage();
+            
+            loadProductsTable();
+            
+                         // Mostrar la sección de productos por defecto
+             showSection('products', null);
+        };
+
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn !== 'true') {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser || currentUser.role !== 'admin') {
+                window.location.href = 'login.html';
+                return;
+            }
+        }
+
+                         function showSection(sectionName, event = null) {
+            // Ocultar todas las secciones
+            document.getElementById('usersSection').style.display = 'none';
+            document.getElementById('purchasesSection').style.display = 'none';
+            document.getElementById('messagesSection').style.display = 'none';
+            document.getElementById('productsSection').style.display = 'none';
+            document.getElementById('editSection').style.display = 'none';
+
+            // Remover clase active de todos los botones
+            document.querySelectorAll('.admin-nav-item').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Mostrar la sección seleccionada
+            document.getElementById(sectionName + 'Section').style.display = 'block';
+            
+            // Activar el botón correspondiente
+            if (event && event.target) {
+                const clickedButton = event.target.closest('.admin-nav-item');
+                if (clickedButton) {
+                    clickedButton.classList.add('active');
+                }
+            } else {
+                // Si se llama desde el botón "Agregar Producto", activar el botón de Agregar
+                if (sectionName === 'edit') {
+                    document.querySelector('.admin-nav-item[onclick="showSection(\'edit\')"]').classList.add('active');
+                }
+            }
+            
+            // Cargar datos específicos según la sección
+            if (sectionName === 'messages') {
+                loadMessages();
+            }
+        }
+
+        function loadUsers() {
+            const users = getUsers();
+            const container = document.getElementById('usersList');
+            
+            container.innerHTML = users.map(user => `
+                <div class="user-item fade-in">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="font-size: 0.9rem;">${user.name}</h4>
+                            <p style="color: #888; margin: 0.2rem 0; font-size: 0.8rem;">${user.email}</p>
+                            <span class="user-role ${user.role}">${user.role}</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <p style="color: #888; font-size: 0.7rem;">ID: ${user.id}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadPurchases() {
+            const purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
+            const container = document.getElementById('purchasesList');
+            
+            if (purchases.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #888; padding: 1rem; font-size: 0.8rem;">No hay compras</p>';
+                return;
+            }
+
+            container.innerHTML = purchases.map(purchase => {
+                const date = new Date(purchase.date).toLocaleDateString('es-ES');
+                const statusColor = purchase.status === 'Completada' ? '#28a745' : '#ffc107';
+                
+                return `
+                    <div class="purchase-item fade-in">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <h4 style="font-size: 0.9rem;">${purchase.userName}</h4>
+                                <p style="color: #888; margin: 0.2rem 0; font-size: 0.8rem;">${purchase.userRole}</p>
+                                <p style="color: #888; margin: 0.2rem 0; font-size: 0.8rem;">${purchase.items.length} productos</p>
+                                <p style="color: #E50914; font-weight: bold; margin: 0.2rem 0; font-size: 0.9rem;">$${purchase.total.toFixed(2)}</p>
+                                <span style="background: ${statusColor}; color: white; padding: 0.1rem 0.3rem; border-radius: 6px; font-size: 0.7rem;">
+                                    ${purchase.status}
+                                </span>
+                            </div>
+                            <div style="text-align: right;">
+                                <p style="color: #888; font-size: 0.7rem;">${date}</p>
+                                <p style="color: #888; font-size: 0.7rem;">${purchase.paymentType}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function loadProductsTable() {
+            // Obtener productos directamente del archivo products.js
+            const products = getProducts();
+            
+            const container = document.getElementById('adminProductsContainer');
+            const noProductsDiv = document.getElementById('noAdminProducts');
+
+            if (products.length === 0) {
+                container.style.display = 'none';
+                noProductsDiv.style.display = 'block';
+                return;
+            }
+
+            container.style.display = 'grid';
+            noProductsDiv.style.display = 'none';
+
+            container.innerHTML = products.map(product => {
+                                 // Manejar imagen con fallback
+                 const imageUrl = product.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzJhMmEyYSIvPjx0ZXh0IHg9IjE1MCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMyRTdEMzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Nb3RvcmdzYTwvdGV4dD48L3N2Zz4=';
+                 
+                 return `
+                     <div class="admin-product-card fade-in">
+                         <div class="admin-product-background" style="background-image: url('${imageUrl}');" 
+                              onerror="this.style.backgroundImage='url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzJhMmEyYSIvPjx0ZXh0IHg9IjE1MCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMyRTdEMzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Nb3RvcmdzYTwvdGV4dD48L3N2Zz4=)'">
+                         </div>
+                        <div class="admin-product-overlay">
+                            <div class="admin-product-info">
+                                <h3 class="admin-product-name">${product.name}</h3>
+                                <div class="price-badge">$${product.price.toFixed(2)}</div>
+                            </div>
+                            <div class="admin-product-actions">
+                                <button class="admin-action-btn btn-edit" onclick="editProduct(${product.id})">
+                                    Editar
+                                </button>
+                                                                 <button class="admin-action-btn btn-delete" onclick="showDeleteConfirmation(${product.id})">
+                                     Eliminar
+                                 </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function reloadProductsFromFile() {
+            // Limpiar localStorage de productos
+            localStorage.removeItem('products');
+            
+            // Recargar productos desde el archivo
+            const products = getProducts();
+            
+            // Limpiar productos duplicados por nombre (mantener solo el primero)
+            const uniqueProducts = [];
+            const seenNames = new Set();
+            
+            products.forEach(product => {
+                if (!seenNames.has(product.name.toLowerCase())) {
+                    seenNames.add(product.name.toLowerCase());
+                    uniqueProducts.push(product);
+                } else {
+                    console.log(`Producto duplicado removido: ${product.name}`);
+                }
+            });
+            
+            // Actualizar la lista global de productos
+            if (uniqueProducts.length !== products.length) {
+                window.products = uniqueProducts;
+                localStorage.setItem('products', JSON.stringify(uniqueProducts));
+                showMessage(`✅ Productos recargados: ${uniqueProducts.length} productos únicos (${products.length - uniqueProducts.length} duplicados removidos)`, 'success');
+            } else {
+                showMessage(`✅ Productos recargados: ${products.length} productos cargados desde el archivo`, 'success');
+            }
+            
+            // Recargar la tabla de productos
+            loadProductsTable();
+            
+            // Recargar también en otras páginas si están abiertas
+            window.dispatchEvent(new StorageEvent('storage', {
+                key: 'products',
+                newValue: JSON.stringify(getProducts())
+            }));
+            
+            console.log('Productos recargados desde archivo:', getProducts().length);
+            console.log('Primer producto:', getProducts()[0]);
+            console.log('Categorías disponibles:', [...new Set(getProducts().map(p => p.category))]);
+        }
+
+        function cleanDuplicateProducts() {
+            try {
+                // Obtener productos actuales
+                const products = getProducts();
+                const originalCount = products.length;
+                
+                // Limpiar productos duplicados por nombre (mantener solo el primero)
+                const uniqueProducts = [];
+                const seenNames = new Set();
+                const removedDuplicates = [];
+                
+                products.forEach(product => {
+                    if (!seenNames.has(product.name.toLowerCase())) {
+                        seenNames.add(product.name.toLowerCase());
+                        uniqueProducts.push(product);
+                    } else {
+                        removedDuplicates.push(product.name);
+                        console.log(`Producto duplicado removido: ${product.name}`);
+                    }
+                });
+                
+                if (uniqueProducts.length === originalCount) {
+                    showMessage('✅ No se encontraron productos duplicados', 'success');
+                    return;
+                }
+                
+                // Actualizar la lista global de productos
+                window.products = uniqueProducts;
+                localStorage.setItem('products', JSON.stringify(uniqueProducts));
+                
+                // Mostrar mensaje de éxito
+                const removedCount = originalCount - uniqueProducts.length;
+                showMessage(`✅ Limpieza completada: ${removedCount} productos duplicados removidos. Total: ${uniqueProducts.length} productos únicos`, 'success');
+                
+                // Recargar la tabla de productos
+                loadProductsTable();
+                
+                // Sincronizar con otras páginas
+                window.dispatchEvent(new StorageEvent('storage', {
+                    key: 'products',
+                    newValue: JSON.stringify(uniqueProducts)
+                }));
+                
+                console.log(`Productos duplicados removidos: ${removedDuplicates.join(', ')}`);
+                
+            } catch (error) {
+                console.error('Error al limpiar productos duplicados:', error);
+                showMessage('Error al limpiar productos duplicados', 'error');
+            }
+        }
+
+        function addNewProduct() {
+            const name = document.getElementById('productName').value;
+            const brand = document.getElementById('productBrand').value;
+            const category = document.getElementById('productCategory').value;
+            const price = parseFloat(document.getElementById('productPrice').value);
+            const stock = parseInt(document.getElementById('productStock').value);
+            
+                         // Obtener imagen (URL o archivo local)
+             let image = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzJhMmEyYSIvPjx0ZXh0IHg9IjE1MCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMyRTdEMzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Nb3RvcmdzYTwvdGV4dD48L3N2Zz4=';
+             const imageUrl = document.getElementById('productImageUrl').value;
+             const imageFile = document.getElementById('productImageFile').files[0];
+            
+            if (imageUrl) {
+                image = imageUrl;
+            } else if (imageFile) {
+                image = document.getElementById('previewImg').src;
+            }
+
+            if (!name || !brand || !category || !price || !stock) {
+                showMessage('Completa todos los campos', 'error');
+                return;
+            }
+
+            const newProduct = {
+                name, brand, category, price, stock,
+                image: image,
+                distributorDiscountPercent: 10,
+                description: `Producto agregado: ${name}`
+            };
+
+            // Agregar el producto usando la función del archivo products.js
+            addProduct(newProduct);
+            
+            // Sincronizar con localStorage
+            localStorage.setItem('products', JSON.stringify(getProducts()));
+            
+            showMessage('Producto agregado correctamente', 'success');
+            
+            // Limpiar formulario
+            clearProductForm();
+            
+            // Recargar la tabla de productos
+            loadProductsTable();
+            
+                         // Volver a la sección de productos
+             showSection('products', null);
+        }
+
+        function clearProductForm() {
+            document.getElementById('productName').value = '';
+            document.getElementById('productBrand').value = '';
+            document.getElementById('productCategory').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productStock').value = '';
+            document.getElementById('productImageUrl').value = '';
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('imageFileInput').style.display = 'none';
+            document.getElementById('imageUrlInput').style.display = 'block';
+            document.getElementById('productImageFile').value = '';
+        }
+
+        function editProduct(productId) {
+            const product = getProductById(productId);
+            if (!product) return;
+
+            // Crear modal para editar producto
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+                padding: 1rem;
+            `;
+
+            modal.innerHTML = `
+                <div class="modal-scroll" style="
+                    background-color: #1a1a1a;
+                    border-radius: 15px;
+                    padding: 1.5rem;
+                    max-width: 350px;
+                    width: 100%;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    border: 2px solid #2E7D32;
+                    position: relative;
+                ">
+                    <button onclick="this.parentElement.parentElement.remove()" style="
+                        position: absolute;
+                        top: 10px;
+                        right: 15px;
+                        background: none;
+                        border: none;
+                        color: #ffffff;
+                        font-size: 1.2rem;
+                        cursor: pointer;
+                    ">×</button>
+                    
+                    <h3 style="color: #2E7D32; margin-bottom: 1rem; text-align: center;">
+                        <i class="fas fa-edit"></i> Editar Producto
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label for="editProductName">Nombre</label>
+                        <input type="text" id="editProductName" value="${product.name}" placeholder="Nombre del producto">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editProductBrand">Marca</label>
+                        <input type="text" id="editProductBrand" value="${product.brand || ''}" placeholder="Marca">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editProductCategory">Categoría</label>
+                                                                             <select id="editProductCategory">
+                                <option value="ACCESORIOS" ${product.category === 'ACCESORIOS' ? 'selected' : ''}>ACCESORIOS</option>
+                                <option value="ARADORAS - MOTOCULTORES - SEMBRADORAS" ${product.category === 'ARADORAS - MOTOCULTORES - SEMBRADORAS' ? 'selected' : ''}>ARADORAS - MOTOCULTORES - SEMBRADORAS</option>
+                                <option value="BALANZAS" ${product.category === 'BALANZAS' ? 'selected' : ''}>BALANZAS</option>
+                                <option value="DESBROZADORAS - PODADORAS DE ALTURA - TIJERAS" ${product.category === 'DESBROZADORAS - PODADORAS DE ALTURA - TIJERAS' ? 'selected' : ''}>DESBROZADORAS - PODADORAS DE ALTURA - TIJERAS</option>
+                                <option value="FUMIGADORAS - PULVERIZADORAS" ${product.category === 'FUMIGADORAS - PULVERIZADORAS' ? 'selected' : ''}>FUMIGADORAS - PULVERIZADORAS</option>
+                                <option value="GENERADORES" ${product.category === 'GENERADORES' ? 'selected' : ''}>GENERADORES</option>
+                                <option value="HIDROLVADORAS / ASPIRADORAS" ${product.category === 'HIDROLVADORAS / ASPIRADORAS' ? 'selected' : ''}>HIDROLVADORAS / ASPIRADORAS</option>
+                                <option value="MANGUERAS - ASPERSORES - COLLARINES - ACOPLES" ${product.category === 'MANGUERAS - ASPERSORES - COLLARINES - ACOPLES' ? 'selected' : ''}>MANGUERAS - ASPERSORES - COLLARINES - ACOPLES</option>
+                                <option value="MOTORES - MOTOBOMBAS - BOMBAS - TURBINAS" ${product.category === 'MOTORES - MOTOBOMBAS - BOMBAS - TURBINAS' ? 'selected' : ''}>MOTORES - MOTOBOMBAS - BOMBAS - TURBINAS</option>
+                                <option value="PRODUCTOS INALÁMBRICOS" ${product.category === 'PRODUCTOS INALÁMBRICOS' ? 'selected' : ''}>PRODUCTOS INALÁMBRICOS</option>
+                                <option value="REPUESTOS" ${product.category === 'REPUESTOS' ? 'selected' : ''}>REPUESTOS</option>
+                                <option value="TANQUES DE COMBUSTIBLE PORTÁTIL" ${product.category === 'TANQUES DE COMBUSTIBLE PORTÁTIL' ? 'selected' : ''}>TANQUES DE COMBUSTIBLE PORTÁTIL</option>
+                            </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editProductPrice">Precio ($)</label>
+                        <input type="number" id="editProductPrice" value="${product.price}" step="0.01" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editDistributorDiscount">Descuento para distribuidor (%)</label>
+                        <input type="number" id="editDistributorDiscount" value="${product.distributorDiscountPercent || 10}" step="1" min="0" max="100">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editProductStock">Stock</label>
+                        <input type="number" id="editProductStock" value="${product.stock}" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editProductImage">Imagen del Producto</label>
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <button type="button" class="btn-secondary" onclick="toggleEditImageInput()" style="flex: 1; padding: 0.5rem;">
+                                <i class="fas fa-image"></i> Subir Imagen
+                            </button>
+                            <button type="button" class="btn-secondary" onclick="toggleEditUrlInput()" style="flex: 1; padding: 0.5rem;">
+                                <i class="fas fa-link"></i> Usar URL
+                            </button>
+                        </div>
+                        
+                        <!-- Input para imagen local -->
+                        <div id="editImageFileInput" style="display: none;">
+                            <input type="file" id="editProductImageFile" accept="image/*" onchange="handleEditImageFileSelect(event)">
+                            <p style="font-size: 0.7rem; color: #888; margin-top: 0.3rem;">
+                                <i class="fas fa-info-circle"></i> Formatos: JPG, PNG, GIF (máx. 5MB)
+                            </p>
+                        </div>
+                        
+                        <!-- Input para URL -->
+                        <div id="editImageUrlInput">
+                            <input type="url" id="editProductImage" value="${product.image}" placeholder="URL de la imagen">
+                            <p style="font-size: 0.7rem; color: #888; margin-top: 0.3rem;">
+                                <i class="fas fa-info-circle"></i> Pega una URL de imagen válida
+                            </p>
+                        </div>
+                        
+                        <!-- Vista previa de imagen -->
+                        <div id="editImagePreview" style="margin-top: 0.5rem;">
+                                                         <img id="editPreviewImg" src="${product.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzJhMmEyYSIvPjx0ZXh0IHg9IjE1MCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMyRTdEMzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Nb3RvcmdzYTwvdGV4dD48L3N2Zz4='}" alt="Vista previa" style="
+                                 max-width: 100%;
+                                 max-height: 150px;
+                                 border-radius: 8px;
+                                 border: 2px solid #2E7D32;
+                             " onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzJhMmEyYSIvPjx0ZXh0IHg9IjE1MCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMyRTdEMzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Nb3RvcmdzYTwvdGV4dD48L3N2Zz4='">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editProductDescription">Descripción</label>
+                        <textarea id="editProductDescription" placeholder="Descripción del producto" style="
+                            width: 100%;
+                            padding: 0.6rem;
+                            border: 2px solid #333;
+                            border-radius: 8px;
+                            background-color: #2a2a2a;
+                            color: #ffffff;
+                            font-size: 0.9rem;
+                            resize: vertical;
+                            min-height: 80px;
+                        ">${product.description || ''}</textarea>
+                    </div>
+                    
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem; position: sticky; bottom: 0; background-color: #1a1a1a; padding-top: 0.5rem;">
+                        <button onclick="saveProductEdit(${product.id}); this.parentElement.parentElement.parentElement.remove();" style="
+                            background-color: #28a745;
+                            color: white;
+                            border: none;
+                            padding: 0.8rem 1.5rem;
+                            border-radius: 8px;
+                            font-weight: bold;
+                            cursor: pointer;
+                            flex: 1;
+                        ">Guardar</button>
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" style="
+                            background-color: #6c757d;
+                            color: white;
+                            border: none;
+                            padding: 0.8rem 1.5rem;
+                            border-radius: 8px;
+                            font-weight: bold;
+                            cursor: pointer;
+                            flex: 1;
+                        ">Cancelar</button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            
+            // Cerrar modal al hacer clic fuera
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+
+        function saveProductEdit(productId) {
+            const name = document.getElementById('editProductName').value;
+            const brand = document.getElementById('editProductBrand').value;
+            const category = document.getElementById('editProductCategory').value;
+            const price = parseFloat(document.getElementById('editProductPrice').value);
+            const stock = parseInt(document.getElementById('editProductStock').value);
+            const description = document.getElementById('editProductDescription').value;
+            
+                         // Obtener imagen (URL o archivo local)
+             let image = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzJhMmEyYSIvPjx0ZXh0IHg9IjE1MCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMyRTdEMzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Nb3RvcmdzYTwvdGV4dD48L3N2Zz4=';
+             const imageUrl = document.getElementById('editProductImage').value;
+             const imageFile = document.getElementById('editProductImageFile').files[0];
+            
+            if (imageUrl) {
+                image = imageUrl;
+            } else if (imageFile) {
+                image = document.getElementById('editPreviewImg').src;
+            }
+
+            if (!name || !category || !price || !stock) {
+                showMessage('Completa los campos obligatorios', 'error');
+                return;
+            }
+
+            // Obtener productos actuales
+            let products = getProducts();
+            const productIndex = products.findIndex(p => p.id === productId);
+            
+            if (productIndex === -1) {
+                showMessage('Producto no encontrado', 'error');
+                return;
+            }
+
+            // Actualizar producto
+            products[productIndex] = {
+                ...products[productIndex],
+                name,
+                brand,
+                category,
+                price,
+                stock,
+                image: image,
+                description,
+                distributorDiscountPercent: parseInt(document.getElementById('editDistributorDiscount').value, 10) || 0
+            };
+
+            // Actualizar la lista de productos en memoria
+            window.products = products;
+            
+            // Guardar en localStorage para sincronización global
+            localStorage.setItem('products', JSON.stringify(products));
+            
+            showMessage(`Producto "${name}" actualizado correctamente`, 'success');
+            loadProductsTable();
+            
+            // Cerrar todos los modales abiertos
+            closeAllModals();
+        }
+
+        function showDeleteConfirmation(productId) {
+            // Crear modal de confirmación personalizado
+            const confirmModal = document.createElement('div');
+            confirmModal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 2000;
+                padding: 1rem;
+            `;
+
+            confirmModal.innerHTML = `
+                <div class="modal-scroll" style="
+                    background-color: #1a1a1a;
+                    border-radius: 15px;
+                    padding: 1.5rem;
+                    max-width: 300px;
+                    width: 100%;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    border: 2px solid #2E7D32;
+                    text-align: center;
+                ">
+                    <h3 style="color: #2E7D32; margin-bottom: 1rem;">
+                        <i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación
+                    </h3>
+                    <p style="color: #ffffff; margin-bottom: 1.5rem; font-size: 0.9rem;">
+                        ¿Estás seguro de que quieres eliminar este producto?
+                    </p>
+                    <p style="color: #888; margin-bottom: 1.5rem; font-size: 0.8rem;">
+                        Esta acción no se puede deshacer.
+                    </p>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button onclick="confirmDelete(${productId}); this.parentElement.parentElement.parentElement.remove();" style="
+                            background-color: #dc3545;
+                            color: white;
+                            border: none;
+                            padding: 0.8rem 1.5rem;
+                            border-radius: 8px;
+                            font-weight: bold;
+                            cursor: pointer;
+                            flex: 1;
+                        ">Eliminar</button>
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" style="
+                            background-color: #6c757d;
+                            color:  white;
+                            border: none;
+                            padding: 0.8rem 1.5rem;
+                            border-radius: 8px;
+                            font-weight: bold;
+                            cursor: pointer;
+                            flex: 1;
+                        ">Cancelar</button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(confirmModal);
+            
+            // Cerrar modal al hacer clic fuera
+            confirmModal.addEventListener('click', function(e) {
+                if (e.target === confirmModal) {
+                    confirmModal.remove();
+                }
+            });
+        }
+
+        function confirmDelete(productId) {
+            try {
+                // Obtener el producto a eliminar
+                const productToDelete = getProductById(productId);
+                
+                if (!productToDelete) {
+                    showMessage('Producto no encontrado', 'error');
+                    return;
+                }
+                
+                // Usar la función deleteProduct del archivo products.js
+                const success = deleteProduct(productId);
+                
+                if (success) {
+                    // Mostrar mensaje de éxito
+                    showMessage(`✅ Producto "${productToDelete.name}" eliminado correctamente`, 'success');
+                    
+                    // Cerrar todos los modales abiertos
+                    closeAllModals();
+                    
+                    // Recargar la tabla de productos
+                    loadProductsTable();
+                    
+                    // Sincronizar con otras páginas
+                    window.dispatchEvent(new StorageEvent('storage', {
+                        key: 'products',
+                        newValue: JSON.stringify(getProducts())
+                    }));
+                } else {
+                    showMessage('Error al eliminar el producto', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Error al eliminar producto:', error);
+                showMessage('Error al eliminar el producto', 'error');
+            }
+        }
+
+        // Función para cerrar todos los modales
+        function closeAllModals() {
+            const modals = document.querySelectorAll('div[style*="z-index: 1000"], div[style*="z-index: 2000"], div[style*="z-index: 3000"]');
+            modals.forEach(modal => {
+                modal.remove();
+            });
+        }
+
+        function showMessage(message, type) {
+            // Remover mensajes existentes antes de crear uno nuevo
+            const existingMessages = document.querySelectorAll('.message');
+            existingMessages.forEach(msg => {
+                if (msg.parentNode) {
+                    msg.parentNode.removeChild(msg);
+                }
+            });
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.position = 'fixed';
+            messageDiv.style.top = '10px';
+            messageDiv.style.left = '50%';
+            messageDiv.style.transform = 'translateX(-50%)';
+            messageDiv.style.zIndex = '1000';
+            messageDiv.textContent = message;
+            
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                // Verificar que el elemento aún existe antes de eliminarlo
+                if (messageDiv.parentNode) {
+                    messageDiv.parentNode.removeChild(messageDiv);
+                }
+            }, 2000);
+        }
+
+        function loadProductsFromExcel() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.xlsx,.xls';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                // Verificar que sea un archivo Excel
+                const fileExtension = file.name.split('.').pop().toLowerCase();
+                if (!['xlsx', 'xls'].includes(fileExtension)) {
+                    showMessage('Por favor selecciona un archivo Excel válido (.xlsx o .xls)', 'error');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        const firstSheetName = workbook.SheetNames[0];
+                        const worksheet = workbook.Sheets[firstSheetName];
+                        
+                        // Convertir a JSON
+                        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                        
+                        if (jsonData.length < 2) {
+                            showMessage('El archivo Excel está vacío o no tiene datos válidos', 'error');
+                            return;
+                        }
+                        
+                        // Obtener headers (primera fila)
+                        const headers = jsonData[0].map(header => header ? header.toLowerCase().trim() : '');
+                        
+                                                 // Verificar que tenga las columnas requeridas
+                         const requiredColumns = ['nombre', 'precio', 'categoria', 'stock'];
+                         const missingColumns = requiredColumns.filter(col => !headers.includes(col));
+                         
+                         if (missingColumns.length > 0) {
+                             showMessage(`Columnas faltantes: ${missingColumns.join(', ')}. Formato requerido: nombre, precio, categoria, stock. Opcionales: imagen, descuentoDistribuidor`, 'error');
+                             return;
+                         }
+                        
+                        // Procesar filas de datos
+                        const productsAdded = processExcelData(jsonData, headers);
+                        
+                        if (productsAdded > 0) {
+                            showMessage(`✅ ${productsAdded} productos agregados correctamente desde Excel`, 'success');
+                            loadProductsTable(); // Recargar la tabla
+                        } else {
+                            showMessage('No se pudieron agregar productos. Verifica que el archivo tenga datos válidos', 'error');
+                        }
+                        
+                    } catch (error) {
+                        console.error('Error al procesar Excel:', error);
+                        showMessage('Error al procesar el archivo Excel. Verifica el formato', 'error');
+                    }
+                };
+                
+                reader.readAsArrayBuffer(file);
+            };
+            
+            input.click();
+        }
+
+        function downloadExcelTemplate() {
+            try {
+                const wb = XLSX.utils.book_new();
+                const headers = [[
+                    'nombre', 'precio', 'categoria', 'stock', 'imagen', 'descuentoDistribuidor'
+                ]];
+                const ws = XLSX.utils.aoa_to_sheet(headers);
+                XLSX.utils.book_append_sheet(wb, ws, 'Plantilla');
+                const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+                const blob = new Blob([wbout], { type: 'application/octet-stream' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'plantilla_productos.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                const msg = document.createElement('div');
+                msg.className = 'message success';
+                msg.style.position = 'fixed';
+                msg.style.top = '10px';
+                msg.style.left = '50%';
+                msg.style.transform = 'translateX(-50%)';
+                msg.style.zIndex = '2000';
+                msg.textContent = 'Descarga completada ✅';
+                document.body.appendChild(msg);
+                setTimeout(() => { if (msg.parentNode) msg.parentNode.removeChild(msg); }, 2000);
+            } catch (e) {
+                console.error(e);
+                showMessage('Error al generar plantilla', 'error');
+            }
+        }
+
+        function downloadExcelSample() {
+            try {
+                // Verificar que XLSX esté disponible
+                if (typeof XLSX === 'undefined') {
+                    showMessage('Error: Librería XLSX no está cargada', 'error');
+                    return;
+                }
+
+                console.log('Iniciando descarga del ejemplo...');
+                
+                const wb = XLSX.utils.book_new();
+                                 const rows = [
+                     ['nombre','precio','categoria','stock','imagen','descuentoDistribuidor'],
+                     ['Kit de Herramientas Agrícolas', 89.99, 'ACCESORIOS', 25, 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzJhMmEyYSIvPjx0ZXh0IHg9IjE1MCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMyRTdEMzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Nb3RvcmdzYTwvdGV4dD48L3N2Zz4=', 15],
+                     ['Motocultor Honda FG110 5.5HP', 1250.00, 'ARADORAS - MOTOCULTORES - SEMBRADORAS', 8, 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzJhMmEyYSIvPjx0ZXh0IHg9IjE1MCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMyRTdEMzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Nb3RvcmdzYTwvdGV4dD48L3N2Zz4=', 20],
+                     ['Balanza Digital Agrícola 100kg', 180.00, 'BALANZAS', 15, 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzJhMmEyYSIvPjx0ZXh0IHg9IjE1MCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMyRTdEMzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Nb3RvcmdzYTwvdGV4dD48L3N2Zz4=', 12]
+                 ];
+                
+                console.log('Creando hoja de trabajo...');
+                const ws = XLSX.utils.aoa_to_sheet(rows);
+                XLSX.utils.book_append_sheet(wb, ws, 'Ejemplo');
+                
+                console.log('Generando archivo...');
+                const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+                
+                console.log('Creando blob...');
+                const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                
+                console.log('Creando URL...');
+                const url = URL.createObjectURL(blob);
+                
+                console.log('Creando enlace de descarga...');
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'ejemplo_productos.xlsx';
+                a.style.display = 'none';
+                
+                document.body.appendChild(a);
+                console.log('Haciendo clic en enlace...');
+                a.click();
+                
+                // Limpiar
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 100);
+
+                console.log('Descarga completada');
+                showMessage('Descarga completada ✅', 'success');
+                
+            } catch (e) {
+                console.error('Error en downloadExcelSample:', e);
+                showMessage('Error al generar ejemplo: ' + e.message, 'error');
+            }
+        }
+
+        function processExcelData(jsonData, headers) {
+            let productsAdded = 0;
+            const currentProducts = getProducts();
+            let nextId = Math.max(...currentProducts.map(p => p.id), 0) + 1;
+            
+            // Normalizar nombres de headers para ser más flexibles
+            const normalizedHeaders = headers.map(header => {
+                const headerStr = header.toString().toLowerCase().trim();
+                if (headerStr.includes('nombre') || headerStr.includes('name')) return 'nombre';
+                if (headerStr.includes('precio') || headerStr.includes('price')) return 'precio';
+                if (headerStr.includes('categoria') || headerStr.includes('category')) return 'categoria';
+                if (headerStr.includes('stock')) return 'stock';
+                if (headerStr.includes('imagen') || headerStr.includes('image')) return 'imagen';
+                if (headerStr.includes('descuento') || headerStr.includes('distrib') || headerStr.includes('discount')) return 'descuentoDistribuidor';
+                return headerStr;
+            });
+            
+            // Procesar cada fila (empezar desde la segunda fila, ya que la primera son headers)
+            for (let i = 1; i < jsonData.length; i++) {
+                const row = jsonData[i];
+                if (!row || row.length === 0) continue;
+                
+                try {
+                    // Crear objeto con los datos de la fila
+                    const productData = {};
+                    normalizedHeaders.forEach((header, index) => {
+                        if (row[index] !== undefined && row[index] !== null) {
+                            productData[header] = row[index];
+                        }
+                    });
+                    
+                    // Validar datos requeridos
+                    if (!productData.nombre || !productData.precio || !productData.categoria || !productData.stock) {
+                        console.log(`Fila ${i + 1} omitida - faltan datos requeridos:`, productData);
+                        continue; // Saltar fila si faltan datos requeridos
+                    }
+                    
+                    // Convertir precio a número
+                    const price = parseFloat(productData.precio);
+                    const stockVal = parseInt(productData.stock, 10);
+                    const discountVal = productData.descuentoDistribuidor !== undefined ? parseInt(productData.descuentoDistribuidor, 10) : 10;
+                    if (isNaN(price) || price <= 0 || isNaN(stockVal) || stockVal < 0) {
+                        console.log(`Fila ${i + 1} omitida - datos numéricos inválidos:`, { price, stockVal });
+                        continue; // Saltar si el precio no es válido
+                    }
+                    
+                    // Crear nuevo producto
+                    const newProduct = {
+                        id: nextId++,
+                        name: productData.nombre.toString().trim(),
+                        price: price,
+                        category: productData.categoria.toString().trim(),
+                                                 image: productData.imagen ? productData.imagen.toString().trim() : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzJhMmEyYSIvPjx0ZXh0IHg9IjE1MCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMyRTdEMzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Nb3RvcmdzYTwvdGV4dD48L3N2Zz4=',
+                        distributorDiscountPercent: isNaN(discountVal) ? 10 : Math.max(0, Math.min(100, discountVal)),
+                        brand: 'Motorgsa',
+                        stock: stockVal,
+                        description: `Producto importado desde Excel: ${productData.nombre}`
+                    };
+                    
+                    // Agregar a la lista de productos usando la función addProduct del archivo products.js
+                    addProduct(newProduct);
+                    productsAdded++;
+                    
+                } catch (error) {
+                    console.error(`Error procesando fila ${i + 1}:`, error);
+                    continue; // Continuar con la siguiente fila
+                }
+            }
+            
+            // No es necesario guardar en localStorage aquí porque addProduct ya lo hace
+            // Solo sincronizar con otras páginas si es necesario
+            if (productsAdded > 0) {
+                window.dispatchEvent(new StorageEvent('storage', {
+                    key: 'products',
+                    newValue: JSON.stringify(getProducts())
+                }));
+            }
+            
+            return productsAdded;
+        }
+
+        function toggleImageInput() {
+            document.getElementById('imageFileInput').style.display = 'block';
+            document.getElementById('imageUrlInput').style.display = 'none';
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('productImageUrl').value = ''; // Limpiar URL
+        }
+
+        function toggleUrlInput() {
+            document.getElementById('imageFileInput').style.display = 'none';
+            document.getElementById('imageUrlInput').style.display = 'block';
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('productImageFile').value = ''; // Limpiar archivo
+            
+            // Agregar evento para validar URL
+            const urlInput = document.getElementById('productImageUrl');
+            urlInput.addEventListener('input', validateImageUrl);
+        }
+
+        function validateImageUrl() {
+            const urlInput = document.getElementById('productImageUrl');
+            const url = urlInput.value.trim();
+            
+            if (url) {
+                // Crear imagen temporal para validar
+                const img = new Image();
+                img.onload = function() {
+                    document.getElementById('previewImg').src = url;
+                    document.getElementById('imagePreview').style.display = 'block';
+                };
+                img.onerror = function() {
+                    showMessage('URL de imagen no válida', 'error');
+                    urlInput.value = '';
+                    document.getElementById('imagePreview').style.display = 'none';
+                };
+                img.src = url;
+            } else {
+                document.getElementById('imagePreview').style.display = 'none';
+            }
+        }
+
+        function handleImageFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Validar tamaño del archivo (máximo 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    showMessage('La imagen es demasiado grande. Máximo 5MB', 'error');
+                    event.target.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function toggleEditImageInput() {
+            document.getElementById('editImageFileInput').style.display = 'block';
+            document.getElementById('editImageUrlInput').style.display = 'none';
+            document.getElementById('editImagePreview').style.display = 'none';
+            document.getElementById('editProductImage').value = ''; // Limpiar URL
+        }
+
+        function toggleEditUrlInput() {
+            document.getElementById('editImageFileInput').style.display = 'none';
+            document.getElementById('editImageUrlInput').style.display = 'block';
+            document.getElementById('editImagePreview').style.display = 'none';
+            document.getElementById('editProductImageFile').value = ''; // Limpiar archivo
+            
+            // Agregar evento para validar URL
+            const urlInput = document.getElementById('editProductImage');
+            urlInput.addEventListener('input', validateEditImageUrl);
+        }
+
+        function validateEditImageUrl() {
+            const urlInput = document.getElementById('editProductImage');
+            const url = urlInput.value.trim();
+            
+            if (url) {
+                // Crear imagen temporal para validar
+                const img = new Image();
+                img.onload = function() {
+                    document.getElementById('editPreviewImg').src = url;
+                    document.getElementById('editImagePreview').style.display = 'block';
+                };
+                img.onerror = function() {
+                    showMessage('URL de imagen no válida', 'error');
+                    urlInput.value = '';
+                    document.getElementById('editImagePreview').style.display = 'none';
+                };
+                img.src = url;
+            } else {
+                document.getElementById('editImagePreview').style.display = 'none';
+            }
+        }
+
+        function handleEditImageFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Validar tamaño del archivo (máximo 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    showMessage('La imagen es demasiado grande. Máximo 5MB', 'error');
+                    event.target.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('editPreviewImg').src = e.target.result;
+                    document.getElementById('editImagePreview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+
+        function navigateTo(page) {
+            if (page === 'home') {
+                window.location.href = 'home.html';
+            } else if (page === 'cart') {
+                window.location.href = 'cart.html';
+            } else if (page === 'profile') {
+                window.location.href = 'admin-profile.html';
+            } else if (page === 'about') {
+                window.location.href = 'about.html';
+            }
+        }
+
+                 // Función para sincronizar productos con localStorage
+         function syncProductsWithLocalStorage() {
+             const storedProducts = JSON.parse(localStorage.getItem('products') || '[]');
+             if (storedProducts.length > 0) {
+                 // Actualizar la lista de productos en memoria del archivo products.js
+                 window.products = storedProducts;
+             }
+         }
+
+         // Función para cargar mensajes/solicitudes pendientes
+         function loadMessages() {
+             // Sincronizar usuarios con localStorage
+             syncUsersWithLocalStorage();
+             
+             const pendingRequests = getPendingRequests();
+             const container = document.getElementById('messagesList');
+             const noMessagesDiv = document.getElementById('noMessages');
+
+             if (pendingRequests.length === 0) {
+                 container.style.display = 'none';
+                 noMessagesDiv.style.display = 'block';
+                 return;
+             }
+
+             container.style.display = 'block';
+             noMessagesDiv.style.display = 'none';
+
+             container.innerHTML = pendingRequests.map(request => {
+                 const fecha = new Date(request.fechaRegistro).toLocaleDateString('es-ES');
+                 
+                 // Información específica según el tipo de usuario
+                 let additionalInfo = '';
+                 if (request.role === 'distribuidor' && request.companyName) {
+                     additionalInfo = `
+                         <div style="background-color: #333; padding: 0.5rem; border-radius: 6px; margin-top: 0.5rem;">
+                             <p style="color: #E50914; margin: 0.2rem 0; font-size: 0.8rem; font-weight: bold;">
+                                 <i class="fas fa-building"></i> Datos de empresa:
+                             </p>
+                             <p style="color: #ccc; margin: 0.2rem 0; font-size: 0.8rem;">
+                                 <i class="fas fa-building"></i> ${request.companyName}
+                             </p>
+                             <p style="color: #ccc; margin: 0.2rem 0; font-size: 0.8rem;">
+                                 <i class="fas fa-id-card"></i> RUC: ${request.companyRuc}
+                             </p>
+                             <p style="color: #ccc; margin: 0.2rem 0; font-size: 0.8rem;">
+                                 <i class="fas fa-map-marker-alt"></i> ${request.companyAddress}
+                             </p>
+                             <p style="color: #ccc; margin: 0.2rem 0; font-size: 0.8rem;">
+                                 <i class="fas fa-phone"></i> ${request.companyPhone}
+                             </p>
+                         </div>
+                     `;
+                 }
+                 
+                 return `
+                     <div class="message-item fade-in" style="
+                         background-color: #2a2a2a;
+                         border-radius: 10px;
+                         padding: 1rem;
+                         margin-bottom: 1rem;
+                         border-left: 4px solid #2E7D32;
+                     ">
+                         <div style="flex: 1;">
+                             <h4 style="color: #2E7D32; margin-bottom: 0.5rem; font-size: 1rem;">
+                                 <i class="fas fa-user-plus"></i> ${request.name}
+                             </h4>
+                             <p style="color: #888; margin: 0.2rem 0; font-size: 0.8rem;">
+                                 <i class="fas fa-envelope"></i> ${request.email}
+                             </p>
+                             <p style="color: #888; margin: 0.2rem 0; font-size: 0.8rem;">
+                                 <i class="fas fa-user-tag"></i> ${request.role === 'distribuidor' ? 'Distribuidor' : 'Cliente'}
+                             </p>
+                             <p style="color: #888; margin: 0.2rem 0; font-size: 0.8rem;">
+                                 <i class="fas fa-calendar"></i> ${fecha}
+                             </p>
+                             <p style="color: #888; margin: 0.2rem 0; font-size: 0.8rem;">
+                                 <i class="fas fa-clock"></i> Estado: <span style="color: #ffc107;">Pendiente</span>
+                             </p>
+                             ${additionalInfo}
+                         </div>
+                         
+                         <!-- Botones centrados debajo del contenido -->
+                         <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1rem;">
+                             <button onclick="approveRequest(${request.id})" style="
+                                 background-color: #28a745;
+                                 color: white;
+                                 border: none;
+                                 padding: 0.75rem 1.5rem;
+                                 border-radius: 8px;
+                                 font-size: 0.9rem;
+                                 cursor: pointer;
+                                 font-weight: bold;
+                                 transition: all 0.3s ease;
+                                 box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                             " onmouseover="this.style.backgroundColor='#218838'" onmouseout="this.style.backgroundColor='#28a745'">
+                                 <i class="fas fa-check"></i> Aprobar
+                             </button>
+                             <button onclick="rejectRequest(${request.id})" style="
+                                 background-color: #dc3545;
+                                 color: white;
+                                 border: none;
+                                 padding: 0.75rem 1.5rem;
+                                 border-radius: 8px;
+                                 font-size: 0.9rem;
+                                 cursor: pointer;
+                                 font-weight: bold;
+                                 transition: all 0.3s ease;
+                                 box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                             " onmouseover="this.style.backgroundColor='#c82333'" onmouseout="this.style.backgroundColor='#dc3545'">
+                                 <i class="fas fa-times"></i> Rechazar
+                             </button>
+                         </div>
+                     </div>
+                 `;
+             }).join('');
+         }
+
+         // Función para aprobar solicitud
+         function approveRequest(userId) {
+             if (confirm('¿Estás seguro de que quieres aprobar esta solicitud?')) {
+                 const success = approveUser(userId);
+                 if (success) {
+                     showMessage('Solicitud aprobada correctamente', 'success');
+                     loadMessages(); // Recargar la lista
+                 } else {
+                     showMessage('Error al aprobar la solicitud', 'error');
+                 }
+             }
+         }
+
+         // Función para rechazar solicitud
+         function rejectRequest(userId) {
+             if (confirm('¿Estás seguro de que quieres rechazar esta solicitud?')) {
+                 const success = rejectUser(userId);
+                 if (success) {
+                     showMessage('Solicitud rechazada correctamente', 'success');
+                     loadMessages(); // Recargar la lista
+                 } else {
+                     showMessage('Error al rechazar la solicitud', 'error');
+                 }
+             }
+         }
+    </script>
+</body>
+</html>

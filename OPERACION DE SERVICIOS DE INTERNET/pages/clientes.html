@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Clientes - Telecomunicaciones</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-info">
+                    <h1><i class="fas fa-users"></i> Gestión de Clientes</h1>
+                    <p>Administra la base de datos de clientes</p>
+                </div>
+                <div class="user-logo">
+                    <div class="user-logo-btn" onclick="toggleUserMenu()">
+                        <div class="user-initial" id="userInitial">A</div>
+                    </div>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="#" class="user-dropdown-item" onclick="showPerfilModal()">
+                            <i class="fas fa-user"></i>
+                            Mi Perfil
+                        </a>
+                        <a href="#" class="user-dropdown-item danger" onclick="cerrarSesion()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Cerrar Sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barra de búsqueda y filtros -->
+        <div class="card">
+            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                <div style="flex: 1;">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="form-input" 
+                        placeholder="Buscar cliente..."
+                        onkeyup="filterClientes()"
+                    >
+                </div>
+                <button class="btn btn-primary" onclick="showAddClienteModal()">
+                    <i class="fas fa-plus"></i>
+                    Agregar
+                </button>
+            </div>
+            
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="btn btn-small btn-secondary" onclick="filterByStatus('all')" id="filterAll">
+                    Todos
+                </button>
+                <button class="btn btn-small btn-secondary" onclick="filterByStatus('Activo')" id="filterActivo">
+                    Activos
+                </button>
+                <button class="btn btn-small btn-secondary" onclick="filterByStatus('Pendiente')" id="filterPendiente">
+                    Pendientes
+                </button>
+            </div>
+        </div>
+
+        <!-- Lista de clientes -->
+        <div id="clientesContainer">
+            <div class="loading">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para agregar/editar cliente -->
+    <div id="clienteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Agregar Cliente</h3>
+                <button class="modal-close" onclick="closeClienteModal()">&times;</button>
+            </div>
+            
+            <form id="clienteForm">
+                <input type="hidden" id="clienteId" value="">
+                
+                <div class="form-group">
+                    <label for="nombre" class="form-label">Nombre Completo</label>
+                    <input 
+                        type="text" 
+                        id="nombre" 
+                        class="form-input" 
+                        placeholder="Ingresa el nombre completo"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="direccion" class="form-label">Dirección</label>
+                    <input 
+                        type="text" 
+                        id="direccion" 
+                        class="form-input" 
+                        placeholder="Dirección completa"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="telefono" class="form-label">Teléfono</label>
+                    <input 
+                        type="tel" 
+                        id="telefono" 
+                        class="form-input" 
+                        placeholder="Número de teléfono"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Servicios Contratados</label>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 8px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="servicioInternet" value="Internet">
+                            <span>Internet</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="servicioTV" value="TV">
+                            <span>TV</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="servicioTelefono" value="Teléfono">
+                            <span>Teléfono</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="servicioOtros" value="Otros">
+                            <span>Otros</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="estado" class="form-label">Estado</label>
+                    <select id="estado" class="form-select" required>
+                        <option value="Activo">Activo</option>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Suspendido">Suspendido</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; gap: 12px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeClienteModal()" style="flex: 1;">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        <i class="fas fa-save"></i>
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Perfil -->
+    <div id="perfilModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Mi Perfil</h3>
+                <button class="modal-close" onclick="closePerfilModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div id="perfilInfo">
+                    <!-- Información del perfil se carga aquí -->
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closePerfilModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegación inferior -->
+    <div class="bottom-nav">
+        <a href="dashboard-coordinador.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="clientes.html" class="nav-item active">
+            <i class="fas fa-users"></i>
+            <span>Clientes</span>
+        </a>
+        <a href="tareas.html" class="nav-item">
+            <i class="fas fa-tasks"></i>
+            <span>Tareas</span>
+        </a>
+        <a href="tecnicos.html" class="nav-item">
+            <i class="fas fa-tools"></i>
+            <span>Técnicos</span>
+        </a>
+        <a href="nucleo.html" class="nav-item">
+            <i class="fas fa-network-wired"></i>
+            <span>Núcleo</span>
+        </a>
+    </div>
+
+    <script>
+        let clientes = [];
+        let clientesFiltrados = [];
+        let currentFilter = 'all';
+
+        // Verificar sesión
+        window.addEventListener('load', function() {
+            const userData = localStorage.getItem('userData');
+            if (!userData || JSON.parse(userData).rol !== 'coordinador') {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            loadClientes();
+            loadUserInitial();
+        });
+
+        // Cargar clientes
+        async function loadClientes() {
+            try {
+                const response = await fetch('../data/clientes.json');
+                clientes = await response.json();
+                clientesFiltrados = [...clientes];
+                displayClientes();
+            } catch (error) {
+                console.error('Error cargando clientes:', error);
+                // Cargar desde localStorage
+                loadFromLocalStorage();
+            }
+        }
+
+        function loadFromLocalStorage() {
+            clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
+            clientesFiltrados = [...clientes];
+            displayClientes();
+        }
+
+        function displayClientes() {
+            const container = document.getElementById('clientesContainer');
+            
+            if (clientesFiltrados.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #666;">
+                        <i class="fas fa-users" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                        <p>No se encontraron clientes</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = clientesFiltrados.map(cliente => `
+                <div class="list-item">
+                    <div class="list-item-header">
+                        <div>
+                            <div class="list-item-title">${cliente.nombre}</div>
+                            <div class="list-item-subtitle">
+                                <i class="fas fa-map-marker-alt"></i> ${cliente.direccion}<br>
+                                <i class="fas fa-phone"></i> ${cliente.telefono}
+                            </div>
+                        </div>
+                        <span class="status-badge status-${cliente.estado.toLowerCase()}">
+                            ${cliente.estado}
+                        </span>
+                    </div>
+                    
+                    <div style="margin-top: 12px;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px;">
+                            ${cliente.servicios.map(servicio => `
+                                <span style="background: #E3F2FD; color: #1976D2; padding: 4px 8px; border-radius: 12px; font-size: 12px;">
+                                    ${servicio}
+                                </span>
+                            `).join('')}
+                        </div>
+                        
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-small btn-primary" onclick="editCliente(${cliente.id})">
+                                <i class="fas fa-edit"></i>
+                                Editar
+                            </button>
+                            <button class="btn btn-small btn-danger" onclick="deleteCliente(${cliente.id})">
+                                <i class="fas fa-trash"></i>
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterClientes() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            clientesFiltrados = clientes.filter(cliente => {
+                const matchesSearch = cliente.nombre.toLowerCase().includes(searchTerm) ||
+                                    cliente.direccion.toLowerCase().includes(searchTerm) ||
+                                    cliente.telefono.includes(searchTerm);
+                
+                const matchesStatus = currentFilter === 'all' || cliente.estado === currentFilter;
+                
+                return matchesSearch && matchesStatus;
+            });
+            
+            displayClientes();
+        }
+
+        function filterByStatus(status) {
+            currentFilter = status;
+            
+            // Actualizar botones de filtro
+            document.querySelectorAll('[id^="filter"]').forEach(btn => {
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+            });
+            
+            document.getElementById(`filter${status === 'all' ? 'All' : status}`).classList.remove('btn-secondary');
+            document.getElementById(`filter${status === 'all' ? 'All' : status}`).classList.add('btn-primary');
+            
+            filterClientes();
+        }
+
+        function showAddClienteModal() {
+            document.getElementById('modalTitle').textContent = 'Agregar Cliente';
+            document.getElementById('clienteForm').reset();
+            document.getElementById('clienteId').value = '';
+            document.getElementById('clienteModal').classList.add('show');
+        }
+
+        function editCliente(id) {
+            const cliente = clientes.find(c => c.id === id);
+            if (!cliente) return;
+            
+            document.getElementById('modalTitle').textContent = 'Editar Cliente';
+            document.getElementById('clienteId').value = cliente.id;
+            document.getElementById('nombre').value = cliente.nombre;
+            document.getElementById('direccion').value = cliente.direccion;
+            document.getElementById('telefono').value = cliente.telefono;
+            document.getElementById('estado').value = cliente.estado;
+            
+            // Marcar servicios
+            cliente.servicios.forEach(servicio => {
+                const checkbox = document.getElementById(`servicio${servicio}`);
+                if (checkbox) checkbox.checked = true;
+            });
+            
+            document.getElementById('clienteModal').classList.add('show');
+        }
+
+        function deleteCliente(id) {
+            if (confirm('¿Estás seguro de que quieres eliminar este cliente?')) {
+                clientes = clientes.filter(c => c.id !== id);
+                saveClientesToLocalStorage();
+                loadFromLocalStorage();
+                filterClientes();
+            }
+        }
+
+        function closeClienteModal() {
+            document.getElementById('clienteModal').classList.remove('show');
+        }
+
+        // Manejar envío del formulario
+        document.getElementById('clienteForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('clienteId').value;
+            const nombre = document.getElementById('nombre').value;
+            const direccion = document.getElementById('direccion').value;
+            const telefono = document.getElementById('telefono').value;
+            const estado = document.getElementById('estado').value;
+            
+            // Obtener servicios seleccionados
+            const servicios = [];
+            if (document.getElementById('servicioInternet').checked) servicios.push('Internet');
+            if (document.getElementById('servicioTV').checked) servicios.push('TV');
+            if (document.getElementById('servicioTelefono').checked) servicios.push('Teléfono');
+            if (document.getElementById('servicioOtros').checked) servicios.push('Otros');
+            
+            if (servicios.length === 0) {
+                alert('Por favor selecciona al menos un servicio');
+                return;
+            }
+            
+            const clienteData = {
+                id: id ? parseInt(id) : Date.now(),
+                nombre,
+                direccion,
+                telefono,
+                servicios,
+                estado
+            };
+            
+            if (id) {
+                // Editar cliente existente
+                const index = clientes.findIndex(c => c.id === parseInt(id));
+                if (index !== -1) {
+                    clientes[index] = clienteData;
+                }
+            } else {
+                // Agregar nuevo cliente
+                clientes.push(clienteData);
+            }
+            
+            saveClientesToLocalStorage();
+            loadFromLocalStorage();
+            filterClientes();
+            closeClienteModal();
+        });
+
+        function saveClientesToLocalStorage() {
+            localStorage.setItem('clientes', JSON.stringify(clientes));
+        }
+
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('clienteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeClienteModal();
+            }
+        });
+
+        // Funciones de perfil y sesión
+        function showPerfilModal() {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const perfilInfo = document.getElementById('perfilInfo');
+            
+            perfilInfo.innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="width: 80px; height: 80px; background: #007bff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: white; font-size: 32px;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3>${userData.usuario || 'Usuario'}</h3>
+                    <p style="color: #666; margin: 8px 0;">${userData.rol === 'coordinador' ? 'Coordinador' : 'Técnico'}</p>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                    <h4 style="margin: 0 0 12px 0; color: #333;">Información de Sesión</h4>
+                    <p style="margin: 4px 0;"><strong>Usuario:</strong> ${userData.usuario || 'N/A'}</p>
+                    <p style="margin: 4px 0;"><strong>Rol:</strong> ${userData.rol === 'coordinador' ? 'Coordinador' : 'Técnico'}</p>
+                    <p style="margin: 4px 0;"><strong>Inicio de sesión:</strong> ${userData.loginTime ? new Date(userData.loginTime).toLocaleString() : 'N/A'}</p>
+                </div>
+            `;
+            
+            document.getElementById('perfilModal').classList.add('show');
+        }
+
+        function closePerfilModal() {
+            document.getElementById('perfilModal').classList.remove('show');
+        }
+
+        function cerrarSesion() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                localStorage.removeItem('userData');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Función para toggle del menú de usuario
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            const userLogo = document.querySelector('.user-logo');
+            const dropdown = document.getElementById('userDropdown');
+            
+            if (!userLogo.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Cargar inicial del usuario
+        function loadUserInitial() {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const initial = userData.usuario ? userData.usuario.charAt(0).toUpperCase() : 'A';
+            document.getElementById('userInitial').textContent = initial;
+        }
+    </script>
+</body>
+</html>

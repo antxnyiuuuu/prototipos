@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motorgsa - Registro</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h2><i class="fas fa-user-plus"></i> Crear Cuenta</h2>
+                <p>Elige el tipo de cuenta que deseas crear</p>
+            </div>
+
+            <div class="registration-options">
+                <!-- Opción Cliente -->
+                <div class="registration-option" onclick="window.location.href='registroCliente.html'">
+                    <div class="option-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="option-content">
+                        <h3>Cliente</h3>
+                        <p>Cuenta personal para compras</p>
+                        <ul>
+                            <li>✓ Acceso inmediato</li>
+                            <li>✓ Compras sin restricciones</li>
+                            <li>✓ Historial de pedidos</li>
+                        </ul>
+                    </div>
+                    <div class="option-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- Opción Distribuidor -->
+                <div class="registration-option" onclick="window.location.href='registroDistribuidor.html'">
+                    <div class="option-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="option-content">
+                        <h3>Distribuidor</h3>
+                        <p>Cuenta empresarial con beneficios especiales</p>
+                        <ul>
+                            <li>✓ Precios mayoristas</li>
+                            <li>✓ Gestión de inventario</li>
+                            <li>⚠ Requiere aprobación del Admin</li>
+                        </ul>
+                    </div>
+                    <div class="option-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auth-footer">
+                <p>¿Ya tienes cuenta? <a href="login.html">Iniciar sesión</a></p>
+                <p><a href="../index.html">← Volver al inicio</a></p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .registration-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .registration-option {
+            display: flex;
+            align-items: center;
+            background-color: #2a2a2a;
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .registration-option:hover {
+            border-color: #2E7D32;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(46, 125, 50, 0.2);
+        }
+
+        .option-icon {
+            background: linear-gradient(135deg, #2E7D32, #1B5E20);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .option-icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .option-content {
+            flex: 1;
+        }
+
+        .option-content h3 {
+            color: #E50914;
+            margin: 0 0 0.5rem 0;
+            font-size: 1.2rem;
+        }
+
+        .option-content p {
+            color: #ccc;
+            margin: 0 0 0.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        .option-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .option-content li {
+            color: #888;
+            font-size: 0.8rem;
+            margin: 0.2rem 0;
+        }
+
+        .option-arrow {
+            color: #E50914;
+            font-size: 1.2rem;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .registration-option:hover .option-arrow {
+            opacity: 1;
+            transform: translateX(5px);
+        }
+
+        @media (max-width: 420px) {
+            .registration-option {
+                padding: 1rem;
+            }
+            
+            .option-icon {
+                width: 50px;
+                height: 50px;
+                margin-right: 0.8rem;
+            }
+            
+            .option-icon i {
+                font-size: 1.2rem;
+            }
+            
+            .option-content h3 {
+                font-size: 1.1rem;
+            }
+            
+            .option-content p {
+                font-size: 0.8rem;
+            }
+            
+            .option-content li {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</body>
+</html>

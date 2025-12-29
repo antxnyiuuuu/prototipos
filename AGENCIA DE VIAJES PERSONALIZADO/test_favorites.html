@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba de Favoritos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Prueba de Funciones de Favoritos</h1>
+    
+    <div class="test-section">
+        <h2>1. Cargar Favoritos</h2>
+        <button class="btn" onclick="testLoadFavorites()">Cargar Favoritos del Usuario 1</button>
+        <div id="loadResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Verificar si Producto está en Favoritos</h2>
+        <input type="number" id="productId" placeholder="ID del producto" value="4">
+        <button class="btn" onclick="testIsInFavorites()">Verificar</button>
+        <div id="checkResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Agregar Producto a Favoritos</h2>
+        <input type="number" id="addProductId" placeholder="ID del producto" value="1">
+        <button class="btn" onclick="testAddToFavorites()">Agregar</button>
+        <div id="addResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Remover Producto de Favoritos</h2>
+        <input type="number" id="removeProductId" placeholder="ID del producto" value="4">
+        <button class="btn" onclick="testRemoveFromFavorites()">Remover</button>
+        <div id="removeResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>5. Recargar Favoritos</h2>
+        <button class="btn" onclick="testReloadFavorites()">Recargar</button>
+        <div id="reloadResult" class="result"></div>
+    </div>
+
+    <script src="data/products.js"></script>
+    <script>
+        async function testLoadFavorites() {
+            try {
+                const result = document.getElementById('loadResult');
+                result.innerHTML = 'Cargando...';
+                
+                const favorites = await loadUserFavorites(1);
+                result.innerHTML = `
+                    <strong>Favoritos cargados:</strong><br>
+                    Total: ${favorites.length}<br>
+                    <pre>${JSON.stringify(favorites, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('loadResult').innerHTML = `Error: ${error.message}`;
+            }
+        }
+        
+        async function testIsInFavorites() {
+            try {
+                const result = document.getElementById('checkResult');
+                const productId = parseInt(document.getElementById('productId').value);
+                
+                result.innerHTML = 'Verificando...';
+                
+                const isInFavorites = await isProductInFavorites(1, productId);
+                result.innerHTML = `
+                    <strong>Producto ${productId} en favoritos:</strong> ${isInFavorites ? 'SÍ' : 'NO'}
+                `;
+            } catch (error) {
+                document.getElementById('checkResult').innerHTML = `Error: ${error.message}`;
+            }
+        }
+        
+        async function testAddToFavorites() {
+            try {
+                const result = document.getElementById('addResult');
+                const productId = parseInt(document.getElementById('addProductId').value);
+                
+                result.innerHTML = 'Agregando...';
+                
+                // Simular un producto
+                const product = {
+                    id: productId,
+                    nombre: `Producto ${productId}`,
+                    categoria: 'comidas',
+                    precio: 25,
+                    imagen: 'https://via.placeholder.com/300x200'
+                };
+                
+                const success = await addToFavorites(1, product);
+                result.innerHTML = `
+                    <strong>Producto agregado:</strong> ${success ? 'SÍ' : 'NO'}<br>
+                    <small>Nota: En un entorno real, esto se guardaría en el servidor</small>
+                `;
+            } catch (error) {
+                document.getElementById('addResult').innerHTML = `Error: ${error.message}`;
+            }
+        }
+        
+        async function testRemoveFromFavorites() {
+            try {
+                const result = document.getElementById('removeResult');
+                const productId = parseInt(document.getElementById('removeProductId').value);
+                
+                result.innerHTML = 'Removiendo...';
+                
+                const success = await removeFromFavorites(1, productId);
+                result.innerHTML = `
+                    <strong>Producto removido:</strong> ${success ? 'SÍ' : 'NO'}<br>
+                    <small>Nota: En un entorno real, esto se guardaría en el servidor</small>
+                `;
+            } catch (error) {
+                document.getElementById('removeResult').innerHTML = `Error: ${error.message}`;
+            }
+        }
+        
+        async function testReloadFavorites() {
+            try {
+                const result = document.getElementById('reloadResult');
+                result.innerHTML = 'Recargando...';
+                
+                const favorites = await loadUserFavorites(1);
+                result.innerHTML = `
+                    <strong>Favoritos recargados:</strong><br>
+                    Total: ${favorites.length}<br>
+                    <pre>${JSON.stringify(favorites, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('reloadResult').innerHTML = `Error: ${error.message}`;
+            }
+        }
+        
+        // Cargar favoritos al inicio
+        window.addEventListener('load', () => {
+            testLoadFavorites();
+        });
+    </script>
+</body>
+</html>

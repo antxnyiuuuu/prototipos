@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión del Menú - TravelApp Restaurante</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .restaurant-welcome {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .restaurant-avatar {
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .restaurant-avatar:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Main Content */
+        .main {
+            padding: 2rem 0;
+            padding-bottom: 80px;
+        }
+
+        .management-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .menu-categories {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .category-btn {
+            padding: 0.75rem 1.5rem;
+            background: #f8f9ff;
+            color: #667eea;
+            border: 2px solid #e1e5e9;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-btn:hover,
+        .category-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .menu-item {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .item-image {
+            height: 150px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .item-content {
+            padding: 1.5rem;
+        }
+
+        .item-name {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .item-description {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .item-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .item-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .item-availability {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .available {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .unavailable {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #218838;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
+        .btn-toggle {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-toggle:hover {
+            background: #e0a800;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #f8f9ff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #e1e5e9;
+            padding: 0.5rem 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            transition: color 0.3s;
+            padding: 0.5rem;
+            border-radius: 10px;
+            min-width: 60px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-text {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        /* Alertas */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-success {
+            background: #28a745;
+        }
+
+        .alert-error {
+            background: #dc3545;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Botón Flotante de Edición */
+        .floating-edit-btn {
+            position: fixed;
+            bottom: 100px;
+            left: 20px;
+            z-index: 999;
+            background: linear-gradient(45deg, #20b2aa, #4169e1, #8a2be2);
+            border-radius: 30px;
+            padding: 0.6rem 1.2rem;
+            box-shadow: 0 6px 20px rgba(32, 178, 170, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .floating-edit-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(32, 178, 170, 0.6);
+        }
+
+        .floating-btn-content {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .floating-icon {
+            font-size: 1.2rem;
+        }
+
+        .floating-text {
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        /* Modal de Edición de Perfil */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .profile-modal {
+            background: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .close {
+            font-size: 2rem;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .close:hover {
+            opacity: 0.7;
+        }
+
+        .profile-edit-content {
+            padding: 2rem;
+        }
+
+        /* Cover Photo Section */
+        .cover-photo-section {
+            margin-bottom: 2rem;
+        }
+
+        .cover-photo-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: -50px;
+        }
+
+        .cover-photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cover-photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .cover-photo-container:hover .cover-photo-overlay {
+            opacity: 1;
+        }
+
+        .upload-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-btn:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        /* Profile Photo Section */
+        .profile-photo-section {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .profile-photo-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .profile-photo-container img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-photo-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Restaurant Info Section */
+        .restaurant-info-section {
+            margin-bottom: 2rem;
+        }
+
+        .restaurant-info-section h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        /* Media Gallery Section */
+        .media-gallery-section {
+            margin-bottom: 2rem;
+        }
+
+        .media-gallery-section h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .media-upload-area {
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-zone {
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9ff;
+        }
+
+        .upload-zone:hover {
+            border-color: #5a6fd8;
+            background: #f0f2ff;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-zone p {
+            margin: 0.5rem 0;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .upload-zone small {
+            color: #999;
+        }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .media-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .media-item img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .delete-media {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Modal Actions */
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .menu-categories {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="restaurant-info">
+                    <h1 class="logo">TravelApp Restaurante</h1>
+                    <p class="restaurant-welcome" id="restaurantWelcome">Gestión del Menú</p>
+                </div>
+                <div class="restaurant-avatar" id="restaurantAvatar" onclick="showRestaurantMenu()">🍽️</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Stats Section -->
+            <div class="management-section">
+                <h2 class="section-title">📊 Estadísticas del Menú</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">45</div>
+                        <div class="stat-label">Total Platos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">38</div>
+                        <div class="stat-label">Platos Disponibles</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">7</div>
+                        <div class="stat-label">Platos Agotados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">$25</div>
+                        <div class="stat-label">Precio Promedio</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Management Section -->
+            <div class="management-section">
+                <h2 class="section-title">🍽️ Gestión del Menú</h2>
+                
+                <div class="menu-categories">
+                    <button class="category-btn active" onclick="filterByCategory('all')">Todos</button>
+                    <button class="category-btn" onclick="filterByCategory('entradas')">Entradas</button>
+                    <button class="category-btn" onclick="filterByCategory('platos')">Platos Principales</button>
+                    <button class="category-btn" onclick="filterByCategory('postres')">Postres</button>
+                    <button class="category-btn" onclick="filterByCategory('bebidas')">Bebidas</button>
+                </div>
+
+                <div class="menu-grid" id="menuGrid">
+                    <!-- Los platos se cargarán dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-content">
+            <a href="dashboard-restaurante-direct.html" class="nav-item">
+                <span class="nav-icon">🍽️</span>
+                <span class="nav-text">Dashboard</span>
+            </a>
+            <a href="#" class="nav-item active">
+                <span class="nav-icon">🍽️</span>
+                <span class="nav-text">Menú</span>
+            </a>
+            <a href="restaurante-reservas-direct.html" class="nav-item">
+                <span class="nav-icon">📅</span>
+                <span class="nav-text">Reservas</span>
+            </a>
+            <a href="restaurante-horarios-direct.html" class="nav-item">
+                <span class="nav-icon">🕒</span>
+                <span class="nav-text">Horarios</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showRestaurantMenu()">
+                <span class="nav-icon">🍽️</span>
+                <span class="nav-text">Restaurante</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Modal de Restaurante -->
+    <div id="restaurantModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRestaurantModal()">&times;</span>
+            <h3>Panel del Restaurante</h3>
+            <div id="restaurantInfo"></div>
+            <div style="margin-top: 2rem;">
+                <button class="btn" onclick="goToProfile()">Mi Perfil</button>
+                <button class="btn" onclick="logout()" style="margin-left: 1rem; background: #6c757d;">Cerrar Sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="alertContainer"></div>
+
+    <script>
+        // Datos del menú de ejemplo
+        const menuItems = [
+            {
+                id: 1,
+                nombre: "Ceviche de Pescado",
+                descripcion: "Pescado fresco marinado en limón con cebolla, cilantro y ají amarillo",
+                precio: 18,
+                categoria: "entradas",
+                disponible: true,
+                imagen: "🐟"
+            },
+            {
+                id: 2,
+                nombre: "Lomo Saltado",
+                descripcion: "Tiras de lomo salteadas con cebolla, tomate y papas fritas",
+                precio: 28,
+                categoria: "platos",
+                disponible: true,
+                imagen: "🥩"
+            },
+            {
+                id: 3,
+                nombre: "Arroz con Pollo",
+                descripcion: "Arroz verde con pollo, culantro y verduras frescas",
+                precio: 22,
+                categoria: "platos",
+                disponible: true,
+                imagen: "🍗"
+            },
+            {
+                id: 4,
+                nombre: "Suspiro a la Limeña",
+                descripcion: "Postre tradicional de manjar blanco con merengue italiano",
+                precio: 12,
+                categoria: "postres",
+                disponible: false,
+                imagen: "🍮"
+            },
+            {
+                id: 5,
+                nombre: "Pisco Sour",
+                descripcion: "Cóctel nacional con pisco, limón, jarabe de goma y clara de huevo",
+                precio: 15,
+                categoria: "bebidas",
+                disponible: true,
+                imagen: "🍸"
+            },
+            {
+                id: 6,
+                nombre: "Anticuchos",
+                descripcion: "Brochetas de corazón de res marinadas en ají panca",
+                precio: 16,
+                categoria: "entradas",
+                disponible: true,
+                imagen: "🍢"
+            },
+            {
+                id: 7,
+                nombre: "Aji de Gallina",
+                descripcion: "Pollo deshilachado en crema de ají amarillo con papas y arroz",
+                precio: 24,
+                categoria: "platos",
+                disponible: true,
+                imagen: "🍛"
+            },
+            {
+                id: 8,
+                nombre: "Chicha Morada",
+                descripcion: "Bebida tradicional de maíz morado con especias",
+                precio: 8,
+                categoria: "bebidas",
+                disponible: true,
+                imagen: "🥤"
+            }
+        ];
+
+        let currentCategory = 'all';
+
+        // Funciones de utilidad
+        function showAlert(message, type = 'success') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+        }
+
+        function showRestaurantMenu() {
+            const modal = document.getElementById('restaurantModal');
+            const restaurantInfo = document.getElementById('restaurantInfo');
+            
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                restaurantInfo.innerHTML = `
+                    <p><strong>Nombre:</strong> ${user.name}</p>
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>Rol:</strong> ${getRoleDisplayName(user.role)}</p>
+                `;
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        function closeRestaurantModal() {
+            document.getElementById('restaurantModal').style.display = 'none';
+        }
+
+        function getRoleDisplayName(role) {
+            const roleNames = {
+                'usuario': 'Usuario',
+                'admin': 'Administrador',
+                'hotel': 'Hotel',
+                'restaurante': 'Restaurante',
+                'actividades': 'Actividades'
+            };
+            return roleNames[role] || role;
+        }
+
+        function goToProfile() {
+            showAlert('Funcionalidad de perfil en desarrollo', 'success');
+            closeRestaurantModal();
+        }
+
+        function logout() {
+            localStorage.removeItem('current_user');
+            showAlert('Sesión cerrada correctamente', 'success');
+            setTimeout(() => {
+                window.location.href = 'login-direct.html';
+            }, 1000);
+        }
+
+        function filterByCategory(category) {
+            currentCategory = category;
+            
+            // Actualizar botones activos
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            displayMenu();
+        }
+
+        function displayMenu() {
+            const grid = document.getElementById('menuGrid');
+            grid.innerHTML = '';
+            
+            let filteredItems = menuItems;
+            
+            if (currentCategory !== 'all') {
+                filteredItems = menuItems.filter(item => item.categoria === currentCategory);
+            }
+            
+            filteredItems.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'menu-item';
+                
+                card.innerHTML = `
+                    <div class="item-image">${item.imagen}</div>
+                    <div class="item-content">
+                        <h3 class="item-name">${item.nombre}</h3>
+                        <p class="item-description">${item.descripcion}</p>
+                        
+                        <div class="item-details">
+                            <div class="item-price">$${item.precio}</div>
+                            <span class="item-availability ${item.disponible ? 'available' : 'unavailable'}">
+                                ${item.disponible ? 'Disponible' : 'Agotado'}
+                            </span>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn btn-edit" onclick="editMenuItem(${item.id})">Editar</button>
+                            <button class="btn btn-toggle" onclick="toggleAvailability(${item.id})">
+                                ${item.disponible ? 'Desactivar' : 'Activar'}
+                            </button>
+                            <button class="btn btn-delete" onclick="deleteMenuItem(${item.id})">Eliminar</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function editMenuItem(itemId) {
+            const item = menuItems.find(i => i.id === itemId);
+            if (item) {
+                showAlert(`Editando: ${item.nombre}`, 'success');
+            }
+        }
+
+        function toggleAvailability(itemId) {
+            const item = menuItems.find(i => i.id === itemId);
+            if (item) {
+                item.disponible = !item.disponible;
+                displayMenu();
+                showAlert(`${item.nombre} ${item.disponible ? 'activado' : 'desactivado'}`, 'success');
+            }
+        }
+
+        function deleteMenuItem(itemId) {
+            const item = menuItems.find(i => i.id === itemId);
+            if (item && confirm(`¿Estás seguro de eliminar ${item.nombre}?`)) {
+                const index = menuItems.findIndex(i => i.id === itemId);
+                menuItems.splice(index, 1);
+                displayMenu();
+                showAlert(`${item.nombre} eliminado del menú`, 'success');
+            }
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('restaurantModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Inicializar página
+        window.addEventListener('load', function() {
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                if (user.role === 'restaurante') {
+                    document.getElementById('restaurantWelcome').textContent = `¡Hola ${user.name}!`;
+                    document.getElementById('restaurantAvatar').textContent = user.avatar || '🍽️';
+                } else {
+                    showAlert('Acceso denegado. Solo restaurantes pueden acceder a esta página.', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'login-direct.html';
+                    }, 2000);
+                }
+            } else {
+                showAlert('No hay usuario logueado. Redirigiendo al login...', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login-direct.html';
+                }, 2000);
+            }
+            
+            // Cargar menú inicial
+            displayMenu();
+        });
+    </script>
+
+    <!-- Botón Flotante de Edición -->
+    <div class="floating-edit-btn" onclick="openEditProfile()">
+        <div class="floating-btn-content">
+            <span class="floating-icon">✏️</span>
+            <span class="floating-text">Editar</span>
+        </div>
+    </div>
+
+    <!-- Modal de Edición de Perfil -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content profile-modal">
+            <div class="modal-header">
+                <h2>📸 Editar Perfil del Restaurante</h2>
+                <span class="close" onclick="closeEditProfile()">&times;</span>
+            </div>
+            
+            <div class="profile-edit-content">
+                <!-- Cover Photo Section -->
+                <div class="cover-photo-section">
+                    <div class="cover-photo-container">
+                        <img id="coverPhoto" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjNjY3ZWVhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7wn5GoIENvdmVyIFBob3RvPC90ZXh0Pjwvc3ZnPg==" alt="Cover Photo">
+                        <div class="cover-photo-overlay">
+                            <button class="upload-btn" onclick="uploadCoverPhoto()">
+                                📷 Cambiar Foto de Portada
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Photo Section -->
+                <div class="profile-photo-section">
+                    <div class="profile-photo-container">
+                        <img id="profilePhoto" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI3NSIgY3k9Ijc1IiByPSI3NSIgZmlsbD0iIzY2N2VlYSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+RsTwvdGV4dD48L3N2Zz4=" alt="Profile Photo">
+                        <button class="profile-photo-btn" onclick="uploadProfilePhoto()">
+                            ✏️
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Restaurant Info Section -->
+                <div class="restaurant-info-section">
+                    <h3>🍽️ Información del Restaurante</h3>
+                    <div class="form-group">
+                        <label>Nombre del Restaurante:</label>
+                        <input type="text" id="restaurantName" value="Restaurante Sabor Ecuador" placeholder="Nombre del restaurante">
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción:</label>
+                        <textarea id="restaurantDescription" placeholder="Describe tu restaurante...">Restaurante de comida tradicional ecuatoriana con los mejores sabores del país y ambiente acogedor.</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Ubicación:</label>
+                        <input type="text" id="restaurantLocation" value="Quito, Ecuador" placeholder="Ubicación">
+                    </div>
+                    <div class="form-group">
+                        <label>Especialidad:</label>
+                        <input type="text" id="restaurantSpecialty" value="Comida Tradicional Ecuatoriana" placeholder="Especialidad culinaria">
+                    </div>
+                </div>
+
+                <!-- Media Gallery Section -->
+                <div class="media-gallery-section">
+                    <h3>📸 Galería de Fotos y Videos</h3>
+                    <div class="media-upload-area">
+                        <div class="upload-zone" onclick="uploadMedia()">
+                            <div class="upload-icon">📷</div>
+                            <p>Arrastra fotos/videos aquí o haz clic para subir</p>
+                            <small>Soporta: JPG, PNG, MP4, MOV</small>
+                        </div>
+                    </div>
+                    
+                    <div class="media-grid" id="mediaGrid">
+                        <!-- Media items will be added here -->
+                        <div class="media-item">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPvCfkaggQ29taWRhPC90ZXh0Pjwvc3ZnPg==" alt="Comida">
+                            <button class="delete-media" onclick="deleteMedia(this)">🗑️</button>
+                        </div>
+                        <div class="media-item">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPvCfkaggSW50ZXJpb3I8L3RleHQ+PC9zdmc+" alt="Interior">
+                            <button class="delete-media" onclick="deleteMedia(this)">🗑️</button>
+                        </div>
+                        <div class="media-item">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPvCfkaggVGVycmF6YTwvdGV4dD48L3N2Zz4=" alt="Terraza">
+                            <button class="delete-media" onclick="deleteMedia(this)">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="closeEditProfile()">Cancelar</button>
+                    <button class="btn btn-primary" onclick="saveProfile()">💾 Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Funciones del Modal de Edición de Perfil
+        function openEditProfile() {
+            document.getElementById('editProfileModal').style.display = 'block';
+        }
+
+        function closeEditProfile() {
+            document.getElementById('editProfileModal').style.display = 'none';
+        }
+
+        function uploadCoverPhoto() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('coverPhoto').src = e.target.result;
+                        showAlert('Foto de portada actualizada', 'success');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        function uploadProfilePhoto() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('profilePhoto').src = e.target.result;
+                        showAlert('Foto de perfil actualizada', 'success');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        function uploadMedia() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*,video/*';
+            input.multiple = true;
+            input.onchange = function(e) {
+                const files = Array.from(e.target.files);
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        addMediaItem(e.target.result, file.type.startsWith('video/'));
+                    };
+                    reader.readAsDataURL(file);
+                });
+                showAlert(`${files.length} archivo(s) subido(s)`, 'success');
+            };
+            input.click();
+        }
+
+        function addMediaItem(src, isVideo) {
+            const mediaGrid = document.getElementById('mediaGrid');
+            const mediaItem = document.createElement('div');
+            mediaItem.className = 'media-item';
+            
+            if (isVideo) {
+                mediaItem.innerHTML = `
+                    <video controls style="width: 100%; height: 120px; object-fit: cover;">
+                        <source src="${src}" type="video/mp4">
+                    </video>
+                    <button class="delete-media" onclick="deleteMedia(this)">🗑️</button>
+                `;
+            } else {
+                mediaItem.innerHTML = `
+                    <img src="${src}" alt="Media">
+                    <button class="delete-media" onclick="deleteMedia(this)">🗑️</button>
+                `;
+            }
+            
+            mediaGrid.appendChild(mediaItem);
+        }
+
+        function deleteMedia(button) {
+            if (confirm('¿Estás seguro de que quieres eliminar este archivo?')) {
+                button.parentElement.remove();
+                showAlert('Archivo eliminado', 'info');
+            }
+        }
+
+        function saveProfile() {
+            const restaurantName = document.getElementById('restaurantName').value;
+            const restaurantDescription = document.getElementById('restaurantDescription').value;
+            const restaurantLocation = document.getElementById('restaurantLocation').value;
+            const restaurantSpecialty = document.getElementById('restaurantSpecialty').value;
+            
+            if (!restaurantName || !restaurantDescription || !restaurantLocation || !restaurantSpecialty) {
+                showAlert('Por favor completa todos los campos', 'error');
+                return;
+            }
+            
+            // Simular guardado
+            showAlert('Perfil del restaurante actualizado exitosamente', 'success');
+            closeEditProfile();
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('editProfileModal');
+            if (event.target === modal) {
+                closeEditProfile();
+            }
+        }
+    </script>
+</body>
+</html>

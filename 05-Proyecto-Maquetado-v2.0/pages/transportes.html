@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transportes - Ecuador Travel</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.ico">
+</head>
+<body>
+    <div class="container">
+        <!-- Navegación superior -->
+        <nav class="top-nav">
+            <div class="nav-brand">
+                <span>Ecuador Travel</span>
+            </div>
+            <div class="nav-links">
+                <a href="../index.html" class="nav-link">Inicio</a>
+                <a href="paquetes.html" class="nav-link">Mis Paquetes</a>
+                <a href="fullday.html" class="nav-link">Full Day Tours</a>
+                <a href="transportes.html" class="nav-link active">Transportes</a>
+            </div>
+            <div class="nav-user">
+                <span id="user-greeting"></span>
+                <button class="btn btn-sm btn-secondary" onclick="EcuadorTravel.logoutCustomer(); window.location.href='../login.html';">Salir</button>
+            </div>
+        </nav>
+
+        <!-- Contenido principal -->
+        <main class="main-content">
+            <!-- Información -->
+            <div class="card">
+                <h2 class="card-title">Selección de Transporte</h2>
+                <p class="card-description">
+                    Elige el transporte que mejor se adapte a tu destino y número de personas. 
+                    Los precios son por persona y incluyen conductor profesional.
+                </p>
+            </div>
+
+            <!-- Filtros -->
+            <div class="card">
+                <h3 class="card-title">Filtros de Búsqueda</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Destino</label>
+                    <select class="form-select" id="destination-filter" onchange="filterTransport()">
+                        <option value="">Todos los destinos</option>
+                        <option value="Quito">Quito</option>
+                        <option value="Guayaquil">Guayaquil</option>
+                        <option value="Cuenca">Cuenca</option>
+                        <option value="Baños">Baños</option>
+                        <option value="Otavalo">Otavalo</option>
+                        <option value="Mindo">Mindo</option>
+                        <option value="Cotopaxi">Cotopaxi</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Número de Personas</label>
+                    <div class="person-counter">
+                        <button class="counter-btn" onclick="decreasePersons()" id="decrease-btn">-</button>
+                        <span class="counter-value" id="person-count">2</span>
+                        <button class="counter-btn" onclick="increasePersons()" id="increase-btn">+</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tipo de Transporte</label>
+                    <select class="form-select" id="type-filter" onchange="filterTransport()">
+                        <option value="">Todos los tipos</option>
+                        <option value="Bus Turístico">Bus Turístico</option>
+                        <option value="Van Privada">Van Privada</option>
+                        <option value="Auto Privado">Auto Privado</option>
+                        <option value="Bus Ejecutivo">Bus Ejecutivo</option>
+                        <option value="Minibús">Minibús</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Transportes disponibles -->
+            <div class="card">
+                <h3 class="card-title">Opciones de Transporte</h3>
+                <div id="transport-loading" class="loading">
+                    <div class="spinner"></div>
+                    Cargando transportes...
+                </div>
+                <div class="options-grid" id="transport-container" style="display: none;">
+                    <!-- Los transportes se cargarán dinámicamente -->
+                </div>
+                <div id="no-transport-message" class="alert alert-warning" style="display: none;">
+                    No se encontraron transportes que coincidan con los filtros seleccionados.
+                </div>
+            </div>
+
+            <!-- Transporte seleccionado -->
+            <div class="card">
+                <h3 class="card-title">Transporte Seleccionado</h3>
+                <div id="selected-transport" class="selection-list">
+                    <p style="text-align: center; color: var(--gray-600);">
+                        No hay transporte seleccionado
+                    </p>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <button class="btn btn-secondary" onclick="clearTransport()" style="flex: 1;">
+                        Limpiar Selección
+                    </button>
+                    <button class="btn btn-primary" onclick="saveTransport()" style="flex: 1;">
+                        Guardar Transporte
+                    </button>
+                </div>
+            </div>
+
+            <!-- Resumen -->
+            <div class="package-summary">
+                <h3 class="summary-title">Resumen de Transporte</h3>
+                <div class="summary-item">
+                    <span>Personas:</span>
+                    <span id="summary-persons">2</span>
+                </div>
+                <div class="summary-item">
+                    <span>Transporte seleccionado:</span>
+                    <span id="summary-transport-name">Ninguno</span>
+                </div>
+                <div class="summary-item">
+                    <span>Precio por persona:</span>
+                    <span id="summary-price-per-person">$0</span>
+                </div>
+                <div class="summary-total">
+                    <span>Total transporte:</span>
+                    <span id="summary-total-transport">$0</span>
+                </div>
+            </div>
+
+            <!-- Botones de navegación -->
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <a href="fullday.html" class="btn btn-secondary" style="flex: 1;">Anterior: Full Day</a>
+                <button class="btn btn-whatsapp" onclick="sendCompletePackage()" style="flex: 1;">
+                    📱 Enviar Paquete Completo
+                </button>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Modal para detalles del transporte -->
+    <div id="transport-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-transport-title">Detalles del Transporte</h3>
+                <button class="modal-close" onclick="closeModal('transport-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-transport-content"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('transport-modal')">Cerrar</button>
+                <button id="modal-select-transport-btn" class="btn btn-primary">Seleccionar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/app.js"></script>
+    <script>
+        let allTransports = [];
+        let filteredTransports = [];
+        let selectedTransport = null;
+        let personCount = 2;
+
+        // Inicializar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            loadTransports();
+            loadSelectedTransport();
+            updateSummary();
+        });
+
+        async function loadTransports() {
+            try {
+                const response = await fetch('../data/transportes.json');
+                const data = await response.json();
+                allTransports = data.transportes;
+                filteredTransports = [...allTransports];
+                
+                document.getElementById('transport-loading').style.display = 'none';
+                document.getElementById('transport-container').style.display = 'block';
+                
+                renderTransports();
+            } catch (error) {
+                console.error('Error cargando transportes:', error);
+                document.getElementById('transport-loading').innerHTML = 
+                    '<div class="alert alert-error">Error cargando transportes. Intenta recargar la página.</div>';
+            }
+        }
+
+        function renderTransports() {
+            const container = document.getElementById('transport-container');
+            const noTransportMessage = document.getElementById('no-transport-message');
+            
+            if (filteredTransports.length === 0) {
+                container.style.display = 'none';
+                noTransportMessage.style.display = 'block';
+                return;
+            }
+
+            container.style.display = 'block';
+            noTransportMessage.style.display = 'none';
+            container.innerHTML = '';
+
+            filteredTransports.forEach(transport => {
+                const transportCard = document.createElement('div');
+                transportCard.className = 'option-card';
+                transportCard.onclick = () => showTransportDetails(transport);
+                transportCard.innerHTML = `
+                    <div class="option-title">${transport.tipo}</div>
+                    <div class="option-price">$${transport.precio_por_persona}/persona</div>
+                    <div class="option-description">
+                        <strong>Capacidad:</strong> ${transport.capacidad} personas<br>
+                        <strong>Destinos:</strong> ${transport.destinos.join(', ')}<br>
+                        ${transport.descripcion}
+                    </div>
+                `;
+                container.appendChild(transportCard);
+            });
+        }
+
+        function showTransportDetails(transport) {
+            document.getElementById('modal-transport-title').textContent = transport.tipo;
+            
+            const content = document.getElementById('modal-transport-content');
+            content.innerHTML = `
+                <div class="card-description">
+                    <strong>Precio por persona:</strong> $${transport.precio_por_persona}<br>
+                    <strong>Capacidad máxima:</strong> ${transport.capacidad} personas<br>
+                    <strong>Disponibilidad:</strong> ${transport.disponible ? 'Disponible' : 'No disponible'}<br><br>
+                    ${transport.descripcion}
+                </div>
+                <h4>Destinos disponibles:</h4>
+                <ul class="features-list">
+                    ${transport.destinos.map(destino => `<li>${destino}</li>`).join('')}
+                </ul>
+                <div class="alert alert-success">
+                    <strong>Total para ${personCount} personas:</strong> $${transport.precio_por_persona * personCount}
+                </div>
+            `;
+
+            const selectBtn = document.getElementById('modal-select-transport-btn');
+            selectBtn.onclick = () => selectTransport(transport);
+            selectBtn.disabled = !transport.disponible || personCount > transport.capacidad;
+
+            if (!transport.disponible) {
+                selectBtn.textContent = 'No Disponible';
+            } else if (personCount > transport.capacidad) {
+                selectBtn.textContent = 'Capacidad Insuficiente';
+            } else {
+                selectBtn.textContent = 'Seleccionar';
+            }
+
+            showModal('transport-modal');
+        }
+
+        function selectTransport(transport) {
+            selectedTransport = transport;
+            updateSelectedTransport();
+            updateSummary();
+            closeModal('transport-modal');
+        }
+
+        function updateSelectedTransport() {
+            const container = document.getElementById('selected-transport');
+            
+            if (!selectedTransport) {
+                container.innerHTML = '<p style="text-align: center; color: var(--gray-600);">No hay transporte seleccionado</p>';
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="selection-item">
+                    <div>
+                        <div class="selection-name">${selectedTransport.tipo}</div>
+                        <div style="font-size: 0.875rem; color: var(--gray-600);">
+                            Capacidad: ${selectedTransport.capacidad} personas | 
+                            Precio: $${selectedTransport.precio_por_persona}/persona
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span class="selection-price">$${selectedTransport.precio_por_persona * personCount}</span>
+                        <button onclick="clearTransport()" style="background: var(--error); color: white; border: none; border-radius: 4px; padding: 0.25rem 0.5rem; font-size: 0.75rem;">✕</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadSelectedTransport() {
+            const saved = localStorage.getItem('selectedTransport');
+            if (saved) {
+                selectedTransport = JSON.parse(saved);
+                updateSelectedTransport();
+            }
+        }
+
+        function saveTransport() {
+            if (selectedTransport) {
+                localStorage.setItem('selectedTransport', JSON.stringify(selectedTransport));
+                showAlert('Transporte guardado correctamente', 'success');
+            } else {
+                showAlert('Selecciona un transporte primero', 'warning');
+            }
+        }
+
+        function clearTransport() {
+            selectedTransport = null;
+            updateSelectedTransport();
+            updateSummary();
+        }
+
+        function increasePersons() {
+            if (personCount < 20) {
+                personCount++;
+                document.getElementById('person-count').textContent = personCount;
+                updateSummary();
+                filterTransport();
+            }
+        }
+
+        function decreasePersons() {
+            if (personCount > 1) {
+                personCount--;
+                document.getElementById('person-count').textContent = personCount;
+                updateSummary();
+                filterTransport();
+            }
+        }
+
+        function filterTransport() {
+            const destination = document.getElementById('destination-filter').value;
+            const type = document.getElementById('type-filter').value;
+
+            filteredTransports = allTransports.filter(transport => {
+                const matchesDestination = !destination || transport.destinos.includes(destination);
+                const matchesType = !type || transport.tipo === type;
+                const matchesCapacity = transport.capacidad >= personCount;
+                const isAvailable = transport.disponible;
+
+                return matchesDestination && matchesType && matchesCapacity && isAvailable;
+            });
+
+            renderTransports();
+        }
+
+        function updateSummary() {
+            document.getElementById('summary-persons').textContent = personCount;
+            
+            if (selectedTransport) {
+                document.getElementById('summary-transport-name').textContent = selectedTransport.tipo;
+                document.getElementById('summary-price-per-person').textContent = `$${selectedTransport.precio_por_persona}`;
+                document.getElementById('summary-total-transport').textContent = `$${selectedTransport.precio_por_persona * personCount}`;
+            } else {
+                document.getElementById('summary-transport-name').textContent = 'Ninguno';
+                document.getElementById('summary-price-per-person').textContent = '$0';
+                document.getElementById('summary-total-transport').textContent = '$0';
+            }
+        }
+
+        function sendCompletePackage() {
+            const packageData = getCompletePackageData();
+            const message = generateCompleteWhatsAppMessage(packageData);
+            const whatsappUrl = `https://wa.me/593987654321?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+    </script>
+</body>
+</html>

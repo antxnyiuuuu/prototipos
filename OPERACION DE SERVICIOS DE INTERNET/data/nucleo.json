@@ -1,0 +1,242 @@
+[
+  {
+    "id": 1,
+    "color": "#FF6B6B",
+    "coordenada_x": 23,
+    "coordenada_y": 45,
+    "cliente_id": 1,
+    "cliente_nombre": "María González",
+    "zona": "Barrio Centro",
+    "estado": "Activo"
+  },
+  {
+    "id": 2,
+    "color": "#4ECDC4",
+    "coordenada_x": 15,
+    "coordenada_y": 32,
+    "cliente_id": 2,
+    "cliente_nombre": "Carlos Rodríguez",
+    "zona": "Barrio Norte",
+    "estado": "Activo"
+  },
+  {
+    "id": 3,
+    "color": "#45B7D1",
+    "coordenada_x": 67,
+    "coordenada_y": 89,
+    "cliente_id": 3,
+    "cliente_nombre": "Ana Martínez",
+    "zona": "Barrio Sur",
+    "estado": "Activo"
+  },
+  {
+    "id": 4,
+    "color": "#96CEB4",
+    "coordenada_x": 34,
+    "coordenada_y": 56,
+    "cliente_id": 4,
+    "cliente_nombre": "Luis Pérez",
+    "zona": "Barrio Este",
+    "estado": "Activo"
+  },
+  {
+    "id": 5,
+    "color": "#FFEAA7",
+    "coordenada_x": 78,
+    "coordenada_y": 12,
+    "cliente_id": 5,
+    "cliente_nombre": "Sofia Herrera",
+    "zona": "Barrio Oeste",
+    "estado": "Activo"
+  },
+  {
+    "id": 6,
+    "color": "#DDA0DD",
+    "coordenada_x": 45,
+    "coordenada_y": 78,
+    "cliente_id": null,
+    "cliente_nombre": "Disponible",
+    "zona": "Sin asignar",
+    "estado": "Disponible"
+  },
+  {
+    "id": 7,
+    "color": "#98D8C8",
+    "coordenada_x": 12,
+    "coordenada_y": 34,
+    "cliente_id": null,
+    "cliente_nombre": "Disponible",
+    "zona": "Sin asignar",
+    "estado": "Disponible"
+  },
+  {
+    "id": 8,
+    "color": "#F7DC6F",
+    "coordenada_x": 56,
+    "coordenada_y": 90,
+    "cliente_id": null,
+    "cliente_nombre": "Disponible",
+    "zona": "Sin asignar",
+    "estado": "Disponible"
+  },
+  {
+    "id": 9,
+    "color": "#BB8FCE",
+    "coordenada_x": 89,
+    "coordenada_y": 23,
+    "cliente_id": null,
+    "cliente_nombre": "Disponible",
+    "zona": "Sin asignar",
+    "estado": "Disponible"
+  },
+  {
+    "id": 10,
+    "color": "#85C1E9",
+    "coordenada_x": 23,
+    "coordenada_y": 67,
+    "cliente_id": null,
+    "cliente_nombre": "Disponible",
+    "zona": "Sin asignar",
+    "estado": "Disponible"
+  },
+  {
+    "id": 11,
+    "color": "#F8C471",
+    "coordenada_x": 67,
+    "coordenada_y": 45,
+    "cliente_id": null,
+    "cliente_nombre": "Disponible",
+    "zona": "Sin asignar",
+    "estado": "Disponible"
+  },
+  {
+    "id": 12,
+    "color": "#82E0AA",
+    "coordenada_x": 34,
+    "coordenada_y": 12,
+    "cliente_id": null,
+    "cliente_nombre": "Disponible",
+    "zona": "Sin asignar",
+    "estado": "Disponible"
+  },
+  {
+    "id": 13,
+    "color": "#F1948A",
+    "coordenada_x": 78,
+    "coordenada_y": 56,
+    "cliente_id": null,
+    "cliente_nombre": "Disponible",
+    "zona": "Sin asignar",
+    "estado": "Disponible"
+  },
+  {
+    "id": 14,
+    "color": "#85C1E9",
+    "coordenada_x": 12,
+    "coordenada_y": 78,
+    "cliente_id": null,
+    "cliente_nombre": "Disponible",
+    "zona": "Sin asignar",
+    "estado": "Disponible"
+  },
+  {
+    "id": 15,
+    "color": "#F7DC6F",
+    "coordenada_x": 45,
+    "coordenada_y": 34,
+    "cliente_id": null,
+    "cliente_nombre": "Disponible",
+    "zona": "Sin asignar",
+    "estado": "Disponible"
+  },
+  {
+    "id": 16,
+    "color": "#D7BDE2",
+    "coordenada_x": 90,
+    "coordenada_y": 67,
+    "cliente_id": null,
+    "cliente_nombre": "Disponible",
+    "zona": "Sin asignar",
+    "estado": "Disponible"
+  },
+  {
+    "id": 17,
+    "color": "#A9DFBF",
+    "coordenada_x": 23,
+    "coordenada_y": 90,
+    "cliente_id": null,
+    "cliente_nombre": "Disponible",
+    "zona": "Sin asignar",
+    "estado": "Disponible"
+  },
+  {
+    "id": 18,
+    "color": "#F9E79F",
+    "coordenada_x": 56,
+    "coordenada_y": 23,
+    "cliente_id": null,
+    "cliente_nombre": "Disponible",
+    "zona": "Sin asignar",
+    "estado": "Disponible"
+  },
+  {
+    "id": 19,
+    "color": "#AED6F1",
+    "coordenada_x": 78,
+    "coordenada_y": 45,
+    "cliente_id": null,
+    "cliente_nombre": "Disponible",
+    "zona": "Sin asignar",
+    "estado": "Disponible"
+  },
+  {
+    "id": 20,
+    "color": "#D5DBDB",
+    "coordenada_x": 34,
+    "coordenada_y": 78,
+    "cliente_id": null,
+    "cliente_nombre": "Disponible",
+    "zona": "Sin asignar",
+    "estado": "Disponible"
+  },
+  {
+    "id": 21,
+    "color": "#FADBD8",
+    "coordenada_x": 67,
+    "coordenada_y": 12,
+    "cliente_id": null,
+    "cliente_nombre": "Disponible",
+    "zona": "Sin asignar",
+    "estado": "Disponible"
+  },
+  {
+    "id": 22,
+    "color": "#D1F2EB",
+    "coordenada_x": 12,
+    "coordenada_y": 56,
+    "cliente_id": null,
+    "cliente_nombre": "Disponible",
+    "zona": "Sin asignar",
+    "estado": "Disponible"
+  },
+  {
+    "id": 23,
+    "color": "#FCF3CF",
+    "coordenada_x": 89,
+    "coordenada_y": 34,
+    "cliente_id": null,
+    "cliente_nombre": "Disponible",
+    "zona": "Sin asignar",
+    "estado": "Disponible"
+  },
+  {
+    "id": 24,
+    "color": "#E8DAEF",
+    "coordenada_x": 45,
+    "coordenada_y": 90,
+    "cliente_id": null,
+    "cliente_nombre": "Disponible",
+    "zona": "Sin asignar",
+    "estado": "Disponible"
+  }
+]

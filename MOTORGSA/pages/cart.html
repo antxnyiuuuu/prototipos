@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motorgsa - Carrito</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1><i class="fas fa-tractor"></i> Motorgsa - Carrito</h1>
+            <p>Gestiona tus productos</p>
+            <div id="userInfo" style="margin-top: 0.5rem; font-size: 0.9rem; color: #ccc;">
+                <span id="userName"></span>
+                <span id="userRole"></span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div style="text-align: right; margin-bottom: 0.5rem;">
+                <button onclick="reloadCartProducts()" style="
+                    background-color: #333;
+                    color: white;
+                    border: none;
+                    padding: 0.3rem 0.6rem;
+                    border-radius: 6px;
+                    font-size: 0.7rem;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                " title="Recargar productos del carrito">
+                    <i class="fas fa-sync-alt"></i> Recargar
+                </button>
+            </div>
+            <div id="cartContainer"></div>
+
+            <div id="emptyCart" style="display: none; text-align: center; padding: 2rem; color: #888;">
+                <i class="fas fa-shopping-cart" style="font-size: 3rem; margin-bottom: 0.5rem; opacity: 0.5;"></i>
+                <h3>Carrito vacío</h3>
+                <p>Agrega productos para continuar</p>
+                <button class="btn" onclick="window.location.href='home.html'">
+                    <i class="fas fa-home"></i> Ir al Catálogo
+                </button>
+            </div>
+        </div>
+
+        <!-- Barra de detalle arriba del botón de pago, alineado a la derecha -->
+        <div id="detailsBar" class="summary-bar" style="display: none;">
+            <button id="orderDetailsBtn" class="btn btn-secondary" style="display: none;" onclick="openOrderDetails()">Ver detalle de la orden</button>
+            <button id="creditRequestBtn" class="btn btn-credit" style="display: none; margin-left: 0.5rem; background-color: #17a2b8;" onclick="showCreditModal()">
+                <i class="fas fa-credit-card"></i> Solicitar Crédito
+            </button>
+        </div>
+
+        <!-- Barra de pago fija sobre la navegación -->
+        <div id="payBar" class="pay-bar" style="display: none;">
+            <button class="btn btn-secondary" id="orderDetailsBtnBottom" onclick="openOrderDetails()" style="display:none;">
+                <i class="fas fa-list"></i> Detalles de la compra
+            </button>
+            <button class="btn btn-credit" id="creditRequestBtnBottom" onclick="showCreditModal()" style="display:none;">
+                <i class="fas fa-credit-card"></i> Solicitar Crédito
+            </button>
+            <button class="btn" onclick="openSuccessPayment()">
+                <i class="fas fa-credit-card"></i> Ir a pagar
+            </button>
+        </div>
+
+        <!-- Barra de navegación -->
+        <div class="nav-bar">
+            <button class="nav-item" onclick="navigateTo('home')">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+            </button>
+            <button class="nav-item active" onclick="navigateTo('cart')">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Carrito <span id="cartCount">0</span></span>
+            </button>
+            <button class="nav-item" onclick="navigateTo('about')">
+                <i class="fas fa-info-circle"></i>
+                <span>Empresa</span>
+            </button>
+            <button class="nav-item" onclick="navigateTo('profile')">
+                <i class="fas fa-user"></i>
+                <span>Perfil</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Backdrop para animación de éxito -->
+    <div id="successBackdrop" class="modal-overlay" style="display: none; align-items:center; justify-content:center;">
+      <div class="gp-success in-overlay" id="success-animation" style="display:none;">
+        <div class="gp-ripple"></div>
+        <svg class="gp-icon" viewBox="0 0 72 72">
+          <circle class="gp-circle" cx="36" cy="36" r="30"/>
+          <polyline class="gp-check" points="23,37 32,47 49,27"/>
+        </svg>
+        <span class="gp-label" id="success-label">Compra realizada con éxito</span>
+      </div>
+    </div>
+
+    <!-- Modal: Detalle de la orden -->
+    <div id="orderDetailsModal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Detalle de la orden</h3>
+            </div>
+            <div class="modal-body">
+                <table style="width:100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left; padding-bottom: 6px; border-bottom: 1px solid #333;">Producto</th>
+                            <th style="text-align:center; padding-bottom: 6px; border-bottom: 1px solid #333;">Cant.</th>
+                            <th style="text-align:right; padding-bottom: 6px; border-bottom: 1px solid #333;">Precio</th>
+                            <th style="text-align:right; padding-bottom: 6px; border-bottom: 1px solid #333;">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderDetailsBody"></tbody>
+                </table>
+                <!-- Detalles de pago para distribuidor -->
+                <div id="paymentDetails" style="display:none; margin-top: 1rem; background:#1a1a1a; border:1px solid #333; border-radius:8px; padding:0.8rem;">
+                    <h4 style="margin:0 0 0.6rem 0; color:#2E7D32; font-size:1rem;">Detalles de pago</h4>
+                    <div style="display:flex; flex-direction:column; gap:4px;">
+                        <div style="display:flex; justify-content:space-between;">
+                            <span>Precio original</span>
+                            <strong id="paymentOriginal">$0.00</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <span>Descuento distribuidor</span>
+                            <strong id="paymentDiscountPercent">0%</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <span>Precio con descuento</span>
+                            <strong id="paymentDiscounted">$0.00</strong>
+                        </div>
+                    </div>
+                </div>
+                <div id="orderTotals" style="margin-top: 0.8rem; display:flex; flex-direction: column; align-items: flex-end; gap: 6px;">
+                    <div>Subtotal: <strong id="detailsSubtotal">$0.00</strong></div>
+                    <div>Total del pedido: <strong id="detailsTotal">$0.00</strong></div>
+                    <div id="distributorNote" class="totals-extra-note" style="display:none;">Descuento distribuidor: <strong id="detailsDiscount">$0.00</strong></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeOrderDetails()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Simulación de Crédito -->
+    <div id="creditModal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-credit-card"></i> Simulación de Crédito</h3>
+            </div>
+            <div class="modal-body">
+                <div style="display:flex; flex-direction:column; gap:0.6rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>Monto total de la compra</span>
+                        <strong id="creditTotal">$0.00</strong>
+                    </div>
+                    <div class="form-group" style="margin:0;">
+                        <label for="creditMonths">Plazo (meses)</label>
+                        <select id="creditMonths" onchange="updateCreditSimulation()">
+                            <option value="3">3 meses</option>
+                            <option value="6">6 meses</option>
+                            <option value="12">12 meses</option>
+                        </select>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>Cuota mensual estimada</span>
+                        <strong id="creditInstallment">$0.00</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="confirmCreditRequest()">Confirmar</button>
+                <button class="btn btn-secondary" onclick="closeCreditModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Pago con tarjeta -->
+    <div id="paymentModal" class="modal-overlay" style="display: none;">
+        <div class="payment-modal">
+            <h2><i class="fas fa-credit-card"></i> Pago con tarjeta</h2>
+            <form class="payment-form">
+                <div class="form-group">
+                    <label for="cardNumber">Número de tarjeta</label>
+                    <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                </div>
+                <div class="form-group">
+                    <label for="cardHolder">Nombre del titular</label>
+                    <input type="text" id="cardHolder" placeholder="Juan Pérez">
+                </div>
+                <div class="form-group">
+                    <label for="expiryDate">Fecha de expiración</label>
+                    <input type="text" id="expiryDate" placeholder="MM/AA" maxlength="5">
+                </div>
+                <div class="form-group">
+                    <label for="cvv">CVV</label>
+                    <input type="text" id="cvv" placeholder="123" maxlength="3">
+                </div>
+                <div class="payment-buttons">
+                    <button type="button" class="btn btn-primary" onclick="confirmPayment()">
+                        <i class="fas fa-check"></i> Confirmar pago
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closePaymentModal()">
+                        <i class="fas fa-times"></i> Regresar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+        </div>
+    </div>
+
+    <script src="../data/users.js"></script>
+    <script src="../data/products.js"></script>
+    <script>
+        let currentUser = null;
+        let cart = [];
+
+        window.onload = function() {
+            checkAuth();
+            loadUserInfo();
+            
+            // Limpiar localStorage de productos para forzar recarga desde el archivo
+            localStorage.removeItem('products');
+            
+            if (typeof loadProductsFromStorage === 'function') { loadProductsFromStorage(); }
+            loadCart();
+            updateCartCount();
+        };
+
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn !== 'true') {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            if (currentUser.role === 'distribuidor') {
+                const creditOption = document.getElementById('creditOption');
+                if (creditOption) {
+                    creditOption.style.display = 'block';
+                }
+            }
+        }
+
+        function loadUserInfo() {
+            if (currentUser) {
+                const userNameElement = document.getElementById('userName');
+                const userRoleElement = document.getElementById('userRole');
+                
+                if (userNameElement) {
+                    userNameElement.textContent = `Bienvenido, ${currentUser.name}`;
+                }
+                
+                if (userRoleElement) {
+                    userRoleElement.textContent = currentUser.role === 'distribuidor' ? 'Distribuidor' : 'Cliente';
+                    userRoleElement.className = currentUser.role === 'distribuidor' ? 'distributor-badge' : 'client-badge';
+                }
+            }
+        }
+        
+        function reloadCartProducts() {
+            // Limpiar localStorage de productos
+            localStorage.removeItem('products');
+            
+            // Recargar productos y carrito
+            if (typeof loadProductsFromStorage === 'function') { loadProductsFromStorage(); }
+            loadCart();
+            
+            // Mostrar mensaje temporal
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: #28a745;
+                color: white;
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                font-size: 0.8rem;
+                z-index: 1000;
+            `;
+            messageDiv.textContent = '✅ Productos del carrito recargados';
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                document.body.removeChild(messageDiv);
+            }, 2000);
+        }
+
+        function loadCart() {
+            if (typeof loadProductsFromStorage === 'function') { loadProductsFromStorage(); }
+            cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            renderCart();
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cartContainer');
+            const emptyCart = document.getElementById('emptyCart');
+            const detailsBar = document.getElementById('detailsBar');
+            const payBar = document.getElementById('payBar');
+            const orderDetailsBtn = document.getElementById('orderDetailsBtn');
+            const orderDetailsBtnBottom = document.getElementById('orderDetailsBtnBottom');
+
+            if (cart.length === 0) {
+                container.style.display = 'none';
+                emptyCart.style.display = 'block';
+                detailsBar.style.display = 'none';
+                payBar.style.display = 'none';
+                orderDetailsBtn.style.display = 'none';
+                return;
+            }
+
+            container.style.display = 'block';
+            emptyCart.style.display = 'none';
+            detailsBar.style.display = 'block';
+            payBar.style.display = 'block';
+            orderDetailsBtn.style.display = 'block';
+            if (orderDetailsBtnBottom) orderDetailsBtnBottom.style.display = 'block';
+            
+            // Mostrar botón de crédito solo para distribuidores (solo en barra de pago inferior)
+            const creditRequestBtn = document.getElementById('creditRequestBtn');
+            const creditRequestBtnBottom = document.getElementById('creditRequestBtnBottom');
+            if (creditRequestBtn) creditRequestBtn.style.display = 'none';
+            if (creditRequestBtnBottom) creditRequestBtnBottom.style.display = currentUser.role === 'distribuidor' ? 'inline-block' : 'none';
+
+            container.innerHTML = cart.map(item => {
+                // Obtener el producto original para calcular el precio sin descuento
+                const originalProduct = getProductById(item.id);
+                const originalPrice = originalProduct ? originalProduct.price : item.price;
+                const isDistributor = currentUser.role === 'distribuidor';
+                
+                let priceDisplay = '';
+                if (isDistributor && originalPrice !== item.price) {
+                    const discountPercent = originalProduct ? originalProduct.distributorDiscountPercent || 10 : 10;
+                    priceDisplay = `
+                        <div class="cart-item-price-container">
+                            <span class="price-tag distributor-old">$${originalPrice.toFixed(2)}</span>
+                            <span class="price-tag distributor-current">$${item.price.toFixed(2)}</span>
+                            <span class="discount-badge">Descuento distribuidor -${discountPercent}%</span>
+                        </div>
+                    `;
+                } else {
+                    priceDisplay = `<div class="price-tag client">$${item.price.toFixed(2)}</div>`;
+                }
+
+                return `
+                    <div class="cart-item fade-in">
+                        <img src="${item.image}" alt="${item.name}" class="cart-item-image" 
+                             onerror="this.src='https://via.placeholder.com/40x40/2a2a2a/E50914?text=AP'">
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.name}</div>
+                            ${priceDisplay}
+                        </div>
+                        <div class="cart-item-actions">
+                            <div class="cart-item-quantity">
+                                <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                                <span style="margin: 0 0.5rem; font-weight: bold;">${item.quantity}</span>
+                                <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                            </div>
+                            <button class="quantity-btn" onclick="removeItem(${item.id})" title="Eliminar" style="background-color: #2E7D32;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            updateTotals();
+        }
+
+        function updateQuantity(productId, change) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeItem(productId);
+                } else {
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    renderCart();
+                    updateCartCount();
+                }
+            }
+        }
+
+        function removeItem(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+            updateCartCount();
+        }
+
+        function updateTotals() {
+            if (typeof loadProductsFromStorage === 'function') { loadProductsFromStorage(); }
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const total = subtotal;
+
+            // Para distribuidores, calcular también el precio original total
+            let originalSubtotal = subtotal;
+            let savings = 0;
+            let discountPercent = 0;
+            
+            if (currentUser.role === 'distribuidor') {
+                originalSubtotal = cart.reduce((total, item) => {
+                    const originalProduct = getProductById(item.id);
+                    const originalPrice = originalProduct ? originalProduct.price : item.price;
+                    return total + (originalPrice * item.quantity);
+                }, 0);
+                savings = originalSubtotal - subtotal;
+                if (originalSubtotal > 0) {
+                    discountPercent = Math.round((savings / originalSubtotal) * 100);
+                }
+            }
+
+            // Construir datos para modal de detalle
+            buildOrderDetails(cart, subtotal, total, originalSubtotal, savings, currentUser.role === 'distribuidor', discountPercent);
+        }
+
+        function buildOrderDetails(cartItems, subtotal, total, originalSubtotal = null, savings = 0, isDistributor = false, discountPercent = 0) {
+            const detailsBody = document.getElementById('orderDetailsBody');
+            if (!detailsBody) return;
+            const rows = cartItems.map(item => {
+                const originalProduct = getProductById(item.id);
+                const originalPrice = originalProduct ? originalProduct.price : item.price;
+                const priceClass = isDistributor ? 'details-price-distributor' : 'details-price-client';
+                return `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td style="text-align:center;">${item.quantity}</td>
+                        <td style="text-align:right;" class="${priceClass}">$${item.price.toFixed(2)}</td>
+                        <td style="text-align:right;" class="${priceClass}">$${(item.price * item.quantity).toFixed(2)}</td>
+                    </tr>
+                `;
+            }).join('');
+            detailsBody.innerHTML = rows || '<tr><td colspan="4" style="text-align:center; color:#888;">Sin productos</td></tr>';
+            // Rellenar totales del modal
+            const detailsSubtotal = document.getElementById('detailsSubtotal');
+            const detailsTotal = document.getElementById('detailsTotal');
+            const detailsDiscount = document.getElementById('detailsDiscount');
+            const distributorNote = document.getElementById('distributorNote');
+            const paymentDetails = document.getElementById('paymentDetails');
+            const paymentOriginal = document.getElementById('paymentOriginal');
+            const paymentDiscountPercent = document.getElementById('paymentDiscountPercent');
+            const paymentDiscounted = document.getElementById('paymentDiscounted');
+            const totalClass = isDistributor ? 'total-distributor' : 'total-client';
+            if (detailsSubtotal) {
+                detailsSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+                detailsSubtotal.className = totalClass;
+            }
+            if (detailsTotal) {
+                detailsTotal.textContent = `$${total.toFixed(2)}`;
+                detailsTotal.className = totalClass;
+            }
+            if (detailsDiscount) detailsDiscount.textContent = `$${savings.toFixed(2)}`;
+            if (distributorNote) distributorNote.style.display = isDistributor && savings > 0 ? 'block' : 'none';
+
+            if (paymentDetails) {
+                if (isDistributor) {
+                    paymentDetails.style.display = 'block';
+                    if (paymentOriginal) {
+                        paymentOriginal.textContent = `$${originalSubtotal.toFixed(2)}`;
+                        paymentOriginal.className = 'details-price-client';
+                    }
+                    if (paymentDiscountPercent) paymentDiscountPercent.textContent = `${discountPercent}%`;
+                    if (paymentDiscounted) {
+                        paymentDiscounted.textContent = `$${subtotal.toFixed(2)}`;
+                        paymentDiscounted.className = 'details-price-distributor';
+                    }
+                } else {
+                    paymentDetails.style.display = 'none';
+                }
+            }
+        }
+
+        // Refrescar si cambian productos (p. ej., descuento) en otra pestaña
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'products') {
+                if (typeof loadProductsFromStorage === 'function') { loadProductsFromStorage(); }
+                renderCart();
+            }
+        });
+
+        function openOrderDetails() {
+            const modal = document.getElementById('orderDetailsModal');
+            if (!modal) return;
+            modal.style.display = 'flex';
+        }
+
+        function closeOrderDetails() {
+            const modal = document.getElementById('orderDetailsModal');
+            if (!modal) return;
+            modal.style.display = 'none';
+        }
+
+        function updateCartCount() {
+            const count = cart.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById('cartCount').textContent = count;
+        }
+
+        function processPayment(paymentType) {
+            if (cart.length === 0) {
+                showMessage('Carrito vacío', 'error');
+                return;
+            }
+
+            const total = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            
+            const purchase = {
+                id: Date.now(),
+                userId: currentUser.id,
+                userName: currentUser.name,
+                userRole: currentUser.role,
+                items: [...cart],
+                total: total,
+                paymentType: paymentType,
+                date: new Date().toISOString(),
+                status: paymentType === 'credit' ? 'Pendiente' : 'Completada'
+            };
+
+            let purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
+            purchases.push(purchase);
+            localStorage.setItem('purchases', JSON.stringify(purchases));
+
+            localStorage.removeItem('cart');
+            cart = [];
+
+            let message = '';
+            if (paymentType === 'credit') {
+                message = 'Solicitud de crédito enviada';
+            } else {
+                message = `¡Compra exitosa! $${total.toFixed(2)}`;
+            }
+
+            showMessage(message, 'success');
+
+            setTimeout(() => {
+                window.location.href = 'home.html';
+            }, 1500);
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.position = 'fixed';
+            messageDiv.style.top = '10px';
+            messageDiv.style.left = '50%';
+            messageDiv.style.transform = 'translateX(-50%)';
+            messageDiv.style.zIndex = '1000';
+            messageDiv.textContent = message;
+            
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                document.body.removeChild(messageDiv);
+            }, 2000);
+        }
+
+        function navigateTo(page) {
+            if (page === 'home') {
+                window.location.href = 'home.html';
+            } else if (page === 'cart') {
+                window.location.href = 'cart.html';
+            } else if (page === 'profile') {
+                window.location.href = 'profile.html';
+            } else if (page === 'about') {
+                window.location.href = 'about.html';
+            }
+        }
+
+        function openDevModal() {
+            openSuccessPayment();
+        }
+
+        function closeDevModal() {}
+
+        function showCreditModal() {
+            const modal = document.getElementById('creditModal');
+            modal.style.display = 'flex';
+            // Inicializar simulación
+            updateCreditSimulation();
+        }
+
+        function closeCreditModal() {
+            const modal = document.getElementById('creditModal');
+            modal.style.display = 'none';
+        }
+
+        function updateCreditSimulation() {
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const monthsSelect = document.getElementById('creditMonths');
+            const months = parseInt(monthsSelect ? monthsSelect.value : '3', 10);
+            const monthlyInstallment = months > 0 ? total / months : total;
+            const creditTotalEl = document.getElementById('creditTotal');
+            const creditInstallmentEl = document.getElementById('creditInstallment');
+            if (creditTotalEl) creditTotalEl.textContent = `$${total.toFixed(2)}`;
+            if (creditInstallmentEl) creditInstallmentEl.textContent = `$${monthlyInstallment.toFixed(2)}`;
+        }
+
+        function confirmCreditRequest() {
+            closeCreditModal();
+            showCreditSuccess();
+        }
+
+        function openSuccessPayment() {
+            const modal = document.getElementById('paymentModal');
+            modal.style.display = 'flex';
+        }
+
+        function closePaymentModal() {
+            const modal = document.getElementById('paymentModal');
+            modal.style.display = 'none';
+        }
+
+        function confirmPayment() {
+            closePaymentModal();
+            showPurchaseSuccess();
+        }
+
+        function showPurchaseSuccess() {
+            const backdrop = document.getElementById('successBackdrop');
+            const anim = document.getElementById('success-animation');
+            const label = document.getElementById('success-label');
+            if (label) label.textContent = 'Compra realizada con éxito';
+            if (backdrop) backdrop.style.display = 'flex';
+            if (anim) anim.style.display = 'inline-flex';
+            setTimeout(() => {
+                if (anim) anim.style.display = 'none';
+                if (backdrop) backdrop.style.display = 'none';
+                localStorage.removeItem('cart');
+                cart = [];
+                updateCartCount();
+                window.location.href = 'home.html';
+            }, 2500);
+        }
+
+        function showCreditSuccess() {
+            const backdrop = document.getElementById('successBackdrop');
+            const anim = document.getElementById('success-animation');
+            const label = document.getElementById('success-label');
+            if (label) label.textContent = 'Crédito solicitado';
+            if (backdrop) backdrop.style.display = 'flex';
+            if (anim) anim.style.display = 'inline-flex';
+            setTimeout(() => {
+                if (anim) anim.style.display = 'none';
+                if (backdrop) backdrop.style.display = 'none';
+            }, 2500);
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('isLoggedIn');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motorgsa - Registro de Distribuidor</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h2><i class="fas fa-building"></i> Registro de Distribuidor</h2>
+                <p>Completa los datos de tu empresa para solicitar tu cuenta de distribuidor</p>
+            </div>
+
+            <form id="distributorRegisterForm" class="auth-form">
+                <!-- Datos personales -->
+                <div class="form-section">
+                    <h3><i class="fas fa-user"></i> Datos personales</h3>
+                    
+                    <div class="form-group">
+                        <label for="distributorName">
+                            <i class="fas fa-user"></i> Nombre completo
+                        </label>
+                        <input type="text" id="distributorName" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="distributorUsername">
+                            <i class="fas fa-at"></i> Nombre de usuario
+                        </label>
+                        <input type="text" id="distributorUsername" name="username" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="distributorEmail">
+                            <i class="fas fa-envelope"></i> Correo electrónico
+                        </label>
+                        <input type="email" id="distributorEmail" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="distributorPassword">
+                            <i class="fas fa-lock"></i> Contraseña
+                        </label>
+                        <input type="password" id="distributorPassword" name="password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="distributorConfirmPassword">
+                            <i class="fas fa-lock"></i> Confirmar contraseña
+                        </label>
+                        <input type="password" id="distributorConfirmPassword" name="confirmPassword" required>
+                    </div>
+                </div>
+
+                <!-- Datos de empresa -->
+                <div class="form-section">
+                    <h3><i class="fas fa-building"></i> Datos de empresa</h3>
+                    
+                    <div class="form-group">
+                        <label for="companyName">
+                            <i class="fas fa-building"></i> Nombre de la empresa
+                        </label>
+                        <input type="text" id="companyName" name="companyName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="companyRuc">
+                            <i class="fas fa-id-card"></i> RUC / Identificación fiscal
+                        </label>
+                        <input type="text" id="companyRuc" name="companyRuc" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="companyAddress">
+                            <i class="fas fa-map-marker-alt"></i> Dirección de la empresa
+                        </label>
+                        <textarea id="companyAddress" name="companyAddress" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="companyPhone">
+                            <i class="fas fa-phone"></i> Teléfono de empresa
+                        </label>
+                        <input type="tel" id="companyPhone" name="companyPhone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="distributorProfileImage">
+                            <i class="fas fa-image"></i> Imagen de perfil (URL) - Opcional
+                        </label>
+                        <input type="url" id="distributorProfileImage" name="profileImage" placeholder="https://ejemplo.com/imagen.jpg">
+                    </div>
+                    <div class="form-group">
+                        <label for="distributorProfileFile">
+                            <i class="fas fa-upload"></i> Subir imagen de perfil (local) - Opcional
+                        </label>
+                        <input type="file" id="distributorProfileFile" accept="image/*">
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-button">
+                    <i class="fas fa-paper-plane"></i> Enviar solicitud de distribuidor
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>¿Ya tienes cuenta? <a href="login.html">Iniciar sesión</a></p>
+                <p><a href="registro.html">← Volver a elegir tipo de cuenta</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../data/users.js"></script>
+    <script>
+        document.getElementById('distributorRegisterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('distributorName').value.trim();
+            const username = document.getElementById('distributorUsername').value.trim();
+            const email = document.getElementById('distributorEmail').value.trim();
+            const password = document.getElementById('distributorPassword').value;
+            const confirmPassword = document.getElementById('distributorConfirmPassword').value;
+            const companyName = document.getElementById('companyName').value.trim();
+            const companyRuc = document.getElementById('companyRuc').value.trim();
+            const companyAddress = document.getElementById('companyAddress').value.trim();
+            const companyPhone = document.getElementById('companyPhone').value.trim();
+            const profileImage = document.getElementById('distributorProfileImage').value.trim();
+            const profileFile = document.getElementById('distributorProfileFile').files[0];
+
+            // Validaciones
+            if (!name || !username || !email || !password || !confirmPassword || !companyName || !companyRuc || !companyAddress || !companyPhone) {
+                showMessage('Todos los campos obligatorios deben estar completos', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showMessage('Las contraseñas no coinciden', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showMessage('La contraseña debe tener al menos 6 caracteres', 'error');
+                return;
+            }
+
+            // Verificar si el email o username ya existe
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            if (users.find(user => user.email === email)) {
+                showMessage('Este correo electrónico ya está registrado', 'error');
+                return;
+            }
+            
+            if (users.find(user => user.username === username)) {
+                showMessage('Este nombre de usuario ya está en uso', 'error');
+                return;
+            }
+
+            // Crear nuevo usuario distribuidor
+            const newUser = {
+                id: users.length + 1,
+                username: username,
+                password: password,
+                name: name,
+                email: email,
+                role: 'distribuidor',
+                estado: 'pendiente',
+                fechaRegistro: new Date().toISOString(),
+                profileImage: profileImage || '',
+                // Datos específicos de distribuidor
+                companyName: companyName,
+                companyRuc: companyRuc,
+                companyAddress: companyAddress,
+                companyPhone: companyPhone
+            };
+
+            function saveAndRedirect(imageDataUrl) {
+                if (imageDataUrl) newUser.profileImage = imageDataUrl;
+                if (!newUser.profileImage) newUser.profileImage = 'https://via.placeholder.com/150/ff0000/ffffff?text=Distribuidor';
+                users.push(newUser);
+                localStorage.setItem('users', JSON.stringify(users));
+                showMessage('✅ Solicitud de distribuidor enviada exitosamente. Espera la aprobación del Administrador.', 'success');
+                document.getElementById('distributorRegisterForm').reset();
+                setTimeout(() => { window.location.href = 'login.html'; }, 3000);
+            }
+
+            if (profileFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    saveAndRedirect(e.target.result);
+                };
+                reader.readAsDataURL(profileFile);
+            } else {
+                saveAndRedirect(null);
+            }
+        });
+
+        function showMessage(message, type) {
+            const existingMessages = document.querySelectorAll('.message');
+            existingMessages.forEach(msg => {
+                if (msg.parentNode) {
+                    msg.parentNode.removeChild(msg);
+                }
+            });
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                ${message}
+            `;
+
+            document.body.appendChild(messageDiv);
+
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.parentNode.removeChild(messageDiv);
+                }
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

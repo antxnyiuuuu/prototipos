@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administrador - ViajesMundo</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-globe-americas"></i>
+                <span>ViajesMundo</span>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="../index.html">Inicio</a></li>
+                    <li><a href="paquetes.html">Paquetes</a></li>
+                    <li><a href="agenda.html">Agenda</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                    <li><a href="login.html" class="login-link">Iniciar Sesión</a></li>
+                    <li><a href="admin.html" class="active">Admin</a></li>
+                </ul>
+            </nav>
+            <div class="profile-menu-container">
+                <div class="profile-avatar" id="profileAvatar">
+                    <img src="../assets/img/default-avatar.svg" alt="Avatar del usuario">
+                </div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="dropdown-header">
+                        <img src="../assets/img/default-avatar.svg" alt="Avatar del usuario">
+                        <div class="dropdown-user-info">
+                            <h4>Administrador</h4>
+                            <p>admin@viajesmundo.com</p>
+                        </div>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="editarPerfil.html" class="dropdown-item">
+                            <i class="fas fa-edit"></i>
+                            <span>Editar perfil</span>
+                        </a>
+                        <a href="login.html" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Cerrar sesión</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Panel de Administrador</h1>
+                <p>Gestiona paquetes, reservas y pagos del sistema</p>
+            </div>
+
+            <div class="admin-dashboard">
+                <!-- Perfil del Administrador -->
+                <div class="admin-profile-section">
+                    <div class="admin-profile-card">
+                        <div class="admin-profile-header">
+                            <div class="admin-avatar">
+                                <img id="adminAvatar" src="../assets/img/default-avatar.svg" alt="Avatar del administrador">
+                            </div>
+                            <div class="admin-info">
+                                <h2 id="adminName">Administrador</h2>
+                                <p id="adminEmail">admin@viajesmundo.com</p>
+                                <p id="adminRole">Administrador del Sistema</p>
+                                <p id="adminLastLogin">Último acceso: <span id="lastLoginDate">Hoy</span></p>
+                            </div>
+
+                        </div>
+                        <div class="admin-stats-overview">
+                            <div class="admin-stat-item">
+                                <i class="fas fa-clock"></i>
+                                <div class="admin-stat-info">
+                                    <h4>Días Activo</h4>
+                                    <p id="adminActiveDays">0</p>
+                                </div>
+                            </div>
+                            <div class="admin-stat-item">
+                                <i class="fas fa-tasks"></i>
+                                <div class="admin-stat-info">
+                                    <h4>Tareas Completadas</h4>
+                                    <p id="adminCompletedTasks">0</p>
+                                </div>
+                            </div>
+                            <div class="admin-stat-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <div class="admin-stat-info">
+                                    <h4>Nivel de Acceso</h4>
+                                    <p>Administrador</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estadísticas Generales -->
+                <div class="stats-section">
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <div class="stat-info">
+                            <h3 id="totalUsers">0</h3>
+                            <p>Usuarios Registrados</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-plane"></i>
+                        <div class="stat-info">
+                            <h3 id="totalPackages">0</h3>
+                            <p>Paquetes Activos</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-calendar-check"></i>
+                        <div class="stat-info">
+                            <h3 id="totalBookings">0</h3>
+                            <p>Reservas Activas</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-euro-sign"></i>
+                        <div class="stat-info">
+                            <h3 id="totalRevenue">€0</h3>
+                            <p>Ingresos Totales</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gestión de Paquetes -->
+                <div class="packages-management">
+                    <div class="section-header">
+                        <h2>Gestión de Paquetes</h2>
+                        <button class="btn btn-primary" id="addPackageBtn">
+                            <i class="fas fa-plus"></i> Nuevo Paquete
+                        </button>
+                    </div>
+                    
+                    <div class="packages-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Imagen</th>
+                                    <th>Destino</th>
+                                    <th>Duración</th>
+                                    <th>Precio</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="packagesTableBody">
+                                <!-- Los paquetes se cargan dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Historial de Pagos -->
+                <div class="payments-history">
+                    <h2>Historial de Pagos</h2>
+                    <div class="payments-filters">
+                        <select id="paymentStatusFilter">
+                            <option value="">Todos los Estados</option>
+                            <option value="completed">Completado</option>
+                            <option value="pending">Pendiente</option>
+                            <option value="failed">Fallido</option>
+                        </select>
+                        <input type="date" id="paymentDateFilter" placeholder="Filtrar por fecha">
+                        <button class="btn btn-outline" id="exportPayments">Exportar</button>
+                    </div>
+                    
+                    <div class="payments-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuario</th>
+                                    <th>Paquete</th>
+                                    <th>Fecha</th>
+                                    <th>Monto</th>
+                                    <th>Estado</th>
+                                    <th>Método</th>
+                                </tr>
+                            </thead>
+                            <tbody id="paymentsTableBody">
+                                <!-- Los pagos se cargan dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Usuarios -->
+                <div class="users-section">
+                    <h2>Usuarios</h2>
+                    <div class="users-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Avatar</th>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Fecha de Registro</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <!-- Los usuarios se cargan dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para Agregar/Editar Paquete -->
+    <div class="modal" id="packageModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Nuevo Paquete</h3>
+                <button class="modal-close" id="closePackageModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="packageForm" class="form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="packageDestination">Destino</label>
+                            <input type="text" id="packageDestination" name="destination" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="packageDuration">Duración (días)</label>
+                            <input type="number" id="packageDuration" name="duration" min="1" max="30" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="packagePrice">Precio (€)</label>
+                            <input type="number" id="packagePrice" name="price" min="100" step="50" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="packageRating">Puntuación</label>
+                            <select id="packageRating" name="rating">
+                                <option value="4.0">4.0</option>
+                                <option value="4.1">4.1</option>
+                                <option value="4.2">4.2</option>
+                                <option value="4.3">4.3</option>
+                                <option value="4.4">4.4</option>
+                                <option value="4.5">4.5</option>
+                                <option value="4.6">4.6</option>
+                                <option value="4.7">4.7</option>
+                                <option value="4.8">4.8</option>
+                                <option value="4.9">4.9</option>
+                                <option value="5.0">5.0</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="packageDescription">Descripción</label>
+                        <textarea id="packageDescription" name="description" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="packageImage">URL de la Imagen</label>
+                        <input type="url" id="packageImage" name="image" placeholder="https://ejemplo.com/imagen.jpg" required>
+                    </div>
+                                         <div class="form-group">
+                         <label for="packageStatus">Estado</label>
+                         <select id="packageStatus" name="status">
+                             <option value="active">Activo</option>
+                             <option value="inactive">Inactivo</option>
+                             <option value="draft">Borrador</option>
+                         </select>
+                     </div>
+                     
+                     <div class="form-group">
+                         <label>Fechas Disponibles</label>
+                         <div class="dates-container">
+                             <div class="dates-input-group">
+                                 <input type="date" id="packageDate" class="date-input">
+                                 <button type="button" class="btn btn-outline btn-sm" id="addDateBtn">
+                                     <i class="fas fa-plus"></i> Agregar
+                                 </button>
+                             </div>
+                             <div class="dates-list" id="datesList">
+                                 <!-- Las fechas se mostrarán aquí dinámicamente -->
+                             </div>
+                         </div>
+                     </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelPackage">Cancelar</button>
+                <button class="btn btn-primary" id="savePackage">Guardar Paquete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ViajesMundo</h3>
+                    <p>Tu agencia de confianza para explorar el mundo</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Enlaces Rápidos</h4>
+                    <ul>
+                        <li><a href="../index.html">Inicio</a></li>
+                        <li><a href="paquetes.html">Paquetes</a></li>
+                        <li><a href="agenda.html">Agenda</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <p><i class="fas fa-phone"></i> +34 900 123 456</p>
+                    <p><i class="fas fa-envelope"></i> info@viajesmundo.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Quito, Ecuador</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 ViajesMundo. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../assets/js/packageManager.js"></script>
+    <script src="../assets/js/userData.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/admin.js"></script>
+    <script src="../assets/js/profileMenu.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionar Paquetes - Admin</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.ico">
+</head>
+<body>
+    <div class="container">
+
+        <!-- Navegación superior -->
+        <nav class="top-nav">
+            <div class="nav-brand">
+                <span>Ecuador Travel - Admin</span>
+            </div>
+            <div class="nav-links">
+                <a href="admin-home.html" class="nav-link">Dashboard</a>
+                <a href="admin-packages.html" class="nav-link active">Paquetes</a>
+                <a href="admin-products.html" class="nav-link">Productos</a>
+                <a href="admin-customers.html" class="nav-link">Clientes</a>
+                <a href="../index.html" class="nav-link">Volver al Inicio</a>
+            </div>
+            <div class="nav-user">
+                <span>Administrador</span>
+                <button class="btn btn-sm btn-secondary" onclick="logout()">Cerrar Sesión</button>
+            </div>
+        </nav>
+
+        <!-- Contenido principal -->
+        <main class="main-content">
+            <!-- Lista de paquetes -->
+            <div class="card">
+                <h2 class="card-title">Paquetes Base</h2>
+                <p class="card-description">
+                    Gestiona los paquetes base que los clientes pueden personalizar
+                </p>
+                <div id="packages-list">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Cargando paquetes...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario para editar paquete -->
+            <div class="card">
+                <h3 class="card-title">Editar Paquete</h3>
+                <form id="package-form" onsubmit="savePackage(event)">
+                    <input type="hidden" id="package-id">
+                    
+                    <div class="form-group">
+                        <label class="form-label">Nombre del Paquete</label>
+                        <input type="text" id="package-name" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tipo</label>
+                        <select id="package-type" class="form-select" required>
+                            <option value="Normal">Normal</option>
+                            <option value="Premium">Premium</option>
+                            <option value="Superpremium">Superpremium</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Precio Base</label>
+                        <input type="number" id="package-price" class="form-input" min="0" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Duración</label>
+                        <input type="text" id="package-duration" class="form-input" placeholder="3 días / 2 noches" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Descripción</label>
+                        <textarea id="package-description" class="form-textarea" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Hotel Base</label>
+                        <select id="package-hotel" class="form-select" required>
+                            <!-- Se llenará dinámicamente -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Actividades Disponibles</label>
+                        <div id="activities-checkboxes">
+                            <!-- Se llenará dinámicamente -->
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Comidas Incluidas</label>
+                        <div id="meals-checkboxes">
+                            <!-- Se llenará dinámicamente -->
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Destinos</label>
+                        <input type="text" id="package-destinations" class="form-input" placeholder="Quito, Mitad del Mundo" required>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" class="btn btn-primary" style="flex: 1;">
+                            Guardar Paquete
+                        </button>
+                        <button type="button" onclick="resetForm()" class="btn btn-secondary" style="flex: 1;">
+                            Limpiar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+    </div>
+
+    <script src="../assets/app.js"></script>
+    <script>
+        let packages = [];
+        let products = {};
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            
+            // Verificar autenticación
+            if (!isAdminLoggedIn()) {
+                window.location.href = 'admin-login.html';
+                return;
+            }
+            
+            loadData();
+        });
+
+        async function loadData() {
+            try {
+                // Cargar paquetes
+                const packagesResponse = await fetch('../data/packages.json');
+                const packagesData = await packagesResponse.json();
+                packages = packagesData.paquetes;
+
+                // Cargar productos
+                const productsResponse = await fetch('../data/products.json');
+                const productsData = await productsResponse.json();
+                products = productsData;
+
+                loadPackagesList();
+                loadFormOptions();
+            } catch (error) {
+                console.error('Error cargando datos:', error);
+                showAlert('Error cargando datos', 'error');
+            }
+        }
+
+        function loadPackagesList() {
+            const container = document.getElementById('packages-list');
+            
+            if (packages.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--gray-600);">No hay paquetes disponibles</p>';
+                return;
+            }
+
+            container.innerHTML = packages.map(pkg => `
+                <div class="selection-item">
+                    <div>
+                        <div class="selection-name">${pkg.nombre}</div>
+                        <div style="font-size: 0.875rem; color: var(--gray-600);">
+                            ${pkg.tipo} - ${pkg.duracion} - $${pkg.precio_base}
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button onclick="editPackage(${pkg.id})" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Editar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadFormOptions() {
+            // Cargar hoteles
+            const hotelSelect = document.getElementById('package-hotel');
+            hotelSelect.innerHTML = products.hoteles.map(hotel => 
+                `<option value="${hotel.id}">${hotel.nombre} (${hotel.categoria})</option>`
+            ).join('');
+
+            // Cargar actividades
+            const activitiesContainer = document.getElementById('activities-checkboxes');
+            activitiesContainer.innerHTML = products.actividades.map(activity => `
+                <label style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                    <input type="checkbox" value="${activity.id}" style="margin-right: 0.5rem;">
+                    ${activity.nombre} - $${activity.precio}
+                </label>
+            `).join('');
+
+            // Cargar comidas
+            const mealsContainer = document.getElementById('meals-checkboxes');
+            mealsContainer.innerHTML = products.comidas.map(meal => `
+                <label style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                    <input type="checkbox" value="${meal.id}" style="margin-right: 0.5rem;">
+                    ${meal.nombre} - $${meal.precio}
+                </label>
+            `).join('');
+        }
+
+        function editPackage(packageId) {
+            const pkg = packages.find(p => p.id === packageId);
+            if (!pkg) return;
+
+            // Llenar formulario
+            document.getElementById('package-id').value = pkg.id;
+            document.getElementById('package-name').value = pkg.nombre;
+            document.getElementById('package-type').value = pkg.tipo;
+            document.getElementById('package-price').value = pkg.precio_base;
+            document.getElementById('package-duration').value = pkg.duracion;
+            document.getElementById('package-description').value = pkg.descripcion;
+            document.getElementById('package-hotel').value = pkg.hotel_base.id;
+            document.getElementById('package-destinations').value = pkg.destinos.join(', ');
+
+            // Marcar actividades seleccionadas
+            const activityCheckboxes = document.querySelectorAll('#activities-checkboxes input[type="checkbox"]');
+            activityCheckboxes.forEach(checkbox => {
+                checkbox.checked = pkg.actividades_disponibles.includes(parseInt(checkbox.value));
+            });
+
+            // Marcar comidas seleccionadas
+            const mealCheckboxes = document.querySelectorAll('#meals-checkboxes input[type="checkbox"]');
+            mealCheckboxes.forEach(checkbox => {
+                checkbox.checked = pkg.comidas_incluidas.includes(parseInt(checkbox.value));
+            });
+
+            // Scroll al formulario
+            document.getElementById('package-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function savePackage(event) {
+            event.preventDefault();
+
+            const packageId = document.getElementById('package-id').value;
+            const packageData = {
+                id: packageId ? parseInt(packageId) : Date.now(),
+                nombre: document.getElementById('package-name').value,
+                tipo: document.getElementById('package-type').value,
+                precio_base: parseFloat(document.getElementById('package-price').value),
+                duracion: document.getElementById('package-duration').value,
+                descripcion: document.getElementById('package-description').value,
+                hotel_base: {
+                    id: parseInt(document.getElementById('package-hotel').value),
+                    nombre: products.hoteles.find(h => h.id === parseInt(document.getElementById('package-hotel').value))?.nombre || '',
+                    categoria: products.hoteles.find(h => h.id === parseInt(document.getElementById('package-hotel').value))?.categoria || ''
+                },
+                actividades_disponibles: Array.from(document.querySelectorAll('#activities-checkboxes input[type="checkbox"]:checked'))
+                    .map(cb => parseInt(cb.value)),
+                comidas_incluidas: Array.from(document.querySelectorAll('#meals-checkboxes input[type="checkbox"]:checked'))
+                    .map(cb => parseInt(cb.value)),
+                destinos: document.getElementById('package-destinations').value.split(',').map(d => d.trim()),
+                incluye: [] // Se puede expandir más tarde
+            };
+
+            // Actualizar o agregar paquete
+            const existingIndex = packages.findIndex(p => p.id === packageData.id);
+            if (existingIndex >= 0) {
+                packages[existingIndex] = packageData;
+            } else {
+                packages.push(packageData);
+            }
+
+            // Guardar en localStorage (simulando actualización del JSON)
+            localStorage.setItem('adminPackages', JSON.stringify(packages));
+
+            showAlert('Paquete guardado correctamente', 'success');
+            loadPackagesList();
+            resetForm();
+        }
+
+        function resetForm() {
+            document.getElementById('package-form').reset();
+            document.getElementById('package-id').value = '';
+        }
+
+        function logout() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                localStorage.removeItem('adminSession');
+                window.location.href = 'admin-login.html';
+            }
+        }
+    </script>
+</body>
+</html>

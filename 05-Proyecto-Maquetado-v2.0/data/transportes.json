@@ -1,0 +1,50 @@
+{
+  "transportes": [
+    {
+      "id": 1,
+      "tipo": "Bus Turístico",
+      "capacidad": 50,
+      "precio_por_persona": 25,
+      "destinos": ["Quito", "Guayaquil", "Cuenca", "Baños", "Otavalo"],
+      "disponible": true,
+      "descripcion": "Bus cómodo con aire acondicionado y guía turístico"
+    },
+    {
+      "id": 2,
+      "tipo": "Van Privada",
+      "capacidad": 12,
+      "precio_por_persona": 45,
+      "destinos": ["Quito", "Guayaquil", "Cuenca", "Baños", "Otavalo", "Mindo"],
+      "disponible": true,
+      "descripcion": "Van privada con conductor profesional"
+    },
+    {
+      "id": 3,
+      "tipo": "Auto Privado",
+      "capacidad": 4,
+      "precio_por_persona": 60,
+      "destinos": ["Quito", "Guayaquil", "Cuenca", "Baños", "Otavalo", "Mindo", "Cotopaxi"],
+      "disponible": true,
+      "descripcion": "Auto privado con conductor y combustible incluido"
+    },
+    {
+      "id": 4,
+      "tipo": "Bus Ejecutivo",
+      "capacidad": 30,
+      "precio_por_persona": 35,
+      "destinos": ["Quito", "Guayaquil", "Cuenca"],
+      "disponible": true,
+      "descripcion": "Bus ejecutivo con asientos reclinables y WiFi"
+    },
+    {
+      "id": 5,
+      "tipo": "Minibús",
+      "capacidad": 20,
+      "precio_por_persona": 30,
+      "destinos": ["Quito", "Baños", "Otavalo", "Mindo"],
+      "disponible": true,
+      "descripcion": "Minibús ideal para grupos medianos"
+    }
+  ]
+}
+

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba del Modal - Home User</title>
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="assets/styles.css">
+    <link rel="stylesheet" href="assets/additional-styles.css">
+    <link rel="stylesheet" href="assets/admin-navigation.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Prueba del Modal de Agregar a Paquete</h1>
+        
+        <!-- Botón de prueba -->
+        <button class="btn btn-primary" onclick="testModal()">
+            <i class="fas fa-plus"></i> Probar Modal
+        </button>
+        
+        <!-- Producto de ejemplo -->
+        <div class="product-card hoteles" style="max-width: 400px; margin: 20px 0;">
+            <div class="product-image">
+                <img src="https://via.placeholder.com/300x200/4F46E5/FFFFFF?text=Hotel+Ejemplo" alt="Hotel Ejemplo">
+                <div class="product-category-badge">Hotel</div>
+            </div>
+            
+            <div class="product-content">
+                <h3 class="product-title">Hotel de Prueba</h3>
+                <p class="product-creator">Hotel Ejemplo</p>
+                <p class="product-description">Este es un hotel de prueba para verificar la funcionalidad del modal.</p>
+                
+                <div class="product-meta">
+                    <span class="product-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Quito
+                    </span>
+                    
+                    <span class="product-rating">
+                        <i class="fas fa-star"></i>
+                        4.5 estrellas
+                    </span>
+                    
+                    <span class="product-price">
+                        <i class="fas fa-dollar-sign"></i>
+                        $150
+                    </span>
+                </div>
+                
+                <div class="product-actions">
+                    <button class="btn btn-favorite btn-small">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                    <button class="btn btn-primary btn-small" onclick="addToPackage(1)">
+                        <i class="fas fa-plus"></i> Agregar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para agregar productos a paquetes -->
+    <div id="addToPackageModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Agregar a Paquete</h3>
+                <button class="modal-close" onclick="closeAddToPackageModal()">&times;</button>
+            </div>
+            
+            <div class="modal-content">
+                <div class="product-preview" id="productPreview">
+                    <!-- Vista previa del producto seleccionado -->
+                </div>
+                
+                <div class="packages-section">
+                    <h4>Selecciona un paquete</h4>
+                    <div id="packagesList" class="packages-list">
+                        <!-- Lista de paquetes del usuario -->
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="closeAddToPackageModal()">Cancelar</button>
+                    <button class="btn btn-primary" id="confirmAddToPackage" onclick="confirmAddToPackage()" disabled>
+                        Agregar al Paquete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="data/products.js"></script>
+    
+    <script>
+        // Simular usuario logueado
+        window.app = {
+            currentUser: { id: 1, tipo: 'user' }
+        };
+
+        // Producto de prueba
+        const testProduct = {
+            id: 1,
+            nombre: 'Hotel de Prueba',
+            descripcion: 'Este es un hotel de prueba para verificar la funcionalidad del modal.',
+            imagen: 'https://via.placeholder.com/300x200/4F46E5/FFFFFF?text=Hotel+Ejemplo',
+            precio: 150,
+            categoria: 'hoteles',
+            localidad: 'Quito',
+            creador: 'Hotel Ejemplo'
+        };
+
+        function testModal() {
+            showAddToPackageModal(testProduct);
+        }
+
+        function addToPackage(productId) {
+            showAddToPackageModal(testProduct);
+        }
+
+        function showAddToPackageModal(product) {
+            const modal = document.getElementById('addToPackageModal');
+            const productPreview = document.getElementById('productPreview');
+            const packagesList = document.getElementById('packagesList');
+            const confirmBtn = document.getElementById('confirmAddToPackage');
+            
+            // Configurar vista previa del producto
+            productPreview.innerHTML = `
+                <img src="${product.imagen}" alt="${product.nombre}">
+                <div class="product-preview-info">
+                    <h4>${product.nombre}</h4>
+                    <p>${product.descripcion}</p>
+                    <p class="product-preview-price">$${product.precio}</p>
+                </div>
+            `;
+            
+            // Cargar paquetes de prueba
+            loadTestPackages(packagesList);
+            
+            // Mostrar modal
+            modal.classList.remove('hidden');
+            
+            // Guardar referencia del producto seleccionado
+            window.selectedProductForPackage = product;
+        }
+
+        function loadTestPackages(packagesList) {
+            // Paquetes de prueba
+            const testPackages = [
+                {
+                    id: 1,
+                    nombre: 'Paquete Quito',
+                    localidad: 'Quito',
+                    productos: [],
+                    precio_total: 0
+                },
+                {
+                    id: 2,
+                    nombre: 'Paquete Guayaquil',
+                    localidad: 'Guayaquil',
+                    productos: [],
+                    precio_total: 0
+                }
+            ];
+            
+            packagesList.innerHTML = testPackages.map(pkg => `
+                <div class="package-option" data-package-id="${pkg.id}">
+                    <div class="package-option-info">
+                        <h4>${pkg.nombre}</h4>
+                        <p>${pkg.localidad}</p>
+                        <p class="package-option-products">${pkg.productos.length} productos</p>
+                        <p class="package-option-price">$${pkg.precio_total}</p>
+                    </div>
+                    <input type="radio" name="selectedPackage" value="${pkg.id}" onchange="enableConfirmButton()">
+                </div>
+            `).join('');
+            
+            // Agregar opción para crear nuevo paquete
+            packagesList.innerHTML += `
+                <div class="create-new-section">
+                    <button class="btn btn-outline" onclick="createNewPackage()">
+                        <i class="fas fa-plus"></i> Crear nuevo paquete
+                    </button>
+                </div>
+            `;
+        }
+
+        function enableConfirmButton() {
+            const confirmBtn = document.getElementById('confirmAddToPackage');
+            const selectedPackage = document.querySelector('input[name="selectedPackage"]:checked');
+            
+            if (selectedPackage) {
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = `Agregar al Paquete`;
+            } else {
+                confirmBtn.disabled = true;
+                confirmBtn.textContent = 'Agregar al Paquete';
+            }
+        }
+
+        function confirmAddToPackage() {
+            const selectedPackage = document.querySelector('input[name="selectedPackage"]:checked');
+            const product = window.selectedProductForPackage;
+            
+            if (!selectedPackage || !product) {
+                alert('Por favor selecciona un paquete');
+                return;
+            }
+            
+            alert(`Producto "${product.nombre}" agregado exitosamente al paquete ${selectedPackage.value}`);
+            closeAddToPackageModal();
+        }
+
+        function createNewPackage() {
+            alert('Función de crear nuevo paquete - Redirigiría a la página de creación');
+            closeAddToPackageModal();
+        }
+
+        function closeAddToPackageModal() {
+            const modal = document.getElementById('addToPackageModal');
+            modal.classList.add('hidden');
+            
+            // Limpiar selección
+            const selectedPackage = document.querySelector('input[name="selectedPackage"]:checked');
+            if (selectedPackage) {
+                selectedPackage.checked = false;
+            }
+            
+            // Limpiar referencia del producto
+            window.selectedProductForPackage = null;
+            
+            // Deshabilitar botón de confirmación
+            const confirmBtn = document.getElementById('confirmAddToPackage');
+            confirmBtn.disabled = true;
+        }
+    </script>
+</body>
+</html>

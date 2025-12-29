@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - TravelApp</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo h1 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-bottom: 1rem;
+        }
+
+        .btn:hover {
+            background: #5a6fd8;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .quick-login {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .quick-login h3 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .quick-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .quick-btn {
+            padding: 0.5rem;
+            border: 2px solid #e1e5e9;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .quick-btn:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .quick-icon {
+            font-size: 1.5rem;
+        }
+
+        .quick-text {
+            font-size: 0.8rem;
+            color: #333;
+        }
+
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>TravelApp</h1>
+            <p>Inicia sesión para continuar</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email" class="form-label">Correo Electrónico</label>
+                <input type="email" id="email" name="email" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" id="password" name="password" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="role" class="form-label">Tipo de Usuario</label>
+                <select id="role" name="role" class="form-select" required>
+                    <option value="">Selecciona tu rol</option>
+                    <option value="usuario">Usuario</option>
+                    <option value="admin">Administrador</option>
+                    <option value="hotel">Hotel</option>
+                    <option value="restaurante">Restaurante</option>
+                    <option value="actividades">Actividades</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn">Iniciar Sesión</button>
+        </form>
+
+        <div class="quick-login">
+            <h3>Acceso Rápido</h3>
+            <div class="quick-buttons">
+                <button class="quick-btn" onclick="quickLogin('usuario')">
+                    <span class="quick-icon">👤</span>
+                    <span class="quick-text">Usuario</span>
+                </button>
+                
+                <button class="quick-btn" onclick="quickLogin('admin')">
+                    <span class="quick-icon">👨‍💼</span>
+                    <span class="quick-text">Admin</span>
+                </button>
+                
+                <button class="quick-btn" onclick="quickLogin('hotel')">
+                    <span class="quick-icon">🏨</span>
+                    <span class="quick-text">Hotel</span>
+                </button>
+                
+                <button class="quick-btn" onclick="quickLogin('restaurante')">
+                    <span class="quick-icon">🍽️</span>
+                    <span class="quick-text">Restaurante</span>
+                </button>
+                
+                <button class="quick-btn" onclick="quickLogin('actividades')">
+                    <span class="quick-icon">🎯</span>
+                    <span class="quick-text">Actividades</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="alertContainer"></div>
+    </div>
+
+    <script>
+        // Funciones de utilidad
+        function showAlert(message, type = 'success') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.innerHTML = '';
+            container.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // Manejo del formulario de login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+            
+            // Validaciones
+            if (!validateEmail(email)) {
+                showAlert('Por favor, ingresa un email válido', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showAlert('La contraseña debe tener al menos 6 caracteres', 'error');
+                return;
+            }
+            
+            if (!role) {
+                showAlert('Por favor, selecciona un tipo de usuario', 'error');
+                return;
+            }
+            
+            // Simular login
+            showAlert('Iniciando sesión...', 'success');
+            
+            setTimeout(() => {
+                // Guardar usuario en localStorage
+                const user = {
+                    id: Date.now(),
+                    name: getRoleName(role),
+                    email: email,
+                    role: role,
+                    avatar: getRoleAvatar(role),
+                    loginTime: new Date().toISOString()
+                };
+                
+                localStorage.setItem('current_user', JSON.stringify(user));
+                
+                showAlert(`¡Bienvenido ${user.name}!`, 'success');
+                
+                // Redirigir según el rol
+                setTimeout(() => {
+                    redirectToDashboard(role);
+                }, 1000);
+            }, 1500);
+        });
+
+        // Login rápido
+        function quickLogin(role) {
+            showAlert(`Iniciando sesión como ${getRoleName(role)}...`, 'success');
+            
+            // Crear usuario de prueba
+            const user = {
+                id: Date.now(),
+                name: getRoleName(role),
+                email: `${role}@test.com`,
+                role: role,
+                avatar: getRoleAvatar(role),
+                loginTime: new Date().toISOString()
+            };
+            
+            // Guardar en localStorage
+            localStorage.setItem('current_user', JSON.stringify(user));
+            
+            // Actualizar formulario
+            document.getElementById('email').value = user.email;
+            document.getElementById('password').value = 'password123';
+            document.getElementById('role').value = role;
+            
+            setTimeout(() => {
+                showAlert(`¡Bienvenido ${user.name}!`, 'success');
+                
+                setTimeout(() => {
+                    redirectToDashboard(role);
+                }, 1000);
+            }, 1000);
+        }
+
+        // Funciones auxiliares
+        function getRoleName(role) {
+            const names = {
+                'usuario': 'Usuario',
+                'admin': 'Administrador',
+                'hotel': 'Hotel Manager',
+                'restaurante': 'Restaurante Manager',
+                'actividades': 'Actividades Manager'
+            };
+            return names[role] || role;
+        }
+
+        function getRoleAvatar(role) {
+            const avatars = {
+                'usuario': '👤',
+                'admin': '👨‍💼',
+                'hotel': '🏨',
+                'restaurante': '🍽️',
+                'actividades': '🎯'
+            };
+            return avatars[role] || '👤';
+        }
+
+        function redirectToDashboard(role) {
+            const dashboards = {
+                'usuario': 'user-destacados-direct.html',
+                'admin': 'dashboard-admin-direct.html',
+                'hotel': 'dashboard-hotel-direct.html',
+                'restaurante': 'dashboard-restaurante-direct.html',
+                'actividades': 'dashboard-actividades-direct.html'
+            };
+            
+            const dashboard = dashboards[role];
+            if (dashboard) {
+                // Intentar abrir el archivo directamente
+                try {
+                    window.location.href = dashboard;
+                } catch (error) {
+                    showAlert(`Redirigiendo a: ${dashboard}`, 'success');
+                    // Si no puede redirigir, mostrar mensaje
+                    setTimeout(() => {
+                        showAlert('Por favor, navega manualmente a la página correspondiente', 'error');
+                    }, 2000);
+                }
+            }
+        }
+
+        // Verificar si ya hay usuario logueado
+        window.addEventListener('load', function() {
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                showAlert(`Ya estás logueado como: ${user.name}`, 'success');
+            }
+        });
+    </script>
+</body>
+</html>

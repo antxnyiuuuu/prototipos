@@ -1,0 +1,243 @@
+[
+  {
+    "id": 1,
+    "nombre": "Cancún",
+    "pais": "México",
+    "estado": "Quintana Roo",
+    "descripcion": "Destino paradisíaco con playas de arena blanca y aguas cristalinas del Caribe mexicano.",
+    "clima": "Tropical",
+    "mejor_epoca": "Noviembre - Abril",
+    "atracciones_principales": [
+      "Playa Delfines",
+      "Zona Hotelera",
+      "Isla Mujeres",
+      "Xcaret",
+      "Chichén Itzá"
+    ],
+    "actividades_populares": [
+      "Snorkel",
+      "Buceo",
+      "Tours Arqueológicos",
+      "Parques Temáticos",
+      "Vida Nocturna"
+    ],
+    "gastronomia": [
+      "Mariscos Frescos",
+      "Cocina Internacional",
+      "Ceviche",
+      "Tacos de Pescado"
+    ],
+    "imagen": "🏖️",
+    "activo": true,
+    "popularidad": 5,
+    "precio_promedio": "$$$",
+    "distancia_ciudad_mas_cercana": "Cancún Centro - 0 km"
+  },
+  {
+    "id": 2,
+    "nombre": "Ciudad de México",
+    "pais": "México",
+    "estado": "CDMX",
+    "descripcion": "Capital cultural y gastronómica de México, rica en historia, arte y tradiciones.",
+    "clima": "Templado",
+    "mejor_epoca": "Octubre - Mayo",
+    "atracciones_principales": [
+      "Centro Histórico",
+      "Museo Nacional de Antropología",
+      "Chapultepec",
+      "Coyoacán",
+      "Xochimilco"
+    ],
+    "actividades_populares": [
+      "Tours Culturales",
+      "Gastronomía",
+      "Museos",
+      "Mercados Tradicionales",
+      "Arte Urbano"
+    ],
+    "gastronomia": [
+      "Tacos al Pastor",
+      "Mole",
+      "Chiles en Nogada",
+      "Pozole",
+      "Tortas"
+    ],
+    "imagen": "🏙️",
+    "activo": true,
+    "popularidad": 5,
+    "precio_promedio": "$$",
+    "distancia_ciudad_mas_cercana": "Centro - 0 km"
+  },
+  {
+    "id": 3,
+    "nombre": "Playa del Carmen",
+    "pais": "México",
+    "estado": "Quintana Roo",
+    "descripcion": "Destino bohemio y vibrante con playas hermosas y una vida nocturna animada.",
+    "clima": "Tropical",
+    "mejor_epoca": "Noviembre - Abril",
+    "atracciones_principales": [
+      "Quinta Avenida",
+      "Playa Mamitas",
+      "Cozumel",
+      "Tulum",
+      "Cenotes"
+    ],
+    "actividades_populares": [
+      "Buceo",
+      "Snorkel",
+      "Tours de Cenotes",
+      "Vida Nocturna",
+      "Compras"
+    ],
+    "gastronomia": [
+      "Mariscos",
+      "Cocina Internacional",
+      "Ceviche",
+      "Cocktails Tropicales"
+    ],
+    "imagen": "🌴",
+    "activo": true,
+    "popularidad": 4,
+    "precio_promedio": "$$",
+    "distancia_ciudad_mas_cercana": "Cancún - 68 km"
+  },
+  {
+    "id": 4,
+    "nombre": "San Miguel de Allende",
+    "pais": "México",
+    "estado": "Guanajuato",
+    "descripcion": "Pueblo mágico colonial con arquitectura barroca, arte y cultura vibrante.",
+    "clima": "Templado",
+    "mejor_epoca": "Octubre - Abril",
+    "atracciones_principales": [
+      "Parroquia de San Miguel Arcángel",
+      "Jardín Principal",
+      "Mercado de Artesanías",
+      "Casa de Allende",
+      "Mirador"
+    ],
+    "actividades_populares": [
+      "Tours Culturales",
+      "Arte y Artesanías",
+      "Gastronomía",
+      "Fotografía",
+      "Festivales"
+    ],
+    "gastronomia": [
+      "Enchiladas Mineras",
+      "Gorditas",
+      "Café de Especialidad",
+      "Dulces Típicos"
+    ],
+    "imagen": "🏛️",
+    "activo": true,
+    "popularidad": 4,
+    "precio_promedio": "$$",
+    "distancia_ciudad_mas_cercana": "Guanajuato - 97 km"
+  },
+  {
+    "id": 5,
+    "nombre": "Tulum",
+    "pais": "México",
+    "estado": "Quintana Roo",
+    "descripcion": "Destino eco-chic con ruinas mayas frente al mar y una filosofía de vida sostenible.",
+    "clima": "Tropical",
+    "mejor_epoca": "Noviembre - Abril",
+    "atracciones_principales": [
+      "Zona Arqueológica de Tulum",
+      "Playa Paraíso",
+      "Cenotes",
+      "Sian Ka'an",
+      "Gran Cenote"
+    ],
+    "actividades_populares": [
+      "Yoga en la Playa",
+      "Snorkel en Cenotes",
+      "Tours Ecológicos",
+      "Meditación",
+      "Buceo"
+    ],
+    "gastronomia": [
+      "Comida Orgánica",
+      "Smoothies",
+      "Pescado Fresco",
+      "Cocina Saludable"
+    ],
+    "imagen": "🧘",
+    "activo": true,
+    "popularidad": 4,
+    "precio_promedio": "$$$",
+    "distancia_ciudad_mas_cercana": "Playa del Carmen - 65 km"
+  },
+  {
+    "id": 6,
+    "nombre": "Oaxaca",
+    "pais": "México",
+    "estado": "Oaxaca",
+    "descripcion": "Capital cultural con rica tradición gastronómica, artesanal y arquitectura colonial.",
+    "clima": "Templado",
+    "mejor_epoca": "Octubre - Mayo",
+    "atracciones_principales": [
+      "Centro Histórico",
+      "Mercado 20 de Noviembre",
+      "Monte Albán",
+      "Hierve el Agua",
+      "Museo de las Culturas"
+    ],
+    "actividades_populares": [
+      "Tours Gastronómicos",
+      "Artesanías",
+      "Arqueología",
+      "Festivales",
+      "Tradiciones"
+    ],
+    "gastronomia": [
+      "Mole Oaxaqueño",
+      "Tlayudas",
+      "Mezcal",
+      "Chocolate",
+      "Quesillo"
+    ],
+    "imagen": "🌶️",
+    "activo": true,
+    "popularidad": 4,
+    "precio_promedio": "$$",
+    "distancia_ciudad_mas_cercana": "Centro - 0 km"
+  },
+  {
+    "id": 7,
+    "nombre": "Guadalajara",
+    "pais": "México",
+    "estado": "Jalisco",
+    "descripcion": "Cuna del mariachi y el tequila, con arquitectura colonial y tradiciones mexicanas.",
+    "clima": "Templado",
+    "mejor_epoca": "Octubre - Mayo",
+    "atracciones_principales": [
+      "Centro Histórico",
+      "Tlaquepaque",
+      "Tequila",
+      "Chapala",
+      "Mercado San Juan de Dios"
+    ],
+    "actividades_populares": [
+      "Tours de Tequila",
+      "Mariachi",
+      "Artesanías",
+      "Gastronomía",
+      "Arquitectura"
+    ],
+    "gastronomia": [
+      "Birria",
+      "Tortas Ahogadas",
+      "Tequila",
+      "Carne en su Jugo",
+      "Pozole"
+    ],
+    "imagen": "🎺",
+    "activo": true,
+    "popularidad": 3,
+    "precio_promedio": "$$",
+    "distancia_ciudad_mas_cercana": "Centro - 0 km"
+  }
+]

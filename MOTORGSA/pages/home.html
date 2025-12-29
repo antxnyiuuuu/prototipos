@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motorgsa - Catálogo Agrícola</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1><i class="fas fa-tractor"></i> Motorgsa</h1>
+            <p>Bienvenido, <span id="userName"></span>
+                <span id="userRole"></span>
+            </p>
+        </div>
+
+        <div class="main-content">
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar productos...">
+            </div>
+
+            <div style="margin-bottom: 0.5rem;">
+                <select id="categoryFilter" style="width: 100%; padding: 0.6rem; border: 2px solid #333; border-radius: 8px; background-color: #2a2a2a; color: #ffffff; font-size: 0.9rem;">
+                    <option value="">Todas las categorías</option>
+                </select>
+            </div>
+
+            <div id="productsContainer" class="products-grid"></div>
+
+            <div id="noProducts" style="display: none; text-align: center; padding: 1rem; color: #888;">
+                <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                <p>No se encontraron productos</p>
+            </div>
+        </div>
+
+        <!-- Barra de navegación -->
+        <div class="nav-bar">
+            <button class="nav-item active" onclick="navigateTo('home')">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+            </button>
+            <button class="nav-item" onclick="navigateTo('cart')">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Carrito <span id="cartCount">0</span></span>
+            </button>
+            <button class="nav-item" onclick="navigateTo('about')">
+                <i class="fas fa-info-circle"></i>
+                <span>Empresa</span>
+            </button>
+            <button class="nav-item" onclick="navigateTo('profile')">
+                <i class="fas fa-user"></i>
+                <span>Perfil</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="../data/users.js"></script>
+    <script src="../data/products.js"></script>
+    <script>
+        let currentUser = null;
+        let allProducts = [];
+        let filteredProducts = [];
+
+        window.onload = function() {
+            checkAuth();
+            loadUserInfo();
+            loadProducts();
+            updateCartCount();
+        };
+
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn !== 'true') {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+        }
+
+        function loadUserInfo() {
+            const userNameSpan = document.getElementById('userName');
+            const userRoleSpan = document.getElementById('userRole');
+            
+            if (userNameSpan) {
+                userNameSpan.textContent = currentUser.name;
+            }
+            
+            if (userRoleSpan) {
+                const roleText = currentUser.role === 'distribuidor' ? 'Distribuidor' : 'Cliente';
+                const roleClass = currentUser.role === 'distribuidor' ? 'distributor-badge' : 'client-badge';
+                
+                userRoleSpan.textContent = roleText;
+                userRoleSpan.className = roleClass;
+            }
+        }
+
+        function loadProducts() {
+            // Limpiar localStorage de productos para forzar recarga desde el archivo
+            localStorage.removeItem('products');
+            
+            // Cargar productos desde el archivo
+            allProducts = getProducts();
+            filteredProducts = [...allProducts];
+            
+            // Depuración: mostrar en consola cuántos productos se cargaron
+            console.log('Productos cargados:', allProducts.length);
+            console.log('Primer producto:', allProducts[0]);
+            console.log('Categorías disponibles:', [...new Set(allProducts.map(p => p.category))]);
+            
+            // Poblar el filtro de categorías dinámicamente
+            populateCategoryFilter();
+            
+            renderProducts();
+        }
+        
+        function populateCategoryFilter() {
+            const categoryFilter = document.getElementById('categoryFilter');
+            if (!categoryFilter) return;
+            
+            // Obtener categorías únicas de los productos
+            const categories = [...new Set(allProducts.map(p => p.category))].sort();
+            
+            // Limpiar opciones existentes (mantener solo "Todas las categorías")
+            categoryFilter.innerHTML = '<option value="">Todas las categorías</option>';
+            
+            // Agregar opciones para cada categoría
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categoryFilter.appendChild(option);
+            });
+            
+            console.log('Filtro de categorías poblado con:', categories.length, 'categorías');
+        }
+        
+        function reloadProducts() {
+            // Limpiar localStorage de productos
+            localStorage.removeItem('products');
+            
+            // Recargar productos
+            loadProducts();
+            
+            // Mostrar mensaje temporal
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: #28a745;
+                color: white;
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                font-size: 0.8rem;
+                z-index: 1000;
+            `;
+            messageDiv.textContent = '✅ Productos recargados';
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                document.body.removeChild(messageDiv);
+            }, 2000);
+        }
+
+        function renderProducts() {
+            const container = document.getElementById('productsContainer');
+            const noProducts = document.getElementById('noProducts');
+
+            if (filteredProducts.length === 0) {
+                container.style.display = 'none';
+                noProducts.style.display = 'block';
+                return;
+            }
+
+            container.style.display = 'grid';
+            noProducts.style.display = 'none';
+
+                         container.innerHTML = filteredProducts.map(product => {
+                 const originalPrice = product.price;
+                 const discountPercent = product.distributorDiscountPercent || 10;
+                 const discountedPrice = currentUser.role === 'distribuidor' 
+                     ? (originalPrice * (1 - discountPercent / 100)).toFixed(2) 
+                     : originalPrice.toFixed(2);
+                 
+                 const priceClass = currentUser.role === 'distribuidor' ? 'distributor' : '';
+                 
+                 // Mostrar precios diferentes para distribuidores
+                 let priceDisplay = '';
+                 if (currentUser.role === 'distribuidor') {
+                     priceDisplay = `
+                       <div class="price-container-distributor">
+                           <span class="price-tag distributor-old">$${originalPrice.toFixed(2)}</span>
+                           <span class="price-tag distributor-current">$${discountedPrice}</span>
+                           <span class="discount-percent-badge">Descuento distribuidor -${discountPercent}%</span>
+                       </div>
+                   `;
+                 } else {
+                     priceDisplay = `<div class="price-tag client">$${discountedPrice}</div>`;
+                 }
+                 
+                 return `
+                     <div class="product-card fade-in">
+                         <div class="product-background" style="background-image: url('${product.image}');" onclick="showProductDetails(${product.id})" style="cursor: pointer;"></div>
+                         <div class="product-overlay">
+                             <div class="product-info">
+                                 <h3 class="product-name">${product.name}</h3>
+                                 ${priceDisplay}
+                             </div>
+                             <div class="product-actions">
+                                 <button class="action-btn btn-details" onclick="showProductDetails(${product.id})">
+                                     Detalles
+                                 </button>
+                                 <button class="action-btn btn-add-cart" onclick="addToCart(${product.id})">
+                                     Añadir al carrito
+                                 </button>
+                             </div>
+                         </div>
+                     </div>
+                 `;
+             }).join('');
+        }
+
+        function addToCart(productId) {
+            const product = getProductById(productId);
+            if (!product) return;
+
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: productId,
+                    name: product.name,
+                    price: currentUser.role === 'distribuidor' ? product.price * (1 - (product.distributorDiscountPercent || 10) / 100) : product.price,
+                    image: product.image,
+                    quantity: 1
+                });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            showAddToCartModal();
+        }
+
+        function showProductDetails(productId) {
+            const product = getProductById(productId);
+            if (!product) return;
+
+            // Crear modal con detalles del producto
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+                padding: 1rem;
+            `;
+
+            const originalPrice = product.price;
+            const discountPercent = product.distributorDiscountPercent || 10;
+            const discountedPrice = currentUser.role === 'distribuidor' 
+                ? (originalPrice * (1 - discountPercent / 100)).toFixed(2) 
+                : originalPrice.toFixed(2);
+
+            // Mostrar precios diferentes para distribuidores
+            let priceDisplay = '';
+            if (currentUser.role === 'distribuidor') {
+                priceDisplay = `
+                    <div style="margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                            <span style="text-decoration: line-through; color: #888; font-size: 1.1rem;">$${originalPrice.toFixed(2)}</span>
+                            <span style="color: #28a745; font-weight: bold; font-size: 1.3rem;">$${discountedPrice}</span>
+                        </div>
+                                                 <span style="background-color: #28a745; color: white; padding: 0.3rem 0.6rem; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">
+                             Descuento  distribuidor -${discountPercent}%
+                         </span>
+                    </div>
+                `;
+            } else {
+                priceDisplay = `
+                    <div style="
+                        background-color: #2E7D32;
+                        color: white;
+                        padding: 0.5rem 1rem;
+                        border-radius: 20px;
+                        font-weight: bold;
+                        font-size: 1.2rem;
+                        margin-bottom: 1rem;
+                    ">$${discountedPrice}</div>
+                `;
+            }
+
+            modal.innerHTML = `
+                <div style="
+                    background-color: #1a1a1a;
+                    border-radius: 15px;
+                    padding: 1.5rem;
+                    max-width: 350px;
+                    width: 100%;
+                    border: 2px solid #2E7D32;
+                    position: relative;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                ">
+                    <button onclick="this.parentElement.parentElement.remove()" style="
+                        position: absolute;
+                        top: 10px;
+                        right: 15px;
+                        background: none;
+                        border: none;
+                        color: #2E7D32;
+                        font-size: 1.5rem;
+                        cursor: pointer;
+                    ">×</button>
+                    
+                    <div style="text-align: center; margin-bottom: 1rem;">
+                        <img src="${product.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzJhMmEyYSIvPjx0ZXh0IHg9IjE1MCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMyRTdEMzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Nb3RvcmdzYTwvdGV4dD48L3N2Zz4='}" alt="${product.name}" style="
+                            width: 100%;
+                            height: 200px;
+                            object-fit: cover;
+                            border-radius: 10px;
+                            margin-bottom: 1rem;
+                        " onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzJhMmEyYSIvPjx0ZXh0IHg9IjE1MCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMyRTdEMzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Nb3RvcmdzYTwvdGV4dD48L3N2Zz4='">
+                        
+                        <h3 style="color: #ffffff; margin-bottom: 0.5rem; font-size: 1.2rem;">${product.name}</h3>
+                        <p style="color: #888; margin-bottom: 0.5rem; font-size: 0.9rem;">${product.brand || 'Motorgsa'}</p>
+                        
+                        <div style="
+                            background-color: #2a2a2a;
+                            padding: 1rem;
+                            border-radius: 10px;
+                            margin-bottom: 1rem;
+                            text-align: left;
+                        ">
+                            <p style="color: #888; margin-bottom: 0.5rem;"><strong>Categoría:</strong> ${product.category}</p>
+                            <p style="color: #888; margin-bottom: 0.5rem;"><strong>Stock:</strong> ${product.stock} unidades</p>
+                            ${product.description ? `<p style="color: #888; margin-bottom: 0.5rem;"><strong>Descripción:</strong> ${product.description}</p>` : ''}
+                        </div>
+                        
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button onclick="addToCartFromDetails(${product.id}); this.parentElement.parentElement.parentElement.remove();" style="
+                                background-color: #2E7D32;
+                                color: white;
+                                border: none;
+                                padding: 0.8rem 1.5rem;
+                                border-radius: 8px;
+                                font-weight: bold;
+                                cursor: pointer;
+                                flex: 1;
+                            ">Añadir al Carrito</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            
+            // Cerrar modal al hacer clic fuera
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const count = cart.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById('cartCount').textContent = count;
+        }
+
+        function addToCartFromDetails(productId) {
+            addToCart(productId);
+        }
+
+        function showAddToCartModal() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 2000;
+                padding: 1rem;
+            `;
+
+            modal.innerHTML = `
+                <div style="
+                    background-color: #1a1a1a;
+                    border-radius: 15px;
+                    padding: 1.5rem;
+                    max-width: 350px;
+                    width: 100%;
+                    border: 2px solid #2E7D32;
+                    position: relative;
+                    text-align: center;
+                ">
+                    <button onclick="this.parentElement.parentElement.remove()" style="
+                        position: absolute;
+                        top: 10px;
+                        right: 15px;
+                        background: none;
+                        border: none;
+                        color: #ffffff;
+                        font-size: 1.5rem;
+                        cursor: pointer;
+                        font-weight: bold;
+                    ">×</button>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <div style="
+                            background-color: #28a745;
+                            color: white;
+                            width: 60px;
+                            height: 60px;
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin: 0 auto 1rem;
+                            font-size: 2rem;
+                        ">
+                            ✅
+                        </div>
+                        <h3 style="color: #ffffff; margin-bottom: 0.5rem; font-size: 1.2rem;">
+                            ¡Producto agregado!
+                        </h3>
+                        <p style="color: #888; font-size: 0.9rem; line-height: 1.4;">
+                            El producto ha sido agregado al carrito exitosamente
+                        </p>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                        <button onclick="continueShopping()" class="modal-confirmation-btn" style="
+                            background-color: #2E7D32;
+                            color: white;
+                            border: none;
+                            padding: 0.8rem 1.5rem;
+                            border-radius: 8px;
+                            font-weight: bold;
+                            cursor: pointer;
+                            font-size: 0.9rem;
+                        ">Seguir comprando</button>
+                        <button onclick="goToCart()" class="modal-confirmation-btn" style="
+                            background-color: #333;
+                            color: white;
+                            border: none;
+                            padding: 0.8rem 1.5rem;
+                            border-radius: 8px;
+                            font-weight: bold;
+                            cursor: pointer;
+                            font-size: 0.9rem;
+                        ">Ir al carrito</button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            
+            // Cerrar modal al hacer clic fuera
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+
+        function addToCartFromDetails(productId) {
+            const product = getProductById(productId);
+            if (!product) return;
+
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: productId,
+                    name: product.name,
+                    price: currentUser.role === 'distribuidor' ? product.price * (1 - (product.distributorDiscountPercent || 10) / 100) : product.price,
+                    image: product.image,
+                    quantity: 1
+                });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            showAddToCartModal();
+        }
+
+        function continueShopping() {
+            // Cerrar el modal
+            const modal = document.querySelector('div[style*="z-index: 2000"]');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function goToCart() {
+            // Cerrar el modal y redirigir al carrito
+            const modal = document.querySelector('div[style*="z-index: 2000"]');
+            if (modal) {
+                modal.remove();
+            }
+            window.location.href = 'cart.html';
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.position = 'fixed';
+            messageDiv.style.top = '10px';
+            messageDiv.style.left = '50%';
+            messageDiv.style.transform = 'translateX(-50%)';
+            messageDiv.style.zIndex = '1000';
+            messageDiv.textContent = message;
+            
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                document.body.removeChild(messageDiv);
+            }, 2000);
+        }
+
+        function navigateTo(page) {
+            if (page === 'home') {
+                window.location.href = 'home.html';
+            } else if (page === 'cart') {
+                window.location.href = 'cart.html';
+            } else if (page === 'profile') {
+                window.location.href = 'profile.html';
+            } else if (page === 'about') {
+                window.location.href = 'about.html';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('isLoggedIn');
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            filterProducts(searchTerm, categoryFilter);
+        });
+
+        document.getElementById('categoryFilter').addEventListener('change', function(e) {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = e.target.value;
+            filterProducts(searchTerm, categoryFilter);
+        });
+
+        function filterProducts(searchTerm, categoryFilter) {
+            filteredProducts = allProducts.filter(product => {
+                const matchesSearch = product.name.toLowerCase().includes(searchTerm) ||
+                                    (product.brand && product.brand.toLowerCase().includes(searchTerm));
+                
+                const matchesCategory = !categoryFilter || product.category === categoryFilter;
+                
+                return matchesSearch && matchesCategory;
+            });
+            
+            renderProducts();
+        }
+    </script>
+</body>
+</html>

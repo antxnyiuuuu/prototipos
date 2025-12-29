@@ -1,0 +1,148 @@
+{
+  "hoteles": [
+    {
+      "id": 1,
+      "nombre": "Hotel Quito Centro",
+      "categoria": "3 estrellas",
+      "precio_por_noche": 45,
+      "ubicacion": "Centro Histórico, Quito",
+      "servicios": ["WiFi", "Desayuno", "Parking", "Recepción 24h"],
+      "imagen": "hotel-quito-centro.jpg"
+    },
+    {
+      "id": 2,
+      "nombre": "Hotel Plaza Grande",
+      "categoria": "4 estrellas",
+      "precio_por_noche": 85,
+      "ubicacion": "Plaza Grande, Quito",
+      "servicios": ["WiFi", "Desayuno", "Spa", "Restaurante", "Parking"],
+      "imagen": "hotel-plaza-grande.jpg"
+    },
+    {
+      "id": 3,
+      "nombre": "Hotel Casa Gangotena",
+      "categoria": "5 estrellas",
+      "precio_por_noche": 180,
+      "ubicacion": "Centro Histórico, Quito",
+      "servicios": ["WiFi", "Desayuno", "Spa", "Restaurante Gourmet", "Concierge", "Parking"],
+      "imagen": "hotel-casa-gangotena.jpg"
+    },
+    {
+      "id": 4,
+      "nombre": "Hotel Oro Verde Guayaquil",
+      "categoria": "4 estrellas",
+      "precio_por_noche": 95,
+      "ubicacion": "Centro, Guayaquil",
+      "servicios": ["WiFi", "Desayuno", "Piscina", "Gimnasio", "Restaurante", "Parking"],
+      "imagen": "hotel-oro-verde.jpg"
+    },
+    {
+      "id": 5,
+      "nombre": "Hotel Boutique Cuenca",
+      "categoria": "3 estrellas",
+      "precio_por_noche": 55,
+      "ubicacion": "Centro Histórico, Cuenca",
+      "servicios": ["WiFi", "Desayuno", "Terraza", "Parking"],
+      "imagen": "hotel-boutique-cuenca.jpg"
+    }
+  ],
+  "comidas": [
+    {
+      "id": 1,
+      "nombre": "Desayuno Continental",
+      "tipo": "Desayuno",
+      "precio": 8,
+      "descripcion": "Café, jugo, pan, mantequilla, mermelada, frutas",
+      "imagen": "desayuno-continental.jpg"
+    },
+    {
+      "id": 2,
+      "nombre": "Desayuno Americano",
+      "tipo": "Desayuno",
+      "precio": 12,
+      "descripcion": "Huevos, tocino, pan tostado, café, jugo",
+      "imagen": "desayuno-americano.jpg"
+    },
+    {
+      "id": 3,
+      "nombre": "Almuerzo Tradicional",
+      "tipo": "Almuerzo",
+      "precio": 15,
+      "descripcion": "Sopa, plato fuerte, postre, bebida",
+      "imagen": "almuerzo-tradicional.jpg"
+    },
+    {
+      "id": 4,
+      "nombre": "Almuerzo Gourmet",
+      "tipo": "Almuerzo",
+      "precio": 25,
+      "descripcion": "Entrada, plato principal gourmet, postre, vino",
+      "imagen": "almuerzo-gourmet.jpg"
+    },
+    {
+      "id": 5,
+      "nombre": "Cena Romántica",
+      "tipo": "Cena",
+      "precio": 35,
+      "descripcion": "Cena a la luz de velas con vista panorámica",
+      "imagen": "cena-romantica.jpg"
+    }
+  ],
+  "actividades": [
+    {
+      "id": 1,
+      "nombre": "Tour Centro Histórico",
+      "tipo": "Cultural",
+      "precio": 20,
+      "duracion": "4 horas",
+      "descripcion": "Recorrido por el centro histórico de Quito, Patrimonio de la Humanidad",
+      "imagen": "tour-centro-historico.jpg"
+    },
+    {
+      "id": 2,
+      "nombre": "Teleférico Quito",
+      "tipo": "Aventura",
+      "precio": 18,
+      "duracion": "3 horas",
+      "descripcion": "Subida al teleférico con vista panorámica de la ciudad",
+      "imagen": "teleferico-quito.jpg"
+    },
+    {
+      "id": 3,
+      "nombre": "Mitad del Mundo",
+      "tipo": "Cultural",
+      "precio": 25,
+      "duracion": "5 horas",
+      "descripcion": "Visita al monumento de la Mitad del Mundo y museos",
+      "imagen": "mitad-del-mundo.jpg"
+    },
+    {
+      "id": 4,
+      "nombre": "Mercado de Otavalo",
+      "tipo": "Cultural",
+      "precio": 30,
+      "duracion": "8 horas",
+      "descripcion": "Tour al famoso mercado indígena de Otavalo",
+      "imagen": "mercado-otavalo.jpg"
+    },
+    {
+      "id": 5,
+      "nombre": "Baños de Agua Santa",
+      "tipo": "Aventura",
+      "precio": 40,
+      "duracion": "10 horas",
+      "descripcion": "Tour a Baños con cascadas y actividades de aventura",
+      "imagen": "banos-agua-santa.jpg"
+    },
+    {
+      "id": 6,
+      "nombre": "Cotopaxi National Park",
+      "tipo": "Naturaleza",
+      "precio": 45,
+      "duracion": "8 horas",
+      "descripcion": "Excursión al Parque Nacional Cotopaxi",
+      "imagen": "cotopaxi-park.jpg"
+    }
+  ]
+}
+

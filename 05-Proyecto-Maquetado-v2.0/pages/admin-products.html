@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionar Productos - Admin</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.ico">
+</head>
+<body>
+    <div class="container">
+
+        <!-- Navegación superior -->
+        <nav class="top-nav">
+            <div class="nav-brand">
+                <span>Ecuador Travel - Admin</span>
+            </div>
+            <div class="nav-links">
+                <a href="admin-home.html" class="nav-link">Dashboard</a>
+                <a href="admin-packages.html" class="nav-link">Paquetes</a>
+                <a href="admin-products.html" class="nav-link active">Productos</a>
+                <a href="admin-customers.html" class="nav-link">Clientes</a>
+                <a href="../index.html" class="nav-link">Volver al Inicio</a>
+            </div>
+            <div class="nav-user">
+                <span>Administrador</span>
+                <button class="btn btn-sm btn-secondary" onclick="logout()">Cerrar Sesión</button>
+            </div>
+        </nav>
+
+        <!-- Contenido principal -->
+        <main class="main-content">
+            <!-- Tabs de navegación -->
+            <div class="card">
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                    <button onclick="showTab('hotels')" class="btn btn-secondary tab-btn active" data-tab="hotels">
+                        🏨 Hoteles
+                    </button>
+                    <button onclick="showTab('meals')" class="btn btn-secondary tab-btn" data-tab="meals">
+                        🍽️ Comidas
+                    </button>
+                    <button onclick="showTab('activities')" class="btn btn-secondary tab-btn" data-tab="activities">
+                        🎯 Actividades
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab de Hoteles -->
+            <div id="hotels-tab" class="tab-content">
+                <div class="card">
+                    <h2 class="card-title">Hoteles</h2>
+                    <div id="hotels-list">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            Cargando hoteles...
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Agregar/Editar Hotel</h3>
+                    <form id="hotel-form" onsubmit="saveHotel(event)">
+                        <input type="hidden" id="hotel-id">
+                        
+                        <div class="form-group">
+                            <label class="form-label">Nombre del Hotel</label>
+                            <input type="text" id="hotel-name" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Categoría</label>
+                            <select id="hotel-category" class="form-select" required>
+                                <option value="3 estrellas">3 estrellas</option>
+                                <option value="4 estrellas">4 estrellas</option>
+                                <option value="5 estrellas">5 estrellas</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Precio por Noche</label>
+                            <input type="number" id="hotel-price" class="form-input" min="0" step="0.01" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Ubicación</label>
+                            <input type="text" id="hotel-location" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Servicios (separados por comas)</label>
+                            <input type="text" id="hotel-services" class="form-input" placeholder="WiFi, Desayuno, Parking">
+                        </div>
+
+                        <div style="display: flex; gap: 1rem;">
+                            <button type="submit" class="btn btn-primary" style="flex: 1;">
+                                Guardar Hotel
+                            </button>
+                            <button type="button" onclick="resetHotelForm()" class="btn btn-secondary" style="flex: 1;">
+                                Limpiar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tab de Comidas -->
+            <div id="meals-tab" class="tab-content" style="display: none;">
+                <div class="card">
+                    <h2 class="card-title">Comidas</h2>
+                    <div id="meals-list">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            Cargando comidas...
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Agregar/Editar Comida</h3>
+                    <form id="meal-form" onsubmit="saveMeal(event)">
+                        <input type="hidden" id="meal-id">
+                        
+                        <div class="form-group">
+                            <label class="form-label">Nombre de la Comida</label>
+                            <input type="text" id="meal-name" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Tipo</label>
+                            <select id="meal-type" class="form-select" required>
+                                <option value="Desayuno">Desayuno</option>
+                                <option value="Almuerzo">Almuerzo</option>
+                                <option value="Cena">Cena</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Precio</label>
+                            <input type="number" id="meal-price" class="form-input" min="0" step="0.01" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Descripción</label>
+                            <textarea id="meal-description" class="form-textarea" rows="3" required></textarea>
+                        </div>
+
+                        <div style="display: flex; gap: 1rem;">
+                            <button type="submit" class="btn btn-primary" style="flex: 1;">
+                                Guardar Comida
+                            </button>
+                            <button type="button" onclick="resetMealForm()" class="btn btn-secondary" style="flex: 1;">
+                                Limpiar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tab de Actividades -->
+            <div id="activities-tab" class="tab-content" style="display: none;">
+                <div class="card">
+                    <h2 class="card-title">Actividades</h2>
+                    <div id="activities-list">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            Cargando actividades...
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Agregar/Editar Actividad</h3>
+                    <form id="activity-form" onsubmit="saveActivity(event)">
+                        <input type="hidden" id="activity-id">
+                        
+                        <div class="form-group">
+                            <label class="form-label">Nombre de la Actividad</label>
+                            <input type="text" id="activity-name" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Tipo</label>
+                            <select id="activity-type" class="form-select" required>
+                                <option value="Cultural">Cultural</option>
+                                <option value="Aventura">Aventura</option>
+                                <option value="Naturaleza">Naturaleza</option>
+                                <option value="Gastronómica">Gastronómica</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Precio</label>
+                            <input type="number" id="activity-price" class="form-input" min="0" step="0.01" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Duración</label>
+                            <input type="text" id="activity-duration" class="form-input" placeholder="4 horas" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Descripción</label>
+                            <textarea id="activity-description" class="form-textarea" rows="3" required></textarea>
+                        </div>
+
+                        <div style="display: flex; gap: 1rem;">
+                            <button type="submit" class="btn btn-primary" style="flex: 1;">
+                                Guardar Actividad
+                            </button>
+                            <button type="button" onclick="resetActivityForm()" class="btn btn-secondary" style="flex: 1;">
+                                Limpiar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <script src="../assets/app.js"></script>
+    <script>
+        let products = {};
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            
+            // Verificar autenticación
+            if (!isAdminLoggedIn()) {
+                window.location.href = 'admin-login.html';
+                return;
+            }
+            
+            loadProducts();
+        });
+
+        async function loadProducts() {
+            try {
+                const response = await fetch('../data/products.json');
+                const data = await response.json();
+                products = data;
+                
+                loadHotels();
+                loadMeals();
+                loadActivities();
+            } catch (error) {
+                console.error('Error cargando productos:', error);
+                showAlert('Error cargando productos', 'error');
+            }
+        }
+
+        function showTab(tabName) {
+            // Ocultar todos los tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            
+            // Remover clase active de todos los botones
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Mostrar tab seleccionado
+            document.getElementById(`${tabName}-tab`).style.display = 'block';
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        }
+
+        function loadHotels() {
+            const container = document.getElementById('hotels-list');
+            
+            if (!products.hoteles || products.hoteles.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--gray-600);">No hay hoteles disponibles</p>';
+                return;
+            }
+
+            container.innerHTML = products.hoteles.map(hotel => `
+                <div class="selection-item">
+                    <div>
+                        <div class="selection-name">${hotel.nombre}</div>
+                        <div style="font-size: 0.875rem; color: var(--gray-600);">
+                            ${hotel.categoria} - ${hotel.ubicacion} - $${hotel.precio_por_noche}/noche
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button onclick="editHotel(${hotel.id})" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Editar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadMeals() {
+            const container = document.getElementById('meals-list');
+            
+            if (!products.comidas || products.comidas.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--gray-600);">No hay comidas disponibles</p>';
+                return;
+            }
+
+            container.innerHTML = products.comidas.map(meal => `
+                <div class="selection-item">
+                    <div>
+                        <div class="selection-name">${meal.nombre}</div>
+                        <div style="font-size: 0.875rem; color: var(--gray-600);">
+                            ${meal.tipo} - $${meal.precio}
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button onclick="editMeal(${meal.id})" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Editar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadActivities() {
+            const container = document.getElementById('activities-list');
+            
+            if (!products.actividades || products.actividades.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--gray-600);">No hay actividades disponibles</p>';
+                return;
+            }
+
+            container.innerHTML = products.actividades.map(activity => `
+                <div class="selection-item">
+                    <div>
+                        <div class="selection-name">${activity.nombre}</div>
+                        <div style="font-size: 0.875rem; color: var(--gray-600);">
+                            ${activity.tipo} - ${activity.duracion} - $${activity.precio}
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button onclick="editActivity(${activity.id})" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Editar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Funciones para hoteles
+        function editHotel(hotelId) {
+            const hotel = products.hoteles.find(h => h.id === hotelId);
+            if (!hotel) return;
+
+            document.getElementById('hotel-id').value = hotel.id;
+            document.getElementById('hotel-name').value = hotel.nombre;
+            document.getElementById('hotel-category').value = hotel.categoria;
+            document.getElementById('hotel-price').value = hotel.precio_por_noche;
+            document.getElementById('hotel-location').value = hotel.ubicacion;
+            document.getElementById('hotel-services').value = hotel.servicios.join(', ');
+        }
+
+        function saveHotel(event) {
+            event.preventDefault();
+
+            const hotelData = {
+                id: parseInt(document.getElementById('hotel-id').value) || Date.now(),
+                nombre: document.getElementById('hotel-name').value,
+                categoria: document.getElementById('hotel-category').value,
+                precio_por_noche: parseFloat(document.getElementById('hotel-price').value),
+                ubicacion: document.getElementById('hotel-location').value,
+                servicios: document.getElementById('hotel-services').value.split(',').map(s => s.trim()),
+                imagen: `hotel-${document.getElementById('hotel-name').value.toLowerCase().replace(/\s+/g, '-')}.jpg`
+            };
+
+            const existingIndex = products.hoteles.findIndex(h => h.id === hotelData.id);
+            if (existingIndex >= 0) {
+                products.hoteles[existingIndex] = hotelData;
+            } else {
+                products.hoteles.push(hotelData);
+            }
+
+            localStorage.setItem('adminProducts', JSON.stringify(products));
+            showAlert('Hotel guardado correctamente', 'success');
+            loadHotels();
+            resetHotelForm();
+        }
+
+        function resetHotelForm() {
+            document.getElementById('hotel-form').reset();
+            document.getElementById('hotel-id').value = '';
+        }
+
+        // Funciones para comidas
+        function editMeal(mealId) {
+            const meal = products.comidas.find(m => m.id === mealId);
+            if (!meal) return;
+
+            document.getElementById('meal-id').value = meal.id;
+            document.getElementById('meal-name').value = meal.nombre;
+            document.getElementById('meal-type').value = meal.tipo;
+            document.getElementById('meal-price').value = meal.precio;
+            document.getElementById('meal-description').value = meal.descripcion;
+        }
+
+        function saveMeal(event) {
+            event.preventDefault();
+
+            const mealData = {
+                id: parseInt(document.getElementById('meal-id').value) || Date.now(),
+                nombre: document.getElementById('meal-name').value,
+                tipo: document.getElementById('meal-type').value,
+                precio: parseFloat(document.getElementById('meal-price').value),
+                descripcion: document.getElementById('meal-description').value,
+                imagen: `meal-${document.getElementById('meal-name').value.toLowerCase().replace(/\s+/g, '-')}.jpg`
+            };
+
+            const existingIndex = products.comidas.findIndex(m => m.id === mealData.id);
+            if (existingIndex >= 0) {
+                products.comidas[existingIndex] = mealData;
+            } else {
+                products.comidas.push(mealData);
+            }
+
+            localStorage.setItem('adminProducts', JSON.stringify(products));
+            showAlert('Comida guardada correctamente', 'success');
+            loadMeals();
+            resetMealForm();
+        }
+
+        function resetMealForm() {
+            document.getElementById('meal-form').reset();
+            document.getElementById('meal-id').value = '';
+        }
+
+        // Funciones para actividades
+        function editActivity(activityId) {
+            const activity = products.actividades.find(a => a.id === activityId);
+            if (!activity) return;
+
+            document.getElementById('activity-id').value = activity.id;
+            document.getElementById('activity-name').value = activity.nombre;
+            document.getElementById('activity-type').value = activity.tipo;
+            document.getElementById('activity-price').value = activity.precio;
+            document.getElementById('activity-duration').value = activity.duracion;
+            document.getElementById('activity-description').value = activity.descripcion;
+        }
+
+        function saveActivity(event) {
+            event.preventDefault();
+
+            const activityData = {
+                id: parseInt(document.getElementById('activity-id').value) || Date.now(),
+                nombre: document.getElementById('activity-name').value,
+                tipo: document.getElementById('activity-type').value,
+                precio: parseFloat(document.getElementById('activity-price').value),
+                duracion: document.getElementById('activity-duration').value,
+                descripcion: document.getElementById('activity-description').value,
+                imagen: `activity-${document.getElementById('activity-name').value.toLowerCase().replace(/\s+/g, '-')}.jpg`
+            };
+
+            const existingIndex = products.actividades.findIndex(a => a.id === activityData.id);
+            if (existingIndex >= 0) {
+                products.actividades[existingIndex] = activityData;
+            } else {
+                products.actividades.push(activityData);
+            }
+
+            localStorage.setItem('adminProducts', JSON.stringify(products));
+            showAlert('Actividad guardada correctamente', 'success');
+            loadActivities();
+            resetActivityForm();
+        }
+
+        function resetActivityForm() {
+            document.getElementById('activity-form').reset();
+            document.getElementById('activity-id').value = '';
+        }
+
+        function logout() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                localStorage.removeItem('adminSession');
+                window.location.href = 'admin-login.html';
+            }
+        }
+    </script>
+</body>
+</html>

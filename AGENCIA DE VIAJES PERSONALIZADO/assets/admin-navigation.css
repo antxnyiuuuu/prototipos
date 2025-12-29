@@ -1,0 +1,101 @@
+/* Estilos específicos para navegación de admin - Mismo diseño que user-nav */
+.admin-nav {
+  /* Mismo estilo base que user-nav */
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: var(--white, #ffffff) !important;
+  border-radius: 20px 20px 0 0 !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1) !important;
+  padding: 1rem 1.5rem !important;
+  z-index: 1000 !important;
+  width: 90% !important;
+  max-width: 400px !important;
+  border-top: 1px solid #e2e8f0 !important;
+  display: flex !important;
+  justify-content: space-around !important;
+  align-items: center !important;
+}
+
+.admin-nav .nav-item {
+  /* Mismo estilo base que .nav-item de user-nav */
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+  padding: 0.75rem 0.5rem !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  min-width: 60px !important;
+  max-width: 100px !important;
+  text-align: center !important;
+  flex: 1 !important;
+  color: var(--gray-600, #6b7280) !important;
+  position: relative !important;
+}
+
+.admin-nav .nav-item:hover {
+  /* Mismo hover que user-nav */
+  background: var(--gray-100, #f3f4f6) !important;
+  color: var(--primary-blue, #3b82f6) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.admin-nav .nav-item.active {
+  /* Mismo active que user-nav */
+  background: var(--primary-blue, #3b82f6) !important;
+  color: var(--white, #ffffff) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+}
+
+.admin-nav .nav-item i {
+  /* Mismo estilo que user-nav */
+  font-size: 1.25rem !important;
+  margin-bottom: 0.25rem !important;
+  color: inherit !important;
+  transition: color 0.3s ease !important;
+}
+
+.admin-nav .nav-item span {
+  /* Mismo estilo que user-nav */
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  color: inherit !important;
+}
+
+/* Responsive design - Mismo que user-nav */
+@media (max-width: 480px) {
+  .admin-nav {
+    width: 95% !important;
+    padding: 0.75rem 1rem !important;
+  }
+  
+  .admin-nav .nav-item {
+    padding: 0.5rem 0.25rem !important;
+    min-width: 50px !important;
+  }
+  
+  .admin-nav .nav-item i {
+    font-size: 1.1rem !important;
+  }
+  
+  .admin-nav .nav-item span {
+    font-size: 0.7rem !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .admin-nav {
+    width: 98% !important;
+    padding: 0.5rem 0.75rem !important;
+  }
+  
+  .admin-nav .nav-item {
+    padding: 0.4rem 0.2rem !important;
+    min-width: 45px !important;
+  }
+}

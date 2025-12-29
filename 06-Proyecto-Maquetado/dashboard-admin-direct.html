@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - TravelApp</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .admin-welcome {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .admin-avatar {
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .admin-avatar:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Main Content */
+        .main {
+            padding: 2rem 0;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .admin-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .admin-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .card-description {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: #f8f9ff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #e1e5e9;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        /* Alertas */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-success {
+            background: #28a745;
+        }
+
+        .alert-error {
+            background: #dc3545;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #e1e5e9;
+            padding: 0.5rem 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            transition: color 0.3s;
+            padding: 0.5rem;
+            border-radius: 10px;
+            min-width: 60px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-text {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        /* Ajustar contenido para el navbar inferior */
+        .main {
+            padding-bottom: 80px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="admin-info">
+                    <h1 class="logo">TravelApp Admin</h1>
+                    <p class="admin-welcome" id="adminWelcome">¡Hola Administrador!</p>
+                </div>
+                <div class="admin-avatar" id="adminAvatar" onclick="showAdminMenu()">👨‍💼</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Stats Section -->
+            <div class="stats-section">
+                <h2 class="section-title">📊 Estadísticas del Sistema</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">1,247</div>
+                        <div class="stat-label">Usuarios Registrados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">89</div>
+                        <div class="stat-label">Hoteles Activos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">156</div>
+                        <div class="stat-label">Restaurantes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">67</div>
+                        <div class="stat-label">Actividades</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">3,421</div>
+                        <div class="stat-label">Reservas Totales</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">$45,678</div>
+                        <div class="stat-label">Ingresos del Mes</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Grid -->
+            <div class="admin-grid">
+                <div class="admin-card">
+                    <div class="card-icon">👥</div>
+                    <h3 class="card-title">Gestión de Usuarios</h3>
+                    <p class="card-description">Administra usuarios, roles y permisos del sistema</p>
+                    <button class="btn" onclick="manageUsers()">Gestionar Usuarios</button>
+                </div>
+
+                <div class="admin-card">
+                    <div class="card-icon">🏨</div>
+                    <h3 class="card-title">Gestión de Hoteles</h3>
+                    <p class="card-description">Administra hoteles, habitaciones y disponibilidad</p>
+                    <button class="btn" onclick="manageHotels()">Gestionar Hoteles</button>
+                </div>
+
+                <div class="admin-card">
+                    <div class="card-icon">🍽️</div>
+                    <h3 class="card-title">Gestión de Restaurantes</h3>
+                    <p class="card-description">Administra restaurantes, menús y reservas</p>
+                    <button class="btn" onclick="manageRestaurants()">Gestionar Restaurantes</button>
+                </div>
+
+                <div class="admin-card">
+                    <div class="card-icon">🎯</div>
+                    <h3 class="card-title">Gestión de Actividades</h3>
+                    <p class="card-description">Administra actividades, horarios y precios</p>
+                    <button class="btn" onclick="manageActivities()">Gestionar Actividades</button>
+                </div>
+
+                <div class="admin-card">
+                    <div class="card-icon">📦</div>
+                    <h3 class="card-title">Gestión de Paquetes</h3>
+                    <p class="card-description">Crea y administra paquetes promocionales</p>
+                    <button class="btn" onclick="managePackages()">Gestionar Paquetes</button>
+                </div>
+
+                <div class="admin-card">
+                    <div class="card-icon">📊</div>
+                    <h3 class="card-title">Reportes y Analytics</h3>
+                    <p class="card-description">Genera reportes y analiza el rendimiento</p>
+                    <button class="btn" onclick="viewReports()">Ver Reportes</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Admin -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAdminModal()">&times;</span>
+            <h3>Panel de Administración</h3>
+            <div id="adminInfo"></div>
+            <div style="margin-top: 2rem;">
+                <button class="btn" onclick="goToProfile()">Mi Perfil</button>
+                <button class="btn btn-secondary" onclick="logout()" style="margin-left: 1rem;">Cerrar Sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-content">
+            <a href="#" class="nav-item active" onclick="goToDashboard()">
+                <span class="nav-icon">📊</span>
+                <span class="nav-text">Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" onclick="manageUsers()">
+                <span class="nav-icon">👥</span>
+                <span class="nav-text">Usuarios</span>
+            </a>
+            <a href="#" class="nav-item" onclick="manageHotels()">
+                <span class="nav-icon">🏨</span>
+                <span class="nav-text">Hoteles</span>
+            </a>
+            <a href="#" class="nav-item" onclick="manageRestaurants()">
+                <span class="nav-icon">🍽️</span>
+                <span class="nav-text">Restaurantes</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showAdminMenu()">
+                <span class="nav-icon">👨‍💼</span>
+                <span class="nav-text">Admin</span>
+            </a>
+        </div>
+    </nav>
+
+    <div id="alertContainer"></div>
+
+    <script>
+        // Funciones de utilidad
+        function showAlert(message, type = 'success') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+        }
+
+        function showAdminMenu() {
+            const modal = document.getElementById('adminModal');
+            const adminInfo = document.getElementById('adminInfo');
+            
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                adminInfo.innerHTML = `
+                    <p><strong>Nombre:</strong> ${user.name}</p>
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>Rol:</strong> ${getRoleDisplayName(user.role)}</p>
+                `;
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').style.display = 'none';
+        }
+
+        function getRoleDisplayName(role) {
+            const roleNames = {
+                'usuario': 'Usuario',
+                'admin': 'Administrador',
+                'hotel': 'Hotel',
+                'restaurante': 'Restaurante',
+                'actividades': 'Actividades'
+            };
+            return roleNames[role] || role;
+        }
+
+        function goToProfile() {
+            showAlert('Funcionalidad de perfil en desarrollo', 'success');
+            closeAdminModal();
+        }
+
+        function logout() {
+            localStorage.removeItem('current_user');
+            showAlert('Sesión cerrada correctamente', 'success');
+            setTimeout(() => {
+                window.location.href = 'login-direct.html';
+            }, 1000);
+        }
+
+        // Funciones de gestión
+        function goToDashboard() {
+            showAlert('Ya estás en el dashboard principal', 'success');
+        }
+
+        function manageUsers() {
+            window.location.href = 'admin-usuarios-direct.html';
+        }
+
+        function manageHotels() {
+            window.location.href = 'admin-hoteles-direct.html';
+        }
+
+        function manageRestaurants() {
+            window.location.href = 'admin-restaurantes-direct.html';
+        }
+
+        function manageActivities() {
+            showAlert('Redirigiendo a gestión de actividades...', 'success');
+        }
+
+        function managePackages() {
+            showAlert('Redirigiendo a gestión de paquetes...', 'success');
+        }
+
+        function viewReports() {
+            showAlert('Generando reportes del sistema...', 'success');
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('adminModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Inicializar página
+        window.addEventListener('load', function() {
+            const currentUser = localStorage.getItem('current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                if (user.role === 'admin') {
+                    document.getElementById('adminWelcome').textContent = `¡Hola ${user.name}!`;
+                    document.getElementById('adminAvatar').textContent = user.avatar || '👨‍💼';
+                } else {
+                    showAlert('Acceso denegado. Solo administradores pueden acceder a esta página.', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'login-direct.html';
+                    }, 2000);
+                }
+            } else {
+                showAlert('No hay usuario logueado. Redirigiendo al login...', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login-direct.html';
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>

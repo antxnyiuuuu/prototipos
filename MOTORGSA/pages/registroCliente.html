@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motorgsa - Registro de Cliente</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h2><i class="fas fa-user-plus"></i> Registro de Cliente</h2>
+                <p>Completa tus datos para crear tu cuenta de cliente</p>
+            </div>
+
+            <form id="clientRegisterForm" class="auth-form">
+                <div class="form-group">
+                    <label for="clientName">
+                        <i class="fas fa-user"></i> Nombre completo
+                    </label>
+                    <input type="text" id="clientName" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="clientUsername">
+                        <i class="fas fa-at"></i> Nombre de usuario
+                    </label>
+                    <input type="text" id="clientUsername" name="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="clientEmail">
+                        <i class="fas fa-envelope"></i> Correo electrónico
+                    </label>
+                    <input type="email" id="clientEmail" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="clientPassword">
+                        <i class="fas fa-lock"></i> Contraseña
+                    </label>
+                    <input type="password" id="clientPassword" name="password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="clientConfirmPassword">
+                        <i class="fas fa-lock"></i> Confirmar contraseña
+                    </label>
+                    <input type="password" id="clientConfirmPassword" name="confirmPassword" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="clientProfileImage">
+                        <i class="fas fa-image"></i> Imagen de perfil (URL)
+                    </label>
+                    <input type="url" id="clientProfileImage" name="profileImage" placeholder="https://ejemplo.com/imagen.jpg">
+                </div>
+                <div class="form-group">
+                    <label for="clientProfileFile">
+                        <i class="fas fa-upload"></i> Subir imagen de perfil (local)
+                    </label>
+                    <input type="file" id="clientProfileFile" accept="image/*">
+                </div>
+
+                <button type="submit" class="auth-button">
+                    <i class="fas fa-user-plus"></i> Crear cuenta de cliente
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>¿Ya tienes cuenta? <a href="login.html">Iniciar sesión</a></p>
+                <p><a href="registro.html">← Volver a elegir tipo de cuenta</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../data/users.js"></script>
+    <script>
+        document.getElementById('clientRegisterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('clientName').value.trim();
+            const username = document.getElementById('clientUsername').value.trim();
+            const email = document.getElementById('clientEmail').value.trim();
+            const password = document.getElementById('clientPassword').value;
+            const confirmPassword = document.getElementById('clientConfirmPassword').value;
+            const profileImage = document.getElementById('clientProfileImage').value.trim();
+            const profileFile = document.getElementById('clientProfileFile').files[0];
+
+            // Validaciones
+            if (!name || !username || !email || !password || !confirmPassword) {
+                showMessage('Todos los campos son obligatorios', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showMessage('Las contraseñas no coinciden', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showMessage('La contraseña debe tener al menos 6 caracteres', 'error');
+                return;
+            }
+
+            // Verificar si el email o username ya existe
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            if (users.find(user => user.email === email)) {
+                showMessage('Este correo electrónico ya está registrado', 'error');
+                return;
+            }
+            
+            if (users.find(user => user.username === username)) {
+                showMessage('Este nombre de usuario ya está en uso', 'error');
+                return;
+            }
+
+            // Crear nuevo usuario cliente
+            const newUser = {
+                id: users.length + 1,
+                username: username,
+                password: password,
+                name: name,
+                email: email,
+                role: 'cliente',
+                estado: 'activo',
+                fechaRegistro: new Date().toISOString(),
+                profileImage: profileImage || ''
+            };
+
+            function saveAndRedirect(imageDataUrl) {
+                if (imageDataUrl) newUser.profileImage = imageDataUrl;
+                if (!newUser.profileImage) newUser.profileImage = 'https://via.placeholder.com/150/ff0000/ffffff?text=Cliente';
+                users.push(newUser);
+                localStorage.setItem('users', JSON.stringify(users));
+                showMessage('✅ Cuenta de cliente creada exitosamente. Ya puedes iniciar sesión.', 'success');
+                document.getElementById('clientRegisterForm').reset();
+                setTimeout(() => { window.location.href = 'login.html'; }, 2000);
+            }
+
+            if (profileFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    saveAndRedirect(e.target.result);
+                };
+                reader.readAsDataURL(profileFile);
+            } else {
+                saveAndRedirect(null);
+            }
+
+            showMessage('✅ Cuenta de cliente creada exitosamente. Ya puedes iniciar sesión.', 'success');
+            
+            // Limpiar formulario
+            document.getElementById('clientRegisterForm').reset();
+            
+            // Redirigir al login después de 2 segundos
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
+        });
+
+        function showMessage(message, type) {
+            const existingMessages = document.querySelectorAll('.message');
+            existingMessages.forEach(msg => {
+                if (msg.parentNode) {
+                    msg.parentNode.removeChild(msg);
+                }
+            });
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                ${message}
+            `;
+
+            document.body.appendChild(messageDiv);
+
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.parentNode.removeChild(messageDiv);
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
